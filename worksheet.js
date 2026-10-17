@@ -166,7 +166,7 @@ function doPrint(){const s=readPanel(),card=document.querySelector('#detail .car
  let[w,h]=PAPER[s.size]||PAPER.A4;if(s.or==='landscape')[w,h]=[h,w];
  const mg=10,aw=w-2*mg,ah=h-2*mg-14;
  let st=document.getElementById('wsPage');if(!st){st=document.createElement('style');st.id='wsPage';document.head.appendChild(st)}
- st.textContent=`@page{size:${w}mm ${h}mm;margin:${mg}mm}`;
+ st.textContent=`@page{size:${w}mm ${h}mm;margin:${mg}mm} @media print{body:not(.pr-big):not(.pr-scale) .views .vw svg{max-height:${Math.max(60,(ah-62)/2).toFixed(0)}mm!important;width:auto!important;max-width:100%!important;margin:0 auto}}`;
  const cls=['ws-printing'];for(const[k]of SECS)if(!s.sec[k])cls.push('pr-hide-'+k);if(s.mode!=='fit')cls.push('pr-'+s.mode);
  document.body.classList.add(...cls);
  const det=[...card.querySelectorAll('details')],was=det.map(d=>d.open);det.forEach(d=>d.open=true);
@@ -223,6 +223,8 @@ const css=`
  #detail,#detail:not(:empty){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;margin:0!important;background:#fff!important;max-height:none!important;height:auto!important;transform:none!important}
  #detail .card{max-width:none!important;width:auto!important;margin:0!important;padding:0!important;transform:none!important;border:0!important;border-radius:0!important;filter:none!important}
  #detail .card>*{max-width:100%!important}
+ .views .vw svg{max-height:100mm}
+ table.tb{break-inside:avoid;page-break-inside:avoid}
  .vw{border:0!important;border-radius:0!important;padding:0!important}
  body,#detail,#detail .card,.vw,details,table,th,td,.ws,.ws-s,.ws-leg>div,.ws-tip,.ws-mat,.warn,.meta>span{background:#fff!important;background-image:none!important}
  .vw,.ws,.ws-s,.ws-leg>div,table,td,th,.tb td{border-color:#888!important}
