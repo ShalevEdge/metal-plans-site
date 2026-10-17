@@ -581,7 +581,7 @@ function show(id){
  ${joins.length?`<div class="warn">⚠️ ארוך מ-6 מ׳ – נדרש חיבור / ריתוך המשך: ${joins.join(', ')}</div>`:''}
  <h2>פרזול, חיפוי ואביזרים</h2><ul style="padding-inline-start:20px">${p.hw.map(h=>`<li>${h}</li>`).join('')}</ul>
  <h2>הערות</h2><ul style="padding-inline-start:20px">${p.notes.map(h=>`<li>${h}</li>`).join('')}</ul>
- ${toolsHTML(p,rows)}${moreHTML(p)} פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
+ ${toolsHTML(p,rows)}${moreHTML(p)}<div class="warn">תבנית עבודה בלבד. פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
  <p class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" onclick="print()">הדפסה / שמירה כ-PDF</button><button class="btn ghost" id="cp">העתקת קישור</button></p></div>`;
  $('cp').onclick=()=>{navigator.clipboard?.writeText(location.href).then(()=>$('cp').textContent='הקישור הועתק ✓',()=>{})};
  bindTools(p,rows);bindMore(p);$('dxf').onclick=()=>dlDXF(p);document.querySelectorAll('.cbar button[data-c]').forEach(b=>b.onclick=()=>{PAINT=b.dataset.c||null;const y=$('detail').scrollTop;show(id);$('detail').scrollTop=y});$('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
@@ -595,5 +595,6 @@ fillSel();render();if(location.hash)show(decodeURIComponent(location.hash.slice(
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 </script>
+<script src="worksheet.js"></script>
 </body>
 </html>
