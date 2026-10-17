@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>רווחיות פרויקטים | SHALVERO FORGE</title><meta name="robots" content="noindex"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png"><link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css"><link rel="stylesheet" href="operations.css"></head>
+<body><div id="nav"></div><main class="wrap">
+<p class="tag">PROJECT FINANCE</p><h1>רווחיות וגבייה</h1><p class="muted">השוואה בין מחיר ההצעה לבין הוצאות שנרשמו ושעות עבודה שנמדדו. הנתונים נשארים במכשיר.</p>
+<div class="notice"><b>המספר הוא תרומה משוערת — לא רווח חשבונאי.</b> הכנסות והוצאות מוזנות בש״ח על בסיס אחיד שתבחרו; מע״מ, מסים, תקורה שלא נרשמה וחובות לא־משולמים אינם מחושבים אוטומטית. כשאין מחיר או עלות שעת עבודה, מוצגת אזהרה. <a href="workshop.html">הגדרת עלות שעה</a></div>
+<div class="grid" id="financeStats"></div>
+<div class="card"><div class="formgrid"><label>בחירת פרויקט<select id="projectChoice"></select></label><label>חיפוש לקוח/עבודה<input id="financeSearch" placeholder="שם לקוח או פרויקט"></label></div></div>
+<div id="financeDetail"></div>
+</main><script src="app.js"></script><script src="operations.js"></script><script>
+const $=id=>document.getElementById(id);$('nav').innerHTML=MP.nav('finance.html');const F=ForgeOps;
+let list=MP.projects(),selected=new URLSearchParams(location.search).get('project')||'';
+const fmt=n=>F.currency(n);
+function render(){
+ list=MP.projects();const settings=MP.settings(),rate=F.safeNum(settings.costRate);
+ const q=$('financeSearch').value.toLowerCase().trim(),filtered=list.filter(p=>!q||((p.cust||'')+' '+(p.name||'')).toLowerCase().includes(q));
+ if(!filtered.some(p=>p.uid===selected))selected=filtered[0]?.uid||'';
+ $('projectChoice').innerHTML=filtered.length?filtered.map(p=>'<option value="'+MP.esc(p.uid)+'" '+(p.uid===selected?'selected':'')+'>'+MP.esc((p.cust||'ללא לקוח')+' · '+(p.name||'עבודה'))+'</option>').join(''):'<option>אין פרויקטים</option>';
+ const stats=list.map(p=>F.analysis(p,rate)),valid=stats.filter(s=>s.hasPrice&&s.hasLaborRate),
+ turnover=stats.reduce((sum,s)=>sum+(s.revenue||0),0),expense=stats.reduce((sum,s)=>sum+s.spent+s.labor,0),
+ contribution=valid.reduce((sum,s)=>sum+s.contribution,0),unknown=stats.filter(s=>s.incomplete).length,
+ due=list.reduce((sum,p)=>sum+Math.max(0,F.safeNum(p.price)-F.safeNum(p.dep)),0);
+ $('financeStats').innerHTML=[['סה״כ הצעות',fmt(turnover)],['הוצאות + עבודה שנרשמו',fmt(expense)],['תרומה בפרויקטים מחושבים',fmt(contribution)],['יתרה לגבייה',fmt(due)],['פרויקטים עם נתונים חסרים',unknown]].map(([k,v])=>'<div class="card"><div class="muted">'+k+'</div><div class="stat">'+v+'</div></div>').join('');
+ const p=list.find(x=>x.uid===selected);if(!p){$('financeDetail').innerHTML='<div class="empty">אין פרויקטים תואמים. <a href="new-job.html">פתח עבודה חדשה</a></div>';return}
+ const a=F.analysis(p,rate),expenses=Array.isArray(p.expenses)?p.expenses:[];
+ const caution=!a.hasPrice?'חסר מחיר מכירה לפרויקט. ':!a.hasLaborRate?'יש להגדיר עלות שעת עבודה אמיתית. ':'';
+ $('financeDetail').innerHTML='<section class="card finance-panel"><div class="finance-head"><div><p class="section-kicker">תיק כספי</p><h2>'+MP.esc(p.cust||'ללא לקוח')+' · '+MP.esc(p.name||'עבודה')+'</h2><p class="muted">שלב: '+MP.esc(p.status||'')+' · שעות בפועל: '+(a.minutes/60).toFixed(2)+' ש׳</p></div><a class="btn ghost" href="production.html">ללוח הייצור</a></div>'+
+ (caution?'<div class="notice bad">'+caution+'לא מוצג רווח סופי עד להשלמת הנתונים.</div>':'')+
+ '<div class="formgrid"><label>מחיר הצעה/מכירה (₪)<input id="fPrice" type="number" min="0" step="0.01" value="'+MP.esc(p.price??'')+'"></label><label>תשלומים שהתקבלו (₪)<input id="fDep" type="number" min="0" step="0.01" value="'+MP.esc(p.dep??'')+'"></label><label>עלות עבודה (₪/שעה) — מהגדרות העסק<input value="'+(rate||'לא הוגדרה')+'" disabled></label></div><div class="actions"><button class="btn" id="saveFinance" type="button">שמור מחיר וגבייה</button><button class="btn ghost" id="printFinance" type="button">הדפס דוח</button></div>'+
+ '<div class="finance-kpis"><div><span>מחיר מכירה</span><b>'+ (a.hasPrice?fmt(a.revenue):'לא הוזן')+'</b></div><div><span>הוצאות שנרשמו</span><b>'+fmt(a.spent)+'</b></div><div><span>עלות שעות בפועל</span><b>'+(a.hasLaborRate?fmt(a.labor):'חסרה עלות שעה')+'</b></div><div><span>תרומה משוערת</span><b>'+(a.incomplete?'אין מספיק נתונים':fmt(a.contribution))+'</b></div><div><span>שיעור תרומה</span><b>'+(a.incomplete||a.margin===null?'—':a.margin.toFixed(1)+'%')+'</b></div></div>'+
+ '<h3>הוצאות שנרשמו לפרויקט</h3><div class="tbl"><table><thead><tr><th>סוג</th><th>תיאור</th><th>סכום (₪)</th><th>פעולה</th></tr></thead><tbody>'+expenses.map(e=>'<tr><td>'+MP.esc(e.category||'אחר')+'</td><td>'+MP.esc(e.description||'')+'</td><td>'+fmt(e.amount)+'</td><td>'+(e.source==='purchase'?'<span class="pill">רכש מספק</span>':'<button class="btn ghost small" data-remove="'+MP.esc(e.id)+'">הסר</button>')+'</td></tr>').join('')+'</tbody></table></div>'+
+ '<h3>הוספת הוצאה בפועל</h3><div class="formgrid"><label>סוג הוצאה<select id="eCategory"><option>חומר</option><option>גימור/צבע</option><option>הובלה</option><option>התקנה</option><option>קבלן משנה</option><option>אחר</option></select></label><label>תיאור<input id="eDesc" maxlength="180" placeholder="למשל ברזל מספק"></label><label>סכום (₪)<input id="eAmount" type="number" min="0.01" step="0.01"></label></div><div class="actions"><button class="btn" id="addExpense" type="button">רשום הוצאה</button><a class="btn ghost" href="purchasing.html?project='+encodeURIComponent(p.uid)+'">פתח הזמנת רכש לפרויקט</a></div><p class="muted">רכש שנקלט יופיע אוטומטית בהוצאות. סכומים ידניים צריכים להיות הוצאות אחרות כדי למנוע ספירה כפולה.</p><div id="finMsg" role="status" aria-live="polite"></div></section>';
+}
+$('projectChoice').onchange=()=>{selected=$('projectChoice').value;render()};
+$('financeSearch').oninput=render;
+$('financeDetail').onclick=e=>{
+ const target=e.target.closest('button');if(!target)return;
+ if(target.id==='printFinance'){print();return}
+ if(target.id==='saveFinance'){
+   if(!Number.isFinite(+$('fPrice').value)||+$('fPrice').value<0||+$('fDep').value<0){$('finMsg').textContent='יש לבדוק את הסכומים';return}
+   F.saveQuote(selected,$('fPrice').value,$('fDep').value);render();return;
+ }
+ if(target.id==='addExpense'){
+   const val=Number($('eAmount').value),desc=$('eDesc').value.trim();if(!Number.isFinite(val)||val<=0||!desc){$('finMsg').textContent='יש להזין תיאור וסכום חיובי';return}
+   F.upsertProjectExpense(selected,{id:F.uid(),category:$('eCategory').value,description:desc,amount:val,date:new Date().toISOString().slice(0,10)});
+   render();return;
+ }
+ if(target.dataset.remove&&confirm('למחוק את ההוצאה שנרשמה?')){F.removeExpense(selected,target.dataset.remove);render()}
+};
+render();
+</script></body></html>

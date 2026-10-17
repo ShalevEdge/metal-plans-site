@@ -1,0 +1,57 @@
+/* SHALVERO FORGE V7 — operations, purchasing and document layout */
+.finance-panel{margin-top:18px;padding:22px}
+.finance-head,.purchase-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.finance-head h2,.purchase-head h3{margin:5px 0 6px}
+.finance-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:20px 0}
+.finance-kpis>div{padding:14px;border:1px solid #303c47;border-radius:12px;background:rgba(249,115,22,.045)}
+.finance-kpis span{display:block;font-size:12px;color:#a3b0bc;margin-bottom:7px}
+.finance-kpis b{display:block;font-size:20px;overflow-wrap:anywhere}
+.finance-panel>.formgrid{margin:14px 0}
+.finance-panel h3{margin:24px 0 12px}
+.purchase-card{margin:12px 0;padding:20px}
+.purchase-head b{font-size:22px;color:#ff9e5e}
+.purchase-head .muted{margin:8px 0;font-size:13px}
+.purchase-card .actions{margin-top:14px;flex-wrap:wrap}
+#purchaseLines td{min-width:120px}
+#purchaseLines td:last-child{min-width:72px}
+#purchaseLines input{min-width:96px;width:100%}
+#purchaseTotal{font-weight:800;color:#ffa76d;margin-top:14px}
+#purchaseForm h3{margin:23px 0 12px}
+.quote-sheet{max-width:900px;margin:22px auto;padding:40px!important;min-height:780px;border:1px solid #3b4753!important;overflow:visible!important}
+.quote-brand{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #f97316;padding-bottom:25px;margin-bottom:24px}
+.quote-brand strong{font-size:28px;letter-spacing:.06em;white-space:nowrap}
+.quote-brand em{color:#f97316;font-style:normal}
+.quote-brand h2{margin:0 0 8px;font-size:22px!important}
+.quote-brand p{margin:5px 0}
+.quote-meta{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-bottom:22px;margin-bottom:24px;border-bottom:1px solid #34404b}
+.quote-meta div{display:grid;gap:6px}
+.quote-meta small{font-size:12px;color:#a0adba}
+.quote-meta b{font-size:17px}
+.quote-desc{white-space:pre-wrap;line-height:1.85;min-height:64px;overflow-wrap:anywhere}
+.quote-price{display:flex;justify-content:space-between;align-items:center;padding:24px;margin:28px 0 14px;border:1px solid #46505a;border-radius:12px;background:#141c24}
+.quote-price b{font-size:32px;color:#ff9e5e}
+.quote-foot{display:flex;justify-content:space-between;gap:20px;margin:58px 0 28px}
+@media(max-width:760px){
+ .finance-kpis{grid-template-columns:1fr 1fr}
+ .finance-kpis>div:last-child:nth-child(odd){grid-column:1/-1}
+ .finance-panel,.purchase-card{padding:14px}
+ .finance-head{display:grid}
+ .quote-sheet{padding:22px!important;min-height:unset}
+ .quote-brand strong{font-size:19px}.quote-brand h2{font-size:18px!important}
+ .quote-meta{gap:10px}.quote-foot{display:grid}
+ .quote-price b{font-size:25px}
+}
+@media print{
+ @page{size:A4;margin:13mm}
+ body{background:white!important;color:#141414!important}
+ .screen-only,.top,.nav,.notice{display:none!important}
+ .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+ .quote-sheet{max-width:none;margin:0;padding:0!important;background:white!important;border:0!important;box-shadow:none!important;min-height:0;color:#111!important}
+ .quote-sheet *{color:#111!important;text-shadow:none!important}
+ .quote-sheet .quote-brand strong,.quote-sheet .quote-brand em{color:#ba470c!important}
+ .quote-brand{border-color:#d86b26}
+ .quote-meta,.quote-price{border-color:#b5bbc2!important}
+ .quote-price{background:#f4f4f4!important}
+ .quote-price b{color:#111!important}
+ .quote-sheet .muted{color:#565656!important}
+}

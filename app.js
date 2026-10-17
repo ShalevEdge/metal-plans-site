@@ -3,7 +3,7 @@
   const S=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
   const navItems=[
     ['hub.html','מרכז'],['new-job.html','עבודה חדשה'],['plans.html','תוכניות'],['optimizer.html','חיתוך'],['production.html','ייצור'],
-    ['welding.html','ריתוך'],['projects.html','פרויקטים'],['inventory.html','מלאי'],['workshop.html','המסגריה'],
+    ['welding.html','ריתוך'],['purchasing.html','רכש'],['finance.html','רווחיות'],['projects.html','פרויקטים'],['inventory.html','מלאי'],['workshop.html','המסגריה'],
     ['smart.html','עוזר חכם'],['account.html','חשבון']
   ];
   window.MP={
@@ -14,7 +14,7 @@
     clearJobDraft(){localStorage.removeItem(this.K.jobDraft)},
     esc:s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
     money:n=>'₪'+Math.round(+n||0).toLocaleString('en-US'),
-    settings(){return Object.assign({mat:'fe',ppk:{},fin:{},rate:180,marg:25,vat:18,biz:'',phone:'',install:0,stock:6000,kerf:3,waste:8,suppliers:[]},J('mp_settings_v1',{}))},
+    settings(){return Object.assign({mat:'fe',ppk:{},fin:{},rate:180,costRate:0,marg:25,vat:18,biz:'',phone:'',install:0,stock:6000,kerf:3,waste:8,suppliers:[]},J('mp_settings_v1',{}))},
     saveSettings(v){S('mp_settings_v1',v)},
     projects(){return J('mp_projects',[])},saveProjects(v){S('mp_projects',v)},
     inventory(){return J('mp_inventory_v1',[])},saveInventory(v){S('mp_inventory_v1',v)},

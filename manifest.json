@@ -94,6 +94,42 @@
           "type": "image/png"
         }
       ]
+    },
+    {
+      "name": "רווחיות וגבייה",
+      "short_name": "רווחיות",
+      "url": "./finance.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "רכש מספקים",
+      "short_name": "רכש",
+      "url": "./purchasing.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "הצעת מחיר מקצועית",
+      "short_name": "הצעת מחיר",
+      "url": "./quotes.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
