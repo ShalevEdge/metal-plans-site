@@ -1,5 +1,5 @@
-const C='mp-v14';
-const CORE=['./','./index.html','./hub.html','./new-job.html','./plans.html','./optimizer.html','./production.html','./finance.html','./purchasing.html','./operations.js','./quotes.html','./operations.css','./workshop.html','./inventory.html','./projects.html','./smart.html','./welding.html','./account.html','./pricing.html','./order.html','./app.css','./premium.css','./app.js','./welding.js','./welding-v2.js','./manifest.json','./icon-192.png','./icon-512.png'];
+const C='mp-v15';
+const CORE=['./','./index.html','./hub.html','./new-job.html','./plans.html','./optimizer.html','./production.html','./finance.html','./purchasing.html','./operations.js','./quotes.html','./operations.css','./workshop.html','./inventory.html','./projects.html','./smart.html','./welding.html','./account.html','./pricing.html','./order.html','./app.css','./premium.css','./app.js','./cloud-config.js','./cloud-sync.js','./welding.js','./welding-v2.js','./manifest.json','./icon-192.png','./icon-512.png'];
 const put=async(r,res)=>{if(!res||!res.ok)return res;const c=await caches.open(C);await c.put(r,res.clone());return res};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
