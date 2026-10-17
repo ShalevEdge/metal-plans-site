@@ -1,12 +1,12 @@
 // Cloud adapter deterministic unit tests — no network or real credentials.
 const fs=require('fs'), vm=require('vm'), assert=require('node:assert/strict'), path=require('path');
 const root=path.resolve(__dirname,'..'), docs=new Map(), store=new Map();
-let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[];
+let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[], loginRequest=null;
 const key=(w,k)=>w+':'+k;
 const client={
  auth:{
   async getUser(){return{data:{user:actor},error:null}},
-  async signInWithOtp(){return{error:null}},
+  async signInWithOtp(input){loginRequest=input;return{error:null}},
   async signOut(){actor=null;return{error:null}}
  },
  async rpc(fn,p){
@@ -42,6 +42,9 @@ const C=context.window.ForgeCloud;
 async function run(){
  assert.equal(await C.init(),client);
  assert.equal(C.user().id,'alice');
+ await C.sendLink('alice@example.com');
+ assert.equal(loginRequest.options.emailRedirectTo,'https://shalevedge.github.io/metal-plans-site/account.html');
+ await assert.rejects(C.sendLink('not-an-email'),/כתובת אימייל לא תקינה/);
  store.set('mp_projects',JSON.stringify([{uid:'1',name:'Gate'}]));
  store.set('mp_settings_v1',JSON.stringify({biz:'Forge'}));
  assert.deepEqual(JSON.parse(JSON.stringify(await C.uploadFirst())),{uploaded:2});
