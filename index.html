@@ -25,6 +25,9 @@ h2{font-size:clamp(28px,5vw,44px);font-weight:900;margin-bottom:24px;line-height
 .btn{display:inline-block;background:var(--or);color:var(--bg);font-weight:900;font-size:20px;
  padding:16px 32px;border-radius:8px;text-decoration:none;border:0;cursor:pointer}
 .btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--steel)}
+a.sk{color:var(--tx);text-decoration:none;display:block}a.sk:hover{border-color:var(--or)}
+.soon{font-size:12px;background:var(--line);color:var(--steel);border-radius:6px;padding:2px 8px;margin-inline-start:6px;font-weight:500}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr))}
 .card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:20px}
 .check{list-style:none}.check li{padding:8px 36px 8px 0;position:relative;font-size:18px}
@@ -65,14 +68,14 @@ footer a{color:var(--steel)}
  <h1>התוכנית <span class="hl">כבר מוכנה</span></h1>
  <p class="sub">מאות תוכניות עבודה. מידות במ״מ. רשימת חיתוך מחושבת.</p>
  <p class="muted" style="font-size:19px;max-width:640px">בוחרים עבודה, קוראים מידות וחותכים. כל תוכנית אומרת לך <b style="color:var(--tx)">איזה חלק לחתוך, באיזה אורך, וכמה פרופילים של 6 מטר לקנות</b> – והצעת המחיר מוכנה בדקות.</p>
- <p style="margin-top:28px"><a class="btn" href="#offer">אני רוצה את התוכניות</a></p>
+ <p style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="plans.html">לספריית התוכניות ←</a><a class="btn ghost" href="#offer">עדכנו אותי</a></p>
  <div class="hero-img sk" id="heroSketch"></div>
 </div></section>
 
 <section><div class="wrap">
  <h2>מה מקבלים</h2>
  <ul class="check">
-  <li>תוכניות לשערים, פשפשים, מעקות, סורגים, גדרות, גגונים ומדרגות</li>
+  <li>320 תוכניות: שערים נגררים, שערי כנף, פשפשים, מעקות, סורגים וגדרות (פרגולות, גגונים ומדרגות – בקרוב)</li>
   <li>שרטוט עם כל המידות במילימטרים</li>
   <li>רשימת חיתוך מוכנה: חלק, אורך, כמות</li>
   <li>כמה פרופילים של 6 מטר לקנות – בלי פחת מיותר</li>
@@ -91,6 +94,7 @@ footer a{color:var(--steel)}
 
 <section><div class="wrap">
  <h2>דוגמאות מהספרייה</h2>
+ <p class="muted" style="margin:-12px 0 20px">לחצו על סוג עבודה כדי לראות את כל המידות</p>
  <div class="grid sk-grid" id="sketches"></div>
 </div></section>
 
@@ -164,7 +168,8 @@ const SK={
  'מדרגות':svg((()=>{let p='M40 190';for(let i=0;i<6;i++)p+=` h40 v-25`;return `<path d="${p}" stroke="${W}" stroke-width="2.5"/>`+ln(40,190,280,40,O,3)})()+dim(40,203,280,'3,000')),
  'גגון':svg(ln(30,30,30,180,S,3)+ln(30,50,290,80,W,4)+ln(30,120,160,60,O,2.5)+ln(160,65,160,75,W,2)+rc(286,76,6,8,W,1.5)+dim(30,20,290,'2,500'))
 };
-document.getElementById('sketches').innerHTML=Object.entries(SK).map(([k,v])=>`<div class="card sk">${v}<h3>${k}</h3></div>`).join('');
+const CODE={'שער נגרר':'SG','שער כנף':'DG','פשפש':'PP','מעקה':'RL','סורג חלון':'GR'};
+document.getElementById('sketches').innerHTML=Object.entries(SK).map(([k,v])=>CODE[k]?`<a class="card sk" href="plans.html?type=${CODE[k]}">${v}<h3>${k} ←</h3></a>`:`<div class="card sk">${v}<h3>${k}<span class="soon">בקרוב</span></h3></div>`).join('');
 document.getElementById('heroSketch').innerHTML=SK['שער נגרר'];
 
 function calc(){
