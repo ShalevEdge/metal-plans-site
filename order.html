@@ -426,7 +426,7 @@ function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
  return`<div class="tools no-print">
  <h2>חומר</h2><div class="trow"><label>סוג חומר<select id="mt">${Object.entries(MAT).map(([k,v])=>`<option value="${k}" ${k===m?'selected':''}>${v.n}</option>`).join('')}</select></label>
  <p id="mw" class="muted"></p></div>
- <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
+ <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" aria-label="${g.wl} (${unitOf(g.W)})" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" aria-label="${g.hl} (${unitOf(g.H)})" value="${p.H}"></label>${so}
  <button class="btn" id="cgo">צור תוכנית</button></div><p class="muted" id="cerr" style="font-size:14px"></p>
  <h2>רשימת קנייה לספק</h2><div class="trow"><button class="btn" id="wa">שליחה בוואטסאפ</button><button class="btn ghost" id="cpl">העתקת הרשימה</button></div>
  <h2>הצעת מחיר ללקוח</h2><div class="qgrid">

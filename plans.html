@@ -80,11 +80,12 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 </style>
 <link rel="stylesheet" href="premium.css"></head>
 <body>
-<header><div class="wrap"><a class="forge-nav-brand" href="index.html"><span class="forge-mark">SF</span><span class="forge-brand-text"><strong>SHALVERO</strong><em>FORGE</em></span></a></div></header>
+<div id="nav"></div>
 <main class="wrap">
  <div id="intro">
   <h1>ספריית <span class="hl">התוכניות</span></h1>
   <p class="muted" id="total"></p>
+  <button class="type-picker-btn" id="typeToggle" type="button" aria-expanded="false"><span>בחרו סוג עבודה</span><strong id="currentType">שער נגרר</strong></button>
   <div class="types" id="types"></div>
   <div class="filters">
    <div><label for="fw" id="lw">רוחב</label><select id="fw"></select></div>
@@ -98,8 +99,9 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
  <section id="detail"></section>
 </main>
 <footer><div class="wrap">התוכניות הן תבניות עבודה לעבודות מסגרות נפוצות ואינן מחליפות תכנון הנדסי. יש לוודא התאמה לתקנים הרלוונטיים (למשל ת״י 1142 למעקות, ת״י 900-21.03 לשערים חשמליים) ולתנאי האתר.</div></footer>
-<script src="welding.js"></script><script src="welding-v2.js"></script>
+<script src="app.js"></script><script src="welding.js"></script><script src="welding-v2.js"></script>
 <script>
+nav.innerHTML=MP.nav('plans.html');
 // ===== 3D engine: model -> cut list + 4 projected views =====
 const OR='#E8590C',OT='#B93E07',INK='#1F2328',ST='#6B7680',STOCK=6000,KERF=3;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
@@ -482,7 +484,7 @@ function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
  return`<div class="tools no-print">
  <h2>חומר</h2><div class="trow"><label>סוג חומר<select id="mt">${Object.entries(MAT).map(([k,v])=>`<option value="${k}" ${k===m?'selected':''}>${v.n}</option>`).join('')}</select></label>
  <p id="mw" class="muted"></p></div>
- <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
+ <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" aria-label="${g.wl} (${unitOf(g.W)})" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" aria-label="${g.hl} (${unitOf(g.H)})" value="${p.H}"></label>${so}
  <button class="btn" id="cgo">צור תוכנית</button></div><p class="muted" id="cerr" style="font-size:14px"></p>
  <h2>רשימת קנייה לספק</h2><div class="trow"><button class="btn" id="wa">שליחה בוואטסאפ</button><button class="btn ghost" id="cpl">העתקת הרשימה</button><button class="btn ghost" id="opt">שלח לאופטימייזר חיתוך</button></div>
  <h2>הצעת מחיר ללקוח</h2><div class="qgrid">
@@ -536,9 +538,10 @@ function thumb(x){const p=build(x);M=p.model;return view('iso',{thumb:1})}
 $('total').textContent=`${PLANS.length.toLocaleString('en-US')} תוכניות ב-${Object.keys(GEN).length} סוגי עבודה ב-${CATS.length} קטגוריות. לכל תוכנית: 4 מבטי שרטוט (חזית, צד, על, איזומטרי), רשימת חיתוך ממוספרת, כמות פרופילים ופרזול.`;
 const btn=k=>`<button data-k="${k}">${GEN[k].name} <span class="muted">(${PLANS.filter(p=>p.k===k).length})</span></button>`;
 $('types').innerHTML=CATS.map(([c,ks])=>`<div class="grp"><span class="gt">${c}</span>${ks.map(btn).join('')}</div>`).join('');
-$('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.dataset.k;st.w=st.h=st.s='';st.shown=24;fillSel();render()};
+typeToggle.onclick=()=>{const open=$('types').classList.toggle('open');typeToggle.setAttribute('aria-expanded',open?'true':'false')};
+$('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.dataset.k;st.w=st.h=st.s='';st.shown=24;fillSel();render();if(innerWidth<=760){$('types').classList.remove('open');typeToggle.setAttribute('aria-expanded','false')}};
 function fillSel(){
- const ps=PLANS.filter(p=>p.k===st.k),g=GEN[st.k];
+ const ps=PLANS.filter(p=>p.k===st.k),g=GEN[st.k];if(window.currentType)currentType.textContent=g.name;
  const opt=(arr,v,f)=>`<option value="">הכול</option>`+[...new Set(arr)].map(x=>`<option value="${x}" ${x==v?'selected':''}>${f(x)}</option>`).join('');
  $('lw').textContent=`${g.wl} (${unitOf(g.W)})`;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w,x=>fmt(x)+' '+unitOf(g.W));
  $('lh').textContent=`${g.hl} (${unitOf(g.H)})`;$('fh').innerHTML=opt(ps.map(p=>p.H),st.h,x=>fmt(x)+' '+unitOf(g.H));

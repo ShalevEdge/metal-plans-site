@@ -66,12 +66,14 @@ footer a{color:var(--steel)}
 </style>
 <link rel="stylesheet" href="premium.css"></head>
 <body>
+<div id="nav"></div>
 <section class="hero"><div class="wrap">
- <div class="forge-lockup" aria-label="SHALVERO FORGE"><span>SHALVERO</span><b>FORGE</b></div><p class="tag">מערכת העבודה החכמה למסגריות</p>
+ <p class="tag">SHALVERO FORGE · מערכת העבודה החכמה למסגריות</p>
  <h1>מהתוכנית <span class="hl">עד ההתקנה</span></h1>
  <p class="sub">מתכננים. מתמחרים. חותכים. מבצעים.</p>
  <p class="muted" style="font-size:19px;max-width:640px">SHALVERO FORGE מרכזת את העבודה של המסגריה במקום אחד. בוחרים עבודה, קוראים מידות וחותכים. כל תוכנית אומרת לך <b style="color:var(--tx)">איזה חלק לחתוך, באיזה אורך, וכמה פרופילים של 6 מטר לקנות</b> – והצעת המחיר מוכנה בדקות.</p>
- <p style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="hub.html">מרכז המסגריה ←</a><a class="btn ghost" href="new-job.html">+ עבודה חדשה</a><a class="btn" href="plans.html">לספריית התוכניות ←</a><a class="btn ghost" href="#calc">נסו את המחשבון</a><a class="btn ghost" href="order.html">הזמנת עבודה (ללקוחות)</a><a class="btn ghost" href="projects.html">הפרויקטים שלי</a></p>
+ <div class="hero-actions"><a class="btn" href="new-job.html">+ פתח עבודה חדשה</a><a class="btn ghost" href="hub.html">מרכז המסגריה</a><a class="btn ghost" href="plans.html">ספריית התוכניות</a></div>
+ <div class="hero-links"><a href="order.html">עמוד הזמנה ללקוחות</a><a href="projects.html">פרויקטים ולקוחות</a><a href="#calc">מחשבון לדוגמה</a></div>
  <div class="unit-guide" aria-label="מקרא יחידות"><b>יחידות במערכת</b><span><i>מ״מ</i> מידות וחיתוכים</span><span><i>מ׳</i> אורך מוטות</span><span><i>ק״ג</i> משקל</span><span><i>מ״ר</i> שטח</span><span><i>₪</i> מחיר</span><span><i>יח׳</i> כמות</span></div><div class="hero-img sk" id="heroSketch"></div>
 </div></section>
 
@@ -138,9 +140,9 @@ footer a{color:var(--steel)}
  <p class="muted">הכניסו מידות ותקבלו רשימת חיתוך לדוגמה. בתוכניות המלאות – אותו דבר לכל סוג עבודה.</p>
  <div class="card calc" style="margin-top:20px">
   <div class="grid">
-   <div><label>רוחב פתח (מ״מ)</label><input id="w" type="number" value="4000" min="1500" max="8000" step="50"></div>
-   <div><label>גובה שער (מ״מ)</label><input id="h" type="number" value="1600" min="800" max="2500" step="50"></div>
-   <div><label>מחיר פרופיל 6 מ׳ (₪, הערכה)</label><input id="p" type="number" value="160" min="0" step="10"></div>
+   <div><label for="w">רוחב פתח (מ״מ)</label><input id="w" type="number" value="4000" min="1500" max="8000" step="50"></div>
+   <div><label for="h">גובה שער (מ״מ)</label><input id="h" type="number" value="1600" min="800" max="2500" step="50"></div>
+   <div><label for="p">מחיר פרופיל 6 מ׳ (₪, הערכה)</label><input id="p" type="number" value="160" min="0" step="10"></div>
   </div>
   <div class="out" id="out"></div>
  </div>
@@ -182,7 +184,9 @@ footer a{color:var(--steel)}
 
 <div class="sticky"><b>4,966 תוכניות מוכנות</b><a class="btn" href="plans.html">לספרייה ←</a></div>
 
+<script src="app.js"></script>
 <script>
+nav.innerHTML=MP.nav('');
 const O='#E8590C',W='#1F2328',S='#6B7680';
 const svg=(b,vb='0 -6 320 222')=>`<svg viewBox="${vb}" fill="none" stroke-linecap="round" direction="ltr" role="img">${b}</svg>`;
 const ltr=t=>`<span dir="ltr" style="unicode-bidi:isolate">${t}</span>`;
@@ -243,6 +247,6 @@ document.getElementById('lead').addEventListener('submit',e=>{
  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');
  msg.textContent='נפתח וואטסאפ – לחצו "שלח" כדי להשלים את ההרשמה ✓';e.target.reset();
 });
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</script>
 </body>
 </html>

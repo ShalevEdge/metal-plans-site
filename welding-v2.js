@@ -49,8 +49,17 @@ function buildAdvanced(){
  <section class="weld-section"><p class="section-kicker">12 · חשמל וציוד</p><h2>מערכת הריתוך והחיבורים</h2><div class="grid">${advanced.electrical.map(x=>`<div class="card"><h3>${x.t}</h3><p class="muted">${x.d}</p></div>`).join('')}</div></section>
  <section class="weld-section"><p class="section-kicker">13 · תחום הסמכה</p><h2>Qualification Scope Check</h2><div class="card"><p>המערכת לא מאשרת הסמכה. היא מזכירה אילו משתנים צריך להשוות לתעודת הרתך ולדרישות העבודה:</p><div class="qual-grid">${advanced.qualification.map(x=>`<label class="qual-row"><input type="checkbox"><span>${x}</span></label>`).join('')}</div><div class="notice" style="margin-top:12px"><b>כלל עבודה:</b> שינוי מחוץ לתחום ההסמכה — למשל תהליך, עובי, חומר או תנוחה — מחייב בדיקה מול התעודה/התקן לפני ביצוע.</div></div></section>
  <section class="weld-section"><p class="section-kicker">14 · שפת השרטוט</p><h2>בונה סימן ריתוך בסיסי</h2><div class="card"><div class="formgrid"><label>מחבר<select id="symJoint"><option value="fillet">מילאת / קמץ</option><option value="butt">השקה</option></select></label><label>צד<select id="symSide"><option value="arrow">צד החץ</option><option value="other">הצד השני</option></select></label><label>מידה <span class="unit">מ״מ</span><input id="symSize" type="number" min="0" step="0.5" value="6"></label></div><div id="symbolOut" class="symbol-builder"></div><p class="muted">זהו כלי המחשה לקריאת שרטוט. סימן ביצוע סופי חייב להתאים לתקן, לשרטוט המאושר ול-WPS.</p></div></section>
- <section class="weld-section"><p class="section-kicker">15 · מילון ריתוך</p><h2>מונחים מקצועיים</h2><div class="card"><input id="glossaryQ" placeholder="חפש: חדירה, מכתש, HAZ, תקים..."><div id="glossary" class="defect-grid" style="margin-top:12px"></div></div></section>`;
+ <section class="weld-section"><p class="section-kicker">15 · מילון ריתוך</p><h2>מונחים מקצועיים</h2><div class="card"><label for="glossaryQ">חיפוש במילון</label><input id="glossaryQ" aria-label="חיפוש במילון הריתוך" placeholder="חפש: חדירה, מכתש, HAZ, תקים..."><div id="glossary" class="defect-grid" style="margin-top:12px"></div></div></section>`;
  bindAdvanced();
+ buildWeldNav();
+}
+function buildWeldNav(){
+ const sections=[...document.querySelectorAll('.weld-section')];
+ sections.forEach(sec=>{const txt=sec.querySelector('.section-kicker')?.textContent||'';const m=txt.match(/^(\d+)/);if(m)sec.id='weld-'+m[1].padStart(2,'0')});
+ let bar=document.getElementById('weldQuickNav');if(bar)bar.remove();
+ const first=document.querySelector('.weld-section');if(!first)return;
+ const links=[['01','פרמטרים'],['04','פגמים'],['05','בדיקות'],['08','בטיחות'],['10','תהליך'],['11','מחבר וחום'],['13','הסמכה'],['14','סימנים'],['15','מילון']];
+ bar=document.createElement('nav');bar.id='weldQuickNav';bar.className='weld-toc';bar.setAttribute('aria-label','ניווט מהיר במרכז הריתוך');bar.innerHTML=links.map(([n,t])=>`<a href=\"#weld-${n}\">${t}</a>`).join('');first.before(bar);
 }
 function bindAdvanced(){
  const inputs=['th','el','dia','joint','pos'].map(id=>document.getElementById(id)).filter(Boolean);

@@ -102,3 +102,167 @@ details{transition:border-color .15s ease}details[open]{border-color:rgba(243,11
 
 /* FORGE Welding Intelligence V2 */
 .weld-section{margin:34px 0}.qual-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px}.qual-row{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:12px}.qual-row input{width:20px;height:20px;accent-color:var(--or)}.symbol-builder{margin:18px 0;padding:10px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#f8fafc,#e7ebef);color:#111820;overflow:auto}.symbol-builder svg{display:block;width:100%;min-width:500px;height:130px}.weld-intel,.wi-grid{max-width:100%}.weld-section .card h3{margin-top:0}.weld-section .warn ul{margin:8px 0 0;padding-inline-start:22px}@media(max-width:600px){.qual-grid{grid-template-columns:1fr}.symbol-builder svg{min-width:430px}.weld-section{margin:26px 0}}
+
+
+/* ===== SHALVERO FORGE UX/UI V3 ===== */
+:root{
+ --bg:#070a0e;--bg2:#0b1016;--card:#10161d;--card2:#151c24;--line:#2b3540;
+ --or:#f97316;--ort:#fb923c;--tx:#f5f7f9;--steel:#9ba8b4;
+ --focus:#ff9d5b;--danger:#ef4444;--success:#22c55e;
+}
+html{scroll-padding-top:86px}
+body{font-size:16px;background:
+ radial-gradient(900px 520px at 88% -14%,rgba(249,115,22,.11),transparent 62%),
+ linear-gradient(180deg,#070a0e 0%,#0a0f14 55%,#070a0e 100%)!important}
+body:before{opacity:.08;background-size:40px 40px}
+.wrap,.w{width:min(100% - 40px,1160px)!important;max-width:1160px!important}
+main.wrap{padding-top:38px!important;padding-bottom:88px!important}
+main.wrap>.forge-lockup.compact{display:none!important}
+main.wrap>.tag:first-child,main.wrap>.forge-lockup.compact+.tag{margin-bottom:14px}
+main.wrap>h1{margin:0 0 10px!important;font-size:clamp(38px,5.2vw,62px)!important;line-height:1.02!important;letter-spacing:-.04em!important}
+main.wrap>h1+p.muted{font-size:17px!important;max-width:760px;line-height:1.75;margin:0 0 24px}
+h2{font-size:clamp(24px,2.5vw,31px)!important;line-height:1.15}
+.hl{background:none!important;color:#ff8b3d!important;padding:0!important;box-shadow:none!important;position:relative;white-space:normal}
+.hl:after{content:"";position:absolute;inset-inline:0;bottom:-.08em;height:2px;background:linear-gradient(90deg,transparent,#f97316,transparent);opacity:.55}
+
+/* navigation */
+.top{border-bottom:1px solid rgba(148,163,184,.16)!important;box-shadow:0 8px 28px rgba(0,0,0,.16)}
+.topin{min-height:66px!important}
+.forge-nav-brand{flex:0 0 auto}
+.nav{margin-inline-start:auto!important;gap:2px!important}
+.nav a{min-height:38px;display:inline-flex;align-items:center;font-weight:700!important;font-size:13px!important}
+.nav a.nav-primary{color:#ffd1b0!important}
+.nav-toggle{display:none;align-items:center;gap:8px;height:40px;padding:0 12px;border:1px solid #374451;border-radius:10px;background:#111820;color:#e7edf2;font:800 14px Heebo;cursor:pointer}
+.nav-toggle i{font-style:normal;font-size:17px;line-height:1}
+
+/* cards / inputs */
+.card{border-color:#2b3540!important;background:linear-gradient(180deg,rgba(17,24,32,.97),rgba(12,17,23,.97))!important}
+.card h2,.card h3{letter-spacing:-.015em}
+input,select,textarea{min-height:48px!important;padding:12px 13px!important;border-color:#364451!important;background:#0a1016!important}
+textarea{min-height:96px;resize:vertical}
+label{gap:6px!important;line-height:1.35}
+.formgrid{gap:14px!important}
+.btn{min-height:46px;display:inline-flex!important;align-items:center;justify-content:center;line-height:1.2!important;padding:12px 18px!important}
+.btn.small{min-height:38px;padding:8px 12px!important}
+.actions{gap:10px!important}
+.notice,.warn{line-height:1.65}
+
+/* dashboard metrics */
+#stats,#sum{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important;margin:18px 0 28px!important}
+#stats .card,#sum .card{padding:14px 15px!important;min-height:88px;box-shadow:none!important}
+#stats .muted,#sum .muted{font-size:13px}
+#stats .stat,#sum .stat{font-size:27px!important;margin-top:3px}
+.hub-section{margin-top:36px!important;padding-top:24px!important}
+.hub-section .grid{gap:12px!important}
+.hub-section .card{min-height:176px;padding:18px!important}
+.hub-section .ico{font-size:27px;margin-bottom:16px}
+.hub-section .card p{line-height:1.65;margin:0}
+
+/* page sections */
+.form-section{padding:0 0 18px;margin-bottom:20px;border-bottom:1px solid #27313b}
+.form-section:last-of-type{border-bottom:0;margin-bottom:0}
+.form-section-head{display:flex;align-items:center;gap:9px;margin:0 0 14px;color:#f3f6f8;font-size:18px;font-weight:900}
+.form-section-head span{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:rgba(249,115,22,.11);border:1px solid rgba(249,115,22,.24);color:#ff9d5b;font:900 12px ui-monospace,Consolas,monospace}
+
+/* landing page */
+.hero{padding-top:58px!important;padding-bottom:58px!important}
+.hero .forge-lockup{margin-bottom:18px}
+.hero .tag{margin-bottom:16px}
+.hero h1{max-width:880px}
+.hero .sub{margin:16px 0 18px!important;color:#dbe4eb!important}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.hero-actions .btn{font-size:17px!important}
+.hero-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:14px}
+.hero-links a{color:#aebac4;text-decoration:none;border-bottom:1px solid transparent}
+.hero-links a:hover{color:#fff;border-color:#f97316}
+section{padding-block:58px!important}
+
+/* plans library */
+.type-picker-btn{display:none;width:100%;min-height:48px;margin:16px 0 10px;padding:10px 14px;border:1px solid #364451;border-radius:11px;background:#111820;color:#f5f7f9;font:800 15px Heebo;text-align:right;cursor:pointer}
+.type-picker-btn strong{color:#ff9d5b}
+#intro .types{padding:15px;border:1px solid #29343f;border-radius:15px;background:rgba(13,19,25,.72)}
+#intro .grp:last-child{margin-bottom:0}
+#intro .filters{padding:14px;border:1px solid #29343f;border-radius:15px;background:#0d1319}
+#intro .count{color:#9eb0bd}
+.item{border-radius:14px!important;padding:11px!important;transition:transform .15s ease,border-color .15s ease!important}
+.item:hover{transform:translateY(-2px)}
+#detail>.card{border-radius:18px!important}
+
+/* welding readability */
+.weld-section{scroll-margin-top:90px}
+.weld-section>.section-kicker{margin-bottom:6px}
+.weld-section>h2{margin-bottom:15px}
+.weld-intel{padding:18px!important}
+
+/* customer order */
+.order-head{min-height:66px!important}
+.order-head .m{color:#93a2af!important}
+#of>.card{padding:20px!important}
+#of>.card>h2{display:flex;align-items:center;gap:8px;margin-bottom:16px!important}
+
+/* accessibility */
+:focus-visible{outline:2px solid var(--focus)!important;outline-offset:3px!important}
+button,input,select,textarea,a{-webkit-tap-highlight-color:transparent}
+button,.btn,.nav a,summary{touch-action:manipulation}
+.empty{padding:34px 20px!important}
+
+@media(max-width:760px){
+ .wrap,.w{width:min(100% - 24px,1160px)!important}
+ main.wrap{padding-top:28px!important;padding-bottom:78px!important}
+ main.wrap>h1{font-size:clamp(34px,10vw,46px)!important}
+ main.wrap>h1+p.muted{font-size:16px!important;line-height:1.7;margin-bottom:20px}
+ .topin{display:flex!important;flex-direction:row!important;align-items:center!important;padding:8px 0!important;position:relative}
+ .forge-nav-brand{padding:0!important}
+ .nav-toggle{display:inline-flex}
+ .nav{display:none!important;position:absolute;top:calc(100% + 7px);right:0;left:0;z-index:60;margin:0!important;padding:10px!important;grid-template-columns:1fr 1fr;gap:7px!important;background:rgba(11,16,22,.98);border:1px solid #34404d;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.5);backdrop-filter:blur(18px)}
+ .nav.open{display:grid!important}
+ .nav a{min-height:44px!important;padding:10px 11px!important;border:1px solid #27323d!important;background:#10171e!important;justify-content:flex-start}
+ .nav a.on{border-color:rgba(249,115,22,.35)!important;background:rgba(249,115,22,.11)!important}
+ .nav a.nav-primary{background:linear-gradient(135deg,#f97316,#e85d0b)!important;color:white!important;border-color:transparent!important}
+ .forge-mark{width:32px;height:32px}.forge-brand-text strong{font-size:10px}.forge-brand-text em{font-size:13px}
+ #stats,#sum{grid-template-columns:1fr 1fr!important;gap:8px!important;margin:16px 0 24px!important}
+ #stats .card,#sum .card{min-height:78px;padding:12px!important}
+ #stats .stat,#sum .stat{font-size:24px!important}
+ #stats .card:last-child:nth-child(odd),#sum .card:last-child:nth-child(odd){grid-column:1/-1}
+ .hub-section{margin-top:28px!important;padding-top:20px!important}
+ .hub-section .grid{grid-template-columns:1fr 1fr!important;gap:9px!important}
+ .hub-section .card{min-height:150px;padding:14px!important}
+ .hub-section .card h3{font-size:17px}.hub-section .card p{font-size:13px;line-height:1.55}
+ .hub-section .ico{font-size:23px;margin-bottom:11px}
+ .hero{padding-top:34px!important;padding-bottom:42px!important}
+ .hero .forge-lockup{margin-bottom:13px}
+ .hero h1{font-size:clamp(40px,12vw,54px)!important}
+ .hero .sub{font-size:21px!important;line-height:1.45}
+ .hero-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:22px}
+ .hero-actions .btn{width:100%;font-size:16px!important}
+ .hero-links{justify-content:center;gap:11px;font-size:13px}
+ section{padding-block:42px!important}
+ .unit-guide{font-size:12px}
+ .type-picker-btn{display:flex;align-items:center;justify-content:space-between}
+ #intro .types{display:none;padding:12px;margin-top:8px;max-height:52vh;overflow:auto}
+ #intro .types.open{display:block}
+ #intro .filters{padding:11px;margin:12px 0}
+ #intro .grp{gap:6px!important}.types button{padding:7px 10px!important;font-size:13px!important}
+ .list{gap:8px!important}.item{padding:9px!important}
+ .form-section{padding-bottom:16px;margin-bottom:18px}
+ #of>.card{padding:16px!important}
+}
+@media(max-width:430px){
+ .hub-section .grid{grid-template-columns:1fr 1fr!important}
+ .hub-section .card{min-height:142px}
+ .hub-section .card p{font-size:12.5px}
+ .nav{grid-template-columns:1fr 1fr!important}
+}
+
+/* V3 final grid balance */
+@media(min-width:761px){.hub-section .grid{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))!important}}
+
+/* Welding quick navigation + denser desktop plan picker */
+.weld-toc{display:flex;gap:8px;overflow-x:auto;padding:10px 0 14px;margin:-6px 0 26px;scrollbar-width:thin;position:sticky;top:66px;z-index:18;background:linear-gradient(180deg,rgba(7,10,14,.98) 70%,rgba(7,10,14,0));backdrop-filter:blur(12px)}
+.weld-toc a{flex:0 0 auto;text-decoration:none;color:#c9d2da;border:1px solid #33404b;background:#0e151c;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800}
+.weld-toc a:hover,.weld-toc a:focus-visible{color:#fff;border-color:rgba(249,115,22,.55);background:rgba(249,115,22,.09)}
+@media(min-width:761px){
+ #intro .types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;align-items:start}
+ #intro .grp{margin:0;align-content:start}
+}
+@media(max-width:760px){.weld-toc{top:64px;margin-bottom:20px;padding-bottom:11px}.weld-toc a{padding:7px 11px;font-size:12.5px}}
