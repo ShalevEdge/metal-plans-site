@@ -57,7 +57,10 @@
   }
   async function sendLink(email){
     if(!client)throw Error('שירות הענן אינו מחובר');if(!email||!/^\S+@\S+\.\S+$/.test(email))throw Error('כתובת אימייל לא תקינה');
-    const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:new URL('account.html',location.href).href}});
+    // Always point magic links to the production origin, never localhost/preview.
+    // Supabase must additionally allow this redirect in Authentication > URL Configuration.
+    const redirect='https://shalevedge.github.io/metal-plans-site/account.html';
+    const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:redirect}});
     if(error)throw err(error);return true;
   }
   async function signOut(){if(client){const {error}=await client.auth.signOut();if(error)throw err(error)} user=null;workshop=null;stopBackground();}

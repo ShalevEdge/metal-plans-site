@@ -39,7 +39,16 @@
 </div>
 <section class="card" id="cloudSection">
 <p class="tag">FORGE CLOUD</p><h2>משתמשים וסנכרון ענן</h2>
-<div class="cloud-banner" role="status" aria-live="polite" id="cloudStatus">בודק תצורת חיבור…</div><p class="muted">בהתחברות הראשונה יש לוודא שכתובת הדף הזה מאושרת בהגדרות Authentication → URL Configuration של Supabase. לא נעלה פרויקטים לענן ללא לחיצה מפורשת על העלאה.</p>
+<div class="cloud-banner" role="status" aria-live="polite" id="cloudStatus">בודק תצורת חיבור…</div>
+<div class="notice" id="authSetupNote"><strong>לאן קישור ההתחברות צריך לחזור?</strong> אל האתר הרשמי של FORGE — לא ל־localhost:3000.
+אם נפתח דף ״השרת לא זמין״, יש לוודא שב־Supabase תחת Authentication → URL Configuration ה־Site URL הוא
+<code>https://shalevedge.github.io/metal-plans-site/</code>
+ושכתובת החזרה המאושרת (Redirect URL) היא
+<code>https://shalevedge.github.io/metal-plans-site/account.html</code>.
+<a href="https://supabase.com/dashboard/project/szlrmlhiqmyxgbitycez/auth/url-configuration" target="_blank" rel="noopener noreferrer">פתח הגדרת כתובות ב־Supabase</a>.
+לאחר שמירת ההגדרות יש לשלוח <strong>קישור התחברות חדש</strong>, כי קישור ישן עשוי להפנות לכתובת הישנה או לפוג תוקף.</div>
+<div id="authCallbackError" class="notice bad" hidden role="alert"></div>
+<p class="muted">נתוני הפרויקטים נשארים במכשיר עד לאישור מפורש להעלאה לענן.</p>
 <div id="cloudLogin" hidden>
 <p>כניסה מאובטחת באמצעות קישור חד־פעמי לאימייל. אין סיסמה לשמירה באתר.</p>
 <div class="formgrid"><label>כתובת אימייל להתחברות<input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com"></label></div>
@@ -77,6 +86,18 @@ const P=MP.projects(),I=MP.inventory();$('accountCounts').innerHTML=[['פרוי�
 let cloud=null;
 const busy=async(fn)=>{try{$('cloudMessage').textContent='ממתין לסיום הפעולה…';await fn();}catch(e){message('cloudMessage',e.message||'שגיאה',true)}};
 const setStatus=s=>{$('cloudStatus').textContent=s};
+function authErrorFromUrl(){
+  const q=new URLSearchParams(location.search),frag=new URLSearchParams(location.hash.replace(/^#/,''));
+  const code=q.get('error_code')||frag.get('error_code')||q.get('error')||frag.get('error');
+  if(!code)return false;
+  const desc=q.get('error_description')||frag.get('error_description')||'';
+  const message=code==='otp_expired'||/expired|invalid/i.test(desc)
+    ?'קישור ההתחברות פג תוקף או כבר נוצל. חזור למסך זה ושלח קישור חדש.'
+    :'ההתחברות לא הושלמה ('+code+'). יש לשלוח קישור חדש, ולוודא שכתובת האתר מוגדרת ב־Supabase.';
+  $('authCallbackError').textContent=message;
+  $('authCallbackError').hidden=false;
+  return true;
+}
 function showConflicts(items){
  $('cloudConflicts').replaceChildren();
  if(!items.length)return;
@@ -99,8 +120,14 @@ async function refresh(){
  cloud=await MP.loadCloud();
  if(!cloud){setStatus('הענן עדיין לא הופעל: חסרים פרטי פרויקט Supabase מאומתים או אין חיבור זמין. גיבוי ושימוש מקומי ממשיכים כרגיל.');return}
  const client=await cloud.init();if(!client){setStatus('תצורת הענן אינה תקינה');return}
- const user=cloud.user();if(!user){setStatus('שירות הענן זמין, אבל לא התחברת עדיין.');$('cloudLogin').hidden=false;return}
+ const session=await client.auth.getSession();
+ if(session.error)throw session.error;
+ // getSession waits for the auth callback to finish. getUser validates the JWT.
+ const validation=await client.auth.getUser();
+ const user=validation.data?.user||null;
+ if(!user){setStatus('השרת זמין, אבל לא נמצאה התחברות פעילה. שלח קישור חדש מהעמוד הזה.');$('cloudLogin').hidden=false;$('cloudConnected').hidden=true;return}
  const ws=await cloud.ensureWorkshop();$('cloudLogin').hidden=true;$('cloudConnected').hidden=false;
+ $('authCallbackError').hidden=true;
  $('autoSync').checked=localStorage.getItem('forge_cloud_auto_v1')==='1';
  setStatus('מחובר כאימייל: '+(user.email||'חשבון מאומת')+' · מסגריה '+String(ws).slice(0,8)+' · הנתונים המקומיים לא נשלחו אוטומטית.');
 }
@@ -110,7 +137,12 @@ $('downloadFirst').onclick=()=>busy(async()=>{if(!confirm('פעולה זו מח�
 $('syncNow').onclick=()=>busy(async()=>{const r=await cloud.sync();showConflicts(r.conflicts);message('cloudMessage',r.conflicts.length?'סנכרון חלקי. '+r.conflicts.length+' התנגשויות דורשות החלטה.':'הסנכרון הסתיים. עודכנו '+r.changed.length+' סוגי נתונים.',!!r.conflicts.length)});
 $('autoSync').onchange=()=>busy(async()=>{if($('autoSync').checked){const r=await cloud.sync();if(r.conflicts.length){$('autoSync').checked=false;showConflicts(r.conflicts);throw Error('יש לפתור התנגשויות ולסנכרן לפני הפעלה אוטומטית')}localStorage.setItem('forge_cloud_auto_v1','1');await cloud.startBackground();message('cloudMessage','סנכרון אוטומטי הופעל במכשיר הזה.')}else{localStorage.removeItem('forge_cloud_auto_v1');cloud.stopBackground();message('cloudMessage','סנכרון אוטומטי הופסק.')}});
 $('logout').onclick=()=>busy(async()=>{localStorage.removeItem('forge_cloud_auto_v1');await cloud.signOut();location.reload()});
-refresh().catch(e=>{setStatus('חיבור הענן לא הושלם: '+e.message);message('cloudMessage',e.message,true)});
+authErrorFromUrl();
+refresh().catch(e=>{
+  $('cloudLogin').hidden=false;
+  setStatus('לא הצלחנו להשלים את ההתחברות. השרת עשוי להיות זמין, אבל קישור האימות או הרשאות החשבון דורשים בדיקה.');
+  message('cloudMessage',e.message,true)
+});
 })();
 </script>
 </body></html>
