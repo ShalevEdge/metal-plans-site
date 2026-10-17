@@ -74,6 +74,9 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 .tools{border-top:2px solid var(--line);margin-top:20px}.trow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.trow label,.qgrid label{display:flex;flex-direction:column;font-weight:700;font-size:14px;gap:4px}
 .tools input,.tools select{padding:10px;font-size:16px;border:1px solid var(--steel);border-radius:8px;background:#fff;color:var(--tx);min-width:140px}
 .qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:10px}.qsum table{margin-top:12px}.soon2{font-size:13px;background:var(--or);color:#fff;border-radius:6px;padding:2px 8px;vertical-align:middle}
+.cutp{margin:10px 0;font-size:15px}.cutp svg{display:block;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:4px}
+.cbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-weight:700;font-size:14px}.cbar button[data-c]{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);cursor:pointer}.cbar button.on{outline:3px solid var(--or);outline-offset:2px}
+.okb{border-right:4px solid #2F9E44;padding:10px 12px;background:#EBFBEE;border-radius:8px;font-size:15px}
 </style>
 </head>
 <body>
@@ -111,10 +114,10 @@ function by(n,p,x,y,z,len,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];box(x
 function bz(n,p,x,y,z,len,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];box(x,y,z,b,a,len,role,n,p,len)}
 // slanted member in XY plane (extruded along z)
 function sxy(n,p,x0,y0,x1,y1,z,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];const L=Math.hypot(x1-x0,y1-y0),nx=-(y1-y0)/L*a,ny=(x1-x0)/L*a;
- const q=zz=>[[x0,y0,zz],[x1,y1,zz],[x1+nx,y1+ny,zz],[x0+nx,y0+ny,zz]];elem(q(z),q(z+b),role,n,p,Math.round(L))}
+ const q=zz=>[[x0,y0,zz],[x1,y1,zz],[x1+nx,y1+ny,zz],[x0+nx,y0+ny,zz]];elem(q(z),q(z+b),role,n,p,Math.round(L));M[M.length-1].ang=Math.round(Math.abs(Math.atan2(y1-y0,x1-x0))*180/Math.PI)}
 // slanted member in ZY plane (extruded along x)
 function szy(n,p,z0,y0,z1,y1,x,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];const L=Math.hypot(z1-z0,y1-y0),nz=-(y1-y0)/L*a,ny=(z1-z0)/L*a;
- const q=xx=>[[xx,y0,z0],[xx,y1,z1],[xx,y1+ny,z1+nz],[xx,y0+ny,z0+nz]];elem(q(x),q(x+b),role,n,p,Math.round(L))}
+ const q=xx=>[[xx,y0,z0],[xx,y1,z1],[xx,y1+ny,z1+nz],[xx,y0+ny,z0+nz]];elem(q(x),q(x+b),role,n,p,Math.round(L));M[M.length-1].ang=Math.round(Math.abs(Math.atan2(y1-y0,z1-z0))*180/Math.PI)}
 function frame(nr,ns,p,x,y,z,w,h){const[a]=sec(p);bx(nr,p,x,y,z,w);bx(nr,p,x,y+h-a,z,w);by(ns,p,x,y+a,z,h-2*a);by(ns,p,x+w-a,y+a,z,h-2*a);return a}
 const SN={v:'מוטות אנכיים',h:'פרופילים אופקיים (פרטיות)',s:'פח מלא',m:'רשת מרותכת',q:'משבצות',l:'תריסים',d1:'חיפוי צד אחד',d2:'חיפוי שני צדדים'};
 function infill(s,x,y,z,w,h,df,o={}){
@@ -131,7 +134,7 @@ function infill(s,x,y,z,w,h,df,o={}){
   HW.push(s==='s'?`פח 1.5 מ״מ ${fmt(w)}×${fmt(h)}`:`רשת מרותכת 50×50×4 ${fmt(w)}×${fmt(h)}`);return s==='s'?'פח מרותך למסגרת + קורות חיזוק':'רשת מרותכת למסגרת + קורות חיזוק'}
  return'';
 }
-function parts(){const m=new Map();for(const e of M)if(e.n){const k=e.n+'|'+e.p+'|'+Math.round(e.len);m.has(k)?m.get(k)[3]++:m.set(k,[e.n,e.p,Math.round(e.len),1])}return[...m.values()]}
+function parts(){const m=new Map();for(const e of M)if(e.n){const k=e.n+'|'+e.p+'|'+Math.round(e.len);m.has(k)?m.get(k)[3]++:m.set(k,[e.n,e.p,Math.round(e.len),1,e.ang||0])}return[...m.values()]}
 function hwList(){const c=new Map();for(const h of HW)c.set(h,(c.get(h)||0)+1);return[...c].map(([h,q])=>q>1?`${q}× ${h}`:h)}
 // ---- projection ----
 const VIEWS={
@@ -141,6 +144,7 @@ const VIEWS={
  iso:{t:'איזומטרי',V:[.57735,.57735,-.57735],P:p=>[(p[0]+p[2])*.7071,(p[0]-2*p[1]-p[2])*.4082]}};
 const COL={m:['#DCE1E6','#F1F3F5','#B9C1CA'],post:['#F9C7A3','#FCDCC4','#F0A06B'],wheel:['#F9C7A3','#FCDCC4','#F0A06B'],sheet:['#C9D3DC','#DCE3EA','#AEB9C4'],
  mesh:['url(#mh)','url(#mh)','url(#mh)'],wood:['#EADBC8','#F3E7D8','#D9C3A8'],wall:['url(#wh)','#ECEDEF','#DADCE0'],track:['#9AA3AB','#B5BCC3','#7E8890'],conc:['#E3E5E8','#EEF0F2','#CDD1D6']};
+let PAINT=null;const PAINTS={blk:['#3A3F45','#555B62','#25292D'],ant:['#4A5056','#666C73','#373C41'],wht:['#F4F5F6','#FFFFFF','#D9DCDF'],grn:['#3E5A47','#56735F','#2D4434'],brn:['#5B4636','#76604E','#46352A'],gal:['#C3C9CF','#D8DCE0','#A7AFB7']};
 const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
 function faces(e){const A=e.A,B=e.B,n=A.length,f=[A,[...B].reverse()];for(let i=0;i<n;i++){const j=(i+1)%n;f.push([A[i],A[j],B[j],B[i]])}
  const c=[0,1,2].map(k=>(A.reduce((s,p)=>s+p[k],0)+B.reduce((s,p)=>s+p[k],0))/(2*n));
@@ -151,7 +155,7 @@ const DEFS=`<defs><pattern id="mh" width="14" height="14" patternUnits="userSpac
 function view(vk,o={}){
  const v=VIEWS[vk],iso=vk==='iso',polys=[];
  for(const e of M)for(const f of faces(e)){if(dot(f.N,v.V)<=1e-6)continue;
-  const d=dot(f.fc,v.V),cat=iso?(f.N[1]>.5?1:(f.N[2]<-.5?0:2)):0,fill=(COL[e.role]||COL.m)[cat];
+  const d=dot(f.fc,v.V),cat=iso?(f.N[1]>.5?1:(f.N[2]<-.5?0:2)):0,fill=(PAINT&&/^(m|post|wheel)$/.test(e.role)?PAINTS[PAINT]:(COL[e.role]||COL.m))[cat];
   polys.push({d,pts:f.F.map(v.P),fill,e})}
  polys.sort((a,b)=>a.d-b.d);
  const all=polys.flatMap(p=>p.pts);if(!all.length)return'';
@@ -390,6 +394,74 @@ Object.assign(GEN,{
 const CATS=[['שערים ודלתות',['SG','DG','PP','DR']],['מעקות, גדרות וסורגים',['RL','SR','FN','GR','PB']],['מדרגות וסולמות',['ST','LD']],
  ['הצללה ומבנים',['PG','CN','CP','SD','SK']],['ריהוט',['TB','CF','BN','BS','BD','SH','CR']],['סדנה ותעשייה',['WT','CT','RK']],['חוץ, גינה ובית',['MZ','GS','BI','BR','BQ','PS','FR','SW','SP']]];
 
+// ===== packing with bins, cutting diagram, DXF =====
+function pack(parts){
+ const by={},joins=new Set();
+ parts.forEach(([n,p,len,q],pi)=>{for(let i=0;i<q;i++){if(len>STOCK){const k=Math.ceil(len/(STOCK-KERF));joins.add(n);for(let j=0;j<k;j++)(by[p]??=[]).push({l:len/k,i:pi,j:1})}else(by[p]??=[]).push({l:len,i:pi})}});
+ const rows=Object.entries(by).map(([p,arr])=>{arr.sort((a,b)=>b.l-a.l);const bins=[];
+  for(const pc of arr){const b=bins.find(b=>b.rem>=pc.l+KERF);if(b){b.rem-=pc.l+KERF;b.pc.push(pc)}else bins.push({rem:STOCK-pc.l-KERF,pc:[pc]})}
+  const used=arr.reduce((a,b)=>a+b.l,0);return{p,bars:bins.length,m:used/1000,waste:1-used/(bins.length*STOCK),kg:used/1000*kgm(p),bins}});
+ return{rows,joins:[...joins]};
+}
+function cutSVG(row){
+ const H=380,G=110,W=STOCK,groups=[];
+ for(const b of row.bins){const sig=b.pc.map(x=>x.i+':'+Math.round(x.l)).join('|');const g=groups.find(g=>g.sig===sig);g?g.n++:groups.push({sig,b,n:1})}
+ const hh=groups.length*(H+G);let s='';
+ groups.forEach((g,r)=>{const y=r*(H+G);let x=0;
+  s+=`<rect x="0" y="${y}" width="${W}" height="${H}" fill="url(#cw)" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+  for(const pc of g.b.pc){s+=`<rect x="${x}" y="${y}" width="${pc.l}" height="${H}" fill="${pc.j?'#FCDCC4':'#DCE1E6'}" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+   if(pc.l>1100)s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.5}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">#${pc.i+1} · ${fmt(pc.l)}</text>`;
+   else s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">${pc.i+1}</text>`;
+   x+=pc.l+KERF}
+  if(g.b.rem>200)s+=`<text x="${x+g.b.rem/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" text-anchor="middle" fill="${ST}">שארית ${fmt(g.b.rem)}</text>`;
+  s+=`<text x="${W+120}" y="${y+H*.68}" font-size="${H*.55}" font-family="Heebo" font-weight="900" fill="${OT}">×${g.n}</text>`});
+ return`<svg viewBox="-20 -20 ${W+900} ${hh+40}" direction="ltr" preserveAspectRatio="xMinYMin meet" style="width:100%;height:auto"><defs><pattern id="cw" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" fill="#fff"/><path d="M0 160L160 0" stroke="#C9CED4" stroke-width="18"/></pattern></defs>${s}</svg>`}
+function cutHTML(rows){return`<h2>סימון חיתוכים על המוט</h2><p class="muted" style="font-size:14px">כל פס = מוט 6 מ׳. המספר תואם לרשימת החיתוך; ×N = כמה מוטות לחתוך בדיוק כך. חותכים משמאל לימין לפי הסדר, עובי מסור ${KERF} מ״מ.</p>`+rows.map(r=>`<div class="cutp"><b dir="ltr">${r.p}</b> – ${r.bars} מוטות${cutSVG(r)}</div>`).join('')}
+function dxf(p){
+ M=p.model;const L=[];const add=(...a)=>L.push(...a);
+ add('0','SECTION','2','HEADER','9','$INSUNITS','70','4','0','ENDSEC','0','SECTION','2','ENTITIES');
+ const lay={front:'FRONT',side:'SIDE',top:'TOP'};let ox=0;const off={};
+ const ext=vk=>{const v=VIEWS[vk];let a=[];for(const e of M)for(const q of[...e.A,...e.B]){const t=v.P(q);a.push(t)}return{x0:Math.min(...a.map(t=>t[0])),x1:Math.max(...a.map(t=>t[0])),y0:Math.min(...a.map(t=>-t[1])),y1:Math.max(...a.map(t=>-t[1]))}};
+ const ef=ext('front'),es=ext('side'),et=ext('top'),gap=Math.max(ef.x1-ef.x0,ef.y1-ef.y0)*.25;
+ off.front=[-ef.x0,-ef.y0];off.side=[-es.x0+(ef.x1-ef.x0)+gap,-es.y0];off.top=[-et.x0,-et.y0+(ef.y1-ef.y0)+gap];
+ for(const vk of['front','side','top']){const v=VIEWS[vk],[dx,dy]=off[vk];
+  for(const e of M)for(const f of faces(e)){if(dot(f.N,v.V)<=1e-6)continue;
+   add('0','POLYLINE','8',lay[vk],'66','1','70','1');for(const q of f.F){const t=v.P(q);add('0','VERTEX','8',lay[vk],'10',(t[0]+dx).toFixed(2),'20',(-t[1]+dy).toFixed(2),'30','0')}add('0','SEQEND','8',lay[vk])}
+  const ex={front:ef,side:es,top:et}[vk];add('0','TEXT','8','TEXT','10',dx+ex.x0+'', '20',(dy+ex.y0-gap*.35).toFixed(1),'30','0','40',(gap*.12).toFixed(1),'1',{front:'FRONT',side:'SIDE',top:'TOP'}[vk]+' '+fmt(ex.x1-ex.x0)+' x '+fmt(ex.y1-ex.y0)+' mm')}
+ add('0','TEXT','8','TEXT','10','0','20',(-gap*.9).toFixed(1),'30','0','40',(gap*.15).toFixed(1),'1',p.id+' - units mm');
+ add('0','ENDSEC','0','EOF');return L.join('\r\n');
+}
+function dlDXF(p){const b=new Blob([dxf(p)],{type:'application/dxf'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=p.id.replace(/[:]/g,'_')+'.dxf';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+
+// ===== paint / weld / load check / colour / projects =====
+const PN={blk:'שחור',ant:'אפור אנתרציט',wht:'לבן',grn:'ירוק כהה',brn:'חום',gal:'מגולוון'};
+function surf(p){const[a,b]=sec(p);return 2*(a+b)/1000} // m² per m length
+function calcs(p){
+ let area=0,weld=0;for(const[n,pr,l,q]of p.parts){area+=surf(pr)*l/1000*q;const[a,b]=sec(pr);weld+=q*2*Math.min(2*(a+b),400)}
+ const sheet=p.model.filter(e=>e.role==='sheet').reduce((s,e)=>{const xs=e.A.map(q=>q[0]),ys=e.A.map(q=>q[1]);return s+(Math.max(...xs)-Math.min(...xs))*(Math.max(...ys)-Math.min(...ys))/1e6*2},0);
+ const A=area+sheet,coats=3,cov=8,lit=A*coats/cov,wm=weld/1000;
+ return{A,lit,wm,elec:Math.ceil(wm/0.15),wire:wm*.03,gasL:wm/0.25*12,hrs:wm/0.25/60}}
+function moreHTML(p){const c=calcs(p),ang=p.parts.filter(r=>r[4]);
+ return`<div class="tools no-print">
+ <h2>חיתוכי זווית</h2>${ang.length?`<ul style="padding-inline-start:20px">${ang.map(r=>`<li>#${p.parts.indexOf(r)+1} ${r[0]} – חיתוך קצוות בזווית <b>${r[4]}°</b> (משלים ${90-r[4]}° על המסור)</li>`).join('')}</ul>`:''}<p class="muted" style="font-size:14px">שאר החלקים – חיתוך ישר 90°. במסגרות אפשר לחתוך פינות ב-45°: מוסיפים לאורך החלק את רוחב הפרופיל.</p>
+ <h2>צבע וגימור</h2><table><tr><td>שטח לצביעה</td><td><b>${c.A.toFixed(1)} מ״ר</b></td></tr><tr><td>יסוד + 2 שכבות (כיסוי ~8 מ״ר לליטר)</td><td><b>${c.lit.toFixed(1)} ליטר</b> (כ-${(c.lit/3).toFixed(1)} ל׳ לשכבה)</td></tr></table>
+ <h2>ריתוך</h2><table><tr><td>אורך ריתוך משוער</td><td><b>${c.wm.toFixed(1)} מ׳</b></td></tr><tr><td>אלקטרודות 2.5 מ״מ</td><td>~${c.elec} יח׳</td></tr><tr><td>או חוט MIG 0.8 מ״מ</td><td>~${c.wire.toFixed(2)} ק״ג · גז ~${fmt(c.gasL)} ליטר</td></tr><tr><td>זמן קשת נטו</td><td>~${c.hrs.toFixed(1)} שעות</td></tr></table>
+ <h2>בדיקת קורה (מנחה)</h2><div class="trow"><label>חלק<select id="lb">${p.parts.map((r,i)=>`<option value="${i}">#${i+1} ${r[0]} (${r[1]})</option>`).join('')}</select></label>
+ <label>מפתח בין תמיכות (מ״מ)<input id="ls" type="number"></label><label>עומס (ק״ג למטר)<input id="lw" type="number" value="50"></label></div><div id="lr" style="margin-top:8px"></div>
+ <p class="muted" style="font-size:13px">קורה פשוטה בעומס אחיד, פלדה S235. מאמץ מותר 140 MPa, שקיעה עד מפתח/200. בדיקה מנחה בלבד – לא מחליפה חישוב מהנדס.</p>
+ <h2>פרויקטים</h2><div class="trow"><label>שם לקוח<input id="pc"></label><button class="btn" id="psv">שמירה לרשימת הפרויקטים</button><a class="btn ghost" href="projects.html">לרשימת הפרויקטים</a></div><p id="pmsg" class="muted"></p></div>`}
+function secProps(pr){const[h0,b0,t0]=pr.split('×').map(Number);const h=Math.max(h0,b0),b=Math.min(h0,b0);if(!t0)return{I:b*h**3/12,W:b*h**2/6};const t=t0,I=(b*h**3-(b-2*t)*(h-2*t)**3)/12;return{I,W:I/(h/2)}}
+function bindMore(p){const $=id=>document.getElementById(id);
+ const lc=()=>{const r=p.parts[+$('lb').value],L=+$('ls').value||r[2],q=(+$('lw').value||0)*9.81/1000,{I,W}=secProps(r[1]);
+  const Mx=q*L*L/8,sg=Mx/W,d=5*q*L**4/(384*210000*I),ok=sg<=140&&d<=L/200;
+  $('lr').innerHTML=`<div class="${ok?'okb':'warn'}">מאמץ: <b>${sg.toFixed(0)} MPa</b> (מותר 140) · שקיעה: <b>${d.toFixed(1)} מ״מ</b> (מותר ${(L/200).toFixed(1)}) — ${ok?'✓ עובר':'✗ לא עובר – להגדיל פרופיל / להוסיף תמיכה'}</div>`};
+ $('lb').onchange=()=>{$('ls').value=p.parts[+$('lb').value][2];lc()};$('ls').oninput=lc;$('lw').oninput=lc;$('ls').value=p.parts[0][2];lc();
+ $('psv').onclick=()=>{let L=[];try{L=JSON.parse(localStorage.getItem('mp_projects')||'[]')}catch(e){}
+  L.unshift({id:p.id,name:p.name,size:sz(p),cust:$('pc').value,status:'הצעת מחיר',date:new Date().toISOString().slice(0,10),price:p.q?Math.round(p.q.tot):'',dep:''});
+  try{localStorage.setItem('mp_projects',JSON.stringify(L));$('pmsg').textContent='נשמר ✓'}catch(e){$('pmsg').textContent='הדפדפן חוסם שמירה'}};
+}
+function colorBar(){return`<div class="no-print cbar">צבע לתצוגה: ${Object.entries(PN).map(([k,n])=>`<button data-c="${k}" title="${n}" style="background:${PAINTS[k][0]}" class="${PAINT===k?'on':''}"></button>`).join('')}<button data-c="" class="${PAINT?'':'on'}" title="ללא">✕</button> <button class="btn ghost" id="dxf" style="padding:6px 12px;font-size:14px">הורדת DXF (אוטוקאד / פלזמה)</button></div>`}
+
 // ===== plan tools: material, custom size, supplier list, quote =====
 const MAT={fe:{n:'ברזל שחור (לצביעה)',rho:7.85,ppk:9,fin:4,fn:'צביעה'},ga:{n:'ברזל מגולוון',rho:7.85,ppk:9,fin:6,fn:'גלוון חם'},al:{n:'אלומיניום',rho:2.7,ppk:38,fin:0,fn:'ללא'},ss:{n:'נירוסטה 304',rho:7.93,ppk:42,fin:0,fn:'ליטוש'}};
 const SETK='mp_settings_v1';
@@ -452,14 +524,6 @@ const range=a=>a.length===3&&typeof a[0]==='number'&&a[2]<a[0]?(()=>{const r=[];
 const PLANS=[];
 for(const[k,g]of Object.entries(GEN))for(const W of range(g.W))for(const H of range(g.H))if(!g.ok||g.ok(W,H))for(const s of(g.S||['']))PLANS.push({id:[k,W,H,s].filter(x=>x!=='').join('-'),k,W,H,s});
 function kgm(p){const v=p.split('×').map(Number);const a=v.length===3?2*(v[0]+v[1])*v[2]-4*v[2]*v[2]:v[0]*v[1];return a*7.85/1000}
-function pack(parts){
- const by={},joins=new Set();
- for(const[n,p,len,q]of parts)for(let i=0;i<q;i++){if(len>STOCK){const k=Math.ceil(len/(STOCK-KERF));joins.add(n);for(let j=0;j<k;j++)(by[p]??=[]).push(len/k)}else(by[p]??=[]).push(len)}
- const rows=Object.entries(by).map(([p,arr])=>{arr.sort((a,b)=>b-a);const bins=[];
-  for(const l of arr){const i=bins.findIndex(r=>r>=l+KERF);if(i>=0)bins[i]-=l+KERF;else bins.push(STOCK-l-KERF)}
-  const used=arr.reduce((a,b)=>a+b,0);return{p,bars:bins.length,m:used/1000,waste:1-used/(bins.length*STOCK),kg:used/1000*kgm(p)}});
- return{rows,joins:[...joins]};
-}
 const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} · ${g.hl} ${fmt(x.H)}${x.s?' · '+SN[x.s]:''}`};
 function build(x){const g=GEN[x.k];M=[];HW=[];const r=g.f(x.W,x.H,x.s);return{...x,name:r.name||g.name,notes:r.notes.filter(Boolean),hw:[...r.hw,...hwList()],parts:parts(),model:M}}
 const plan=id=>{if(id.startsWith('c:'))return customPlan(id);const x=PLANS.find(p=>p.id===id);return x?build(x):null};
@@ -499,20 +563,21 @@ function show(id){
  $('detail').innerHTML=`<div class="card" style="margin-top:8px"><button class="close no-print" id="x" aria-label="סגירה">✕</button>
  <h2>${p.name}${p.custom?' <span class="soon2">מידה מותאמת</span>':''}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
  <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span><span>חלקים: <b>${p.parts.reduce((a,r)=>a+r[3],0)}</b></span></div>
- <div class="views">${V('front')}${V('side')}${V('top')}${V('iso')}</div>
+ ${colorBar()}<div class="views">${V('front')}${V('side')}${V('top')}${V('iso')}</div>
  <table class="tb"><tr><td>שם: <b>${p.name}</b></td><td>קוד: <b dir="ltr">${id}</b></td><td>יחידות: מ״מ</td></tr><tr><td>קנ״מ: ללא (NTS)</td><td>תאריך הפקה: ${today}</td><td>גיליון 1/1 · גרסה 2.0</td></tr></table>
- <h2>רשימת חיתוך</h2><p class="muted" style="font-size:14px">המספרים תואמים לסימון בשרטוט החזית.</p><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th></tr>
- ${p.parts.map(([n,pr,l,q],i)=>`<tr><td><b class="bn">${i+1}</b></td><td>${n}</td><td>${ltr(pr)}</td><td>${fmt(l)}</td><td>${q}</td></tr>`).join('')}</table></div>
+ <h2>רשימת חיתוך</h2><p class="muted" style="font-size:14px">המספרים תואמים לסימון בשרטוט החזית.</p><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th><th>חיתוך</th></tr>
+ ${p.parts.map(([n,pr,l,q,a],i)=>`<tr><td><b class="bn">${i+1}</b></td><td>${n}</td><td>${ltr(pr)}</td><td>${fmt(l)}</td><td>${q}</td><td>${a?`<b>${a}°</b>`:'90°'}</td></tr>`).join('')}</table></div>
  <h2>קנייה – פרופילים של 6 מ׳</h2><div class="tbl"><table><tr><th>פרופיל</th><th>יחידות 6 מ׳</th><th>מטר נטו</th><th>פחת</th></tr>
  ${rows.map(r=>`<tr><td>${ltr(r.p)}</td><td><b>${r.bars}</b></td><td>${r.m.toFixed(1)}</td><td>${Math.round(r.waste*100)}%</td></tr>`).join('')}</table></div>
  <p class="muted" style="font-size:14px;margin-top:6px">חיתוך אופטימלי עם ${KERF} מ״מ עובי מסור לכל חיתוך.</p>
+ ${cutHTML(rows)}
  ${joins.length?`<div class="warn">⚠️ ארוך מ-6 מ׳ – נדרש חיבור / ריתוך המשך: ${joins.join(', ')}</div>`:''}
  <h2>פרזול, חיפוי ואביזרים</h2><ul style="padding-inline-start:20px">${p.hw.map(h=>`<li>${h}</li>`).join('')}</ul>
  <h2>הערות</h2><ul style="padding-inline-start:20px">${p.notes.map(h=>`<li>${h}</li>`).join('')}</ul>
- ${toolsHTML(p,rows)} פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
+ ${toolsHTML(p,rows)}${moreHTML(p)} פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
  <p class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" onclick="print()">הדפסה / שמירה כ-PDF</button><button class="btn ghost" id="cp">העתקת קישור</button></p></div>`;
  $('cp').onclick=()=>{navigator.clipboard?.writeText(location.href).then(()=>$('cp').textContent='הקישור הועתק ✓',()=>{})};
- bindTools(p,rows);$('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
+ bindTools(p,rows);bindMore(p);$('dxf').onclick=()=>dlDXF(p);document.querySelectorAll('.cbar button[data-c]').forEach(b=>b.onclick=()=>{PAINT=b.dataset.c||null;const y=$('detail').scrollTop;show(id);$('detail').scrollTop=y});$('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
 }
 function closeD(){history.pushState(null,'',location.pathname+location.search);show('')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});

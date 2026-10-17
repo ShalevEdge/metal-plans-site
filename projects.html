@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הפרויקטים שלי | תוכניות עבודה למסגרים</title>
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F4F6;--line:#D6DAE0;--or:#E8590C;--ort:#B93E07;--steel:#5B6670;--tx:#15181C}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Heebo,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6}
+.w{max-width:1000px;margin:0 auto;padding:0 16px}header{padding:16px 0;background:#fff;border-bottom:1px solid var(--line)}header a{color:var(--tx);font-weight:900;text-decoration:none}
+h1{font-size:clamp(28px,6vw,44px);margin:24px 0 6px}.m{color:var(--steel)}
+.sum{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.sum div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px}.sum b{display:block;font-size:22px;color:var(--ort)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;display:grid;gap:8px;grid-template-columns:1fr}
+.card .top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.card a{color:var(--ort);font-weight:700}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:8px}
+label{display:flex;flex-direction:column;font-size:13px;font-weight:700;gap:2px}input,select{padding:8px;font-size:15px;border:1px solid var(--steel);border-radius:8px;font-family:inherit;background:#fff}
+.del{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;font-family:inherit}
+.st{font-size:13px;border-radius:999px;padding:2px 10px;color:#fff;font-weight:700}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center}
+.btn{display:inline-block;background:var(--or);color:#fff;font-weight:900;padding:10px 18px;border-radius:8px;text-decoration:none}
+</style>
+</head>
+<body>
+<header><div class="w"><a href="plans.html">← לספריית התוכניות</a></div></header>
+<main class="w">
+ <h1>הפרויקטים שלי</h1>
+ <p class="m">שומרים פרויקט מתוך כל תוכנית (כפתור "שמירה לרשימת הפרויקטים"). הרשימה נשמרת בדפדפן הזה בלבד.</p>
+ <div class="sum" id="sum"></div>
+ <div class="row" style="margin-bottom:12px"><label>סינון לפי סטטוס<select id="flt"></select></label><label>חיפוש לקוח<input id="q"></label></div>
+ <div id="list"></div>
+</main>
+<script>
+const ST=['הצעת מחיר','אושר','בייצור','מוכן להתקנה','הותקן','שולם'],SC=['#868E96','#1C7ED6','#E8590C','#F59F00','#2F9E44','#2B8A3E'];
+const K='mp_projects';let L=[];try{L=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}};
+const $=id=>document.getElementById(id),num=v=>(+v||0).toLocaleString('en-US');
+$('flt').innerHTML='<option value="">הכול</option>'+ST.map(s=>`<option>${s}</option>`).join('');
+function render(){
+ const f=$('flt').value,q=$('q').value.trim(),vis=L.map((p,i)=>[p,i]).filter(([p])=>(!f||p.status===f)&&(!q||(p.cust||'').includes(q)));
+ const open=L.filter(p=>!['הותקן','שולם'].includes(p.status)),tot=L.reduce((a,p)=>a+(+p.price||0),0),dep=L.reduce((a,p)=>a+(+p.dep||0),0);
+ $('sum').innerHTML=`<div>פרויקטים<b>${L.length}</b></div><div>פתוחים<b>${open.length}</b></div><div>סה״כ הצעות (₪)<b>${num(tot)}</b></div><div>מקדמות שהתקבלו (₪)<b>${num(dep)}</b></div><div>יתרה לגבייה (₪)<b>${num(tot-dep)}</b></div>`;
+ $('list').innerHTML=vis.length?vis.map(([p,i])=>`<div class="card"><div class="top"><div><b>${p.cust||'לקוח ללא שם'}</b> · ${p.name}<div class="m" style="font-size:14px">${p.size} · ${p.date} · <a href="plans.html#${encodeURIComponent(p.id)}">לתוכנית</a></div></div><span class="st" style="background:${SC[Math.max(0,ST.indexOf(p.status))]}">${p.status}</span></div>
+ <div class="row"><label>לקוח<input data-i="${i}" data-k="cust" value="${(p.cust||'').replace(/"/g,'&quot;')}"></label><label>סטטוס<select data-i="${i}" data-k="status">${ST.map(s=>`<option ${s===p.status?'selected':''}>${s}</option>`).join('')}</select></label>
+ <label>מחיר (₪)<input type="number" data-i="${i}" data-k="price" value="${p.price||''}"></label><label>מקדמה (₪)<input type="number" data-i="${i}" data-k="dep" value="${p.dep||''}"></label><label>תאריך יעד<input type="date" data-i="${i}" data-k="due" value="${p.due||''}"></label></div>
+ <div><button class="del" data-del="${i}">מחיקה</button></div></div>`).join(''):`<div class="empty">אין עדיין פרויקטים.<br><br><a class="btn" href="plans.html">לבחירת תוכנית</a></div>`;
+}
+$('list').addEventListener('change',e=>{const t=e.target;if(t.dataset.k){L[+t.dataset.i][t.dataset.k]=t.value;save();render()}});
+$('list').addEventListener('click',e=>{const i=e.target.dataset.del;if(i!==undefined&&confirm('למחוק את הפרויקט?')){L.splice(+i,1);save();render()}});
+$('flt').onchange=render;$('q').oninput=render;render();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
