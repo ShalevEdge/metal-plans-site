@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
-<title>ספריית התוכניות | תוכניות עבודה למסגרים</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<title>ספריית התוכניות | SHALVERO FORGE</title>
 <meta name="description" content="מאות תוכניות עבודה למסגרים: שערים נגררים, שערי כנף, פשפשים, מעקות, סורגים וגדרות – שרטוט, רשימת חיתוך וכמות פרופילים.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -78,9 +78,9 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 .cbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0;font-weight:700;font-size:14px}.cbar button[data-c]{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);cursor:pointer}.cbar button.on{outline:3px solid var(--or);outline-offset:2px}
 .okb{border-right:4px solid #2F9E44;padding:10px 12px;background:#EBFBEE;border-radius:8px;font-size:15px}
 </style>
-</head>
+<link rel="stylesheet" href="premium.css"></head>
 <body>
-<header><div class="wrap"><a href="index.html">← תוכניות עבודה למסגרים</a></div></header>
+<header><div class="wrap"><a class="forge-nav-brand" href="index.html"><span class="forge-mark">SF</span><span class="forge-brand-text"><strong>SHALVERO</strong><em>FORGE</em></span></a></div></header>
 <main class="wrap">
  <div id="intro">
   <h1>ספריית <span class="hl">התוכניות</span></h1>
@@ -166,8 +166,8 @@ function view(vk,o={}){
   if(vk==='front'||vk==='side'){const gy=0;if(y1>=gy-1)s+=`<line x1="${x0-S*.08}" y1="${gy}" x2="${x1+S*.08}" y2="${gy}" stroke="${ST}" stroke-width="1.2" stroke-dasharray="8 5" vector-effect="non-scaling-stroke"/>`}
   if(!iso){const L=(a,b,c,d,w=1)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${ST}" stroke-width="${w}" vector-effect="non-scaling-stroke"/>`,t=fs*.3;
    const yb=y1+fs*1.6,xl=x0-fs*1.6,T=(x,y,txt,r)=>`<text x="${x}" y="${y}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle"${r?` transform="rotate(-90 ${x} ${y})"`:''}>${txt}</text>`;
-   s+=L(x0,yb,x1,yb)+L(x0,yb-t,x0,yb+t)+L(x1,yb-t,x1,yb+t)+L(x0,y1+t,x0,yb-t,.6)+L(x1,y1+t,x1,yb-t,.6)+T((x0+x1)/2,yb-fs*.3,fmt(x1-x0));
-   s+=L(xl,y0,xl,y1)+L(xl-t,y0,xl+t,y0)+L(xl-t,y1,xl+t,y1)+T(xl-fs*.35,(y0+y1)/2,fmt(y1-y0),1)}
+   s+=L(x0,yb,x1,yb)+L(x0,yb-t,x0,yb+t)+L(x1,yb-t,x1,yb+t)+L(x0,y1+t,x0,yb-t,.6)+L(x1,y1+t,x1,yb-t,.6)+T((x0+x1)/2,yb-fs*.3,fmt(x1-x0)+' מ״מ');
+   s+=L(xl,y0,xl,y1)+L(xl-t,y0,xl+t,y0)+L(xl-t,y1,xl+t,y1)+T(xl-fs*.35,(y0+y1)/2,fmt(y1-y0)+' מ״מ',1)}
   if(vk==='front'&&o.balloons){const seen=new Set(),bl=[];
    o.balloons.forEach((pt,i)=>{const e=M.find(e=>e.n&&e.n+'|'+e.p+'|'+Math.round(e.len)===pt);if(!e)return;
     const fr=faces(e).find(f=>f.N[2]<-.5)||faces(e)[0],c=v.P(fr.fc);bl.push([c,i+1])});
@@ -410,13 +410,13 @@ function cutSVG(row){
  groups.forEach((g,r)=>{const y=r*(H+G);let x=0;
   s+=`<rect x="0" y="${y}" width="${W}" height="${H}" fill="url(#cw)" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
   for(const pc of g.b.pc){s+=`<rect x="${x}" y="${y}" width="${pc.l}" height="${H}" fill="${pc.j?'#FCDCC4':'#DCE1E6'}" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
-   if(pc.l>1100)s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.5}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">#${pc.i+1} · ${fmt(pc.l)}</text>`;
+   if(pc.l>1100)s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.5}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">#${pc.i+1} · ${fmt(pc.l)} מ״מ</text>`;
    else s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">${pc.i+1}</text>`;
    x+=pc.l+KERF}
-  if(g.b.rem>200)s+=`<text x="${x+g.b.rem/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" text-anchor="middle" fill="${ST}">שארית ${fmt(g.b.rem)}</text>`;
+  if(g.b.rem>200)s+=`<text x="${x+g.b.rem/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" text-anchor="middle" fill="${ST}">שארית ${fmt(g.b.rem)} מ״מ</text>`;
   s+=`<text x="${W+120}" y="${y+H*.68}" font-size="${H*.55}" font-family="Heebo" font-weight="900" fill="${OT}">×${g.n}</text>`});
  return`<svg viewBox="-20 -20 ${W+900} ${hh+40}" direction="ltr" preserveAspectRatio="xMinYMin meet" style="width:100%;height:auto"><defs><pattern id="cw" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" fill="#fff"/><path d="M0 160L160 0" stroke="#C9CED4" stroke-width="18"/></pattern></defs>${s}</svg>`}
-function cutHTML(rows){return`<h2>סימון חיתוכים על המוט</h2><p class="muted" style="font-size:14px">כל פס = מוט 6 מ׳. המספר תואם לרשימת החיתוך; ×N = כמה מוטות לחתוך בדיוק כך. חותכים משמאל לימין לפי הסדר, עובי מסור ${KERF} מ״מ.</p>`+rows.map(r=>`<div class="cutp"><b dir="ltr">${r.p}</b> – ${r.bars} מוטות${cutSVG(r)}</div>`).join('')}
+function cutHTML(rows){return`<h2>סימון חיתוכים על המוט</h2><p class="muted" style="font-size:14px">כל פס = מוט 6 מ׳. המספר תואם לרשימת החיתוך; אורכי החיתוך מסומנים במ״מ; ×N = כמה מוטות לחתוך בדיוק כך. חותכים משמאל לימין לפי הסדר, עובי מסור ${KERF} מ״מ.</p>`+rows.map(r=>`<div class="cutp"><b dir="ltr">${r.p}</b> – ${r.bars} מוטות${cutSVG(r)}</div>`).join('')}
 function dxf(p){
  M=p.model;const L=[];const add=(...a)=>L.push(...a);
  add('0','SECTION','2','HEADER','9','$INSUNITS','70','4','0','ENDSEC','0','SECTION','2','ENTITIES');
@@ -469,6 +469,7 @@ function getSet(){let s={};try{s=JSON.parse(localStorage.getItem(SETK)||'{}')}ca
 function putSet(s){try{localStorage.setItem(SETK,JSON.stringify(s))}catch(e){}}
 const kgOf=(rows,m)=>rows.reduce((a,r)=>a+r.kg,0)*MAT[m].rho/7.85;
 const nums=a=>range(a).filter(v=>typeof v==='number');
+const unitOf=a=>{const v=nums(a);return v.length&&Math.max(...v)>50?'מ״מ':'יח׳'};
 function customPlan(id){const[,k,w,h,s]=id.split(':');const g=GEN[k];if(!g)return null;
  const W=Math.round(+w),H=Math.round(+h),wr=nums(g.W),hr=nums(g.H);
  const inb=(v,r)=>{const lo=Math.min(...r),hi=Math.max(...r);return r.length<=1?v===r[0]:v>=lo*(lo<50?1:.8)&&v<=hi*(hi<50?1:1.2)};
@@ -480,14 +481,14 @@ function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
  return`<div class="tools no-print">
  <h2>חומר</h2><div class="trow"><label>סוג חומר<select id="mt">${Object.entries(MAT).map(([k,v])=>`<option value="${k}" ${k===m?'selected':''}>${v.n}</option>`).join('')}</select></label>
  <p id="mw" class="muted"></p></div>
- <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl}<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl}<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
+ <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
  <button class="btn" id="cgo">צור תוכנית</button></div><p class="muted" id="cerr" style="font-size:14px"></p>
  <h2>רשימת קנייה לספק</h2><div class="trow"><button class="btn" id="wa">שליחה בוואטסאפ</button><button class="btn ghost" id="cpl">העתקת הרשימה</button><button class="btn ghost" id="opt">שלח לאופטימייזר חיתוך</button></div>
  <h2>הצעת מחיר ללקוח</h2><div class="qgrid">
   <label>שם העסק<input id="qb" value="${S.biz}"></label><label>טלפון העסק<input id="qp" value="${S.phone}" inputmode="tel"></label>
   <label>לוגו (תמונה)<input id="ql" type="file" accept="image/*"></label><label>שם הלקוח<input id="qc"></label>
   <label>מחיר חומר (₪/ק״ג)<input id="q1" type="number" step="0.5"></label><label>גימור – <span id="qfn"></span> (₪/ק״ג)<input id="q2" type="number" step="0.5"></label>
-  <label>שעות עבודה<input id="q3" type="number" step="0.5"></label><label>תעריף לשעה (₪)<input id="q4" type="number" value="${S.rate}"></label>
+  <label>שעות עבודה (ש׳)<input id="q3" type="number" step="0.5"></label><label>תעריף עבודה (₪/שעה)<input id="q4" type="number" value="${S.rate}"></label>
   <label>רווח (%)<input id="q5" type="number" value="${S.marg}"></label><label>מע״מ (%)<input id="q6" type="number" value="${S.vat}"></label>
  </div><div id="qsum" class="qsum"></div><p><button class="btn" id="qpdf">הפקת הצעת מחיר (PDF)</button></p>
  <p class="muted" style="font-size:13px">המחירים ברירת מחדל הם הערכה – עדכנו לפי הספק שלכם. ההגדרות נשמרות בדפדפן.</p></div>`}
@@ -505,7 +506,7 @@ function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=
  $('qb').oninput=()=>{S.biz=$('qb').value;putSet(S)};$('qp').oninput=()=>{S.phone=$('qp').value;putSet(S)};
  $('ql').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),sc=Math.min(1,240/im.width,120/im.height);c.width=im.width*sc;c.height=im.height*sc;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.logo=c.toDataURL('image/png');putSet(S)};im.src=rd.result};rd.readAsDataURL(f)};
  $('cgo').onclick=()=>{const s=$('cs')?$('cs').value:'',id=`c:${p.k}:${$('cw').value}:${$('ch').value}:${s}`,t=customPlan(id);if(!t||t.err){$('cerr').textContent=t?t.err:'שגיאה';return}location.hash=id};
- const list=()=>{const m=$('mt').value;return`רשימת חומר – ${p.name} ${fmt(p.W)}×${fmt(p.H)} (${MAT[m].n})\n`+rows.map(r=>`• ${r.p} – ${r.bars} יח׳ באורך 6 מ׳`).join('\n')+(p.hw.length?'\n\nנוסף:\n'+p.hw.map(h=>'• '+h).join('\n'):'')+`\n\nקוד תוכנית: ${p.id}`};
+ const list=()=>{const m=$('mt').value;return`רשימת חומר – ${p.name} · ${sz(p)} (${MAT[m].n})\n`+rows.map(r=>`• ${r.p} – ${r.bars} יח׳ באורך 6 מ׳`).join('\n')+(p.hw.length?'\n\nנוסף:\n'+p.hw.map(h=>'• '+h).join('\n'):'')+`\n\nקוד תוכנית: ${p.id}`};
  $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(list()),'_blank');
  $('cpl').onclick=()=>navigator.clipboard?.writeText(list()).then(()=>$('cpl').textContent='הועתק ✓',()=>{});
  $('opt').onclick=()=>{const G={};for(const r of p.parts){(G[r[1]]??=[]).push({length:r[2],qty:r[3],note:r[0]})}localStorage.setItem('mp_optimizer_input_v1',JSON.stringify({planId:p.id,planName:p.name,groups:Object.entries(G).map(([profile,parts])=>({profile,parts}))}));location.href='optimizer.html'};
@@ -514,7 +515,7 @@ function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=
   w.document.write(`<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>הצעת מחיר – ${p.name}</title><style>body{font-family:Heebo,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#15181C}h1{font-size:28px;margin:8px 0}table{width:100%;border-collapse:collapse;margin:12px 0}td{border-bottom:1px solid #ddd;padding:8px}.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #E8590C;padding-bottom:10px}.tot td{font-size:20px;font-weight:900;color:#B93E07}svg{width:100%;max-height:260px}.m{color:#5B6670;font-size:13px}</style></head><body>
   <div class="hd"><div><b style="font-size:20px">${S2.biz||'שם העסק'}</b><br>${S2.phone||''}</div>${S2.logo?`<img src="${S2.logo}" style="max-height:80px">`:''}</div>
   <h1>הצעת מחיר</h1><p>לכבוד: <b>${$('qc').value||'________'}</b> · תאריך: ${d}</p>
-  <p><b>${p.name}</b> – ${sz(p)} (מ״מ) · חומר: ${MAT[q.m].n} · גימור: ${MAT[q.m].fn}</p>${iso}
+  <p><b>${p.name}</b> – ${sz(p)} · חומר: ${MAT[q.m].n} · גימור: ${MAT[q.m].fn}</p>${iso}
   <table><tr><td>חומר ומתכלים</td><td>₪${fmt(q.mat+q.cons)}</td></tr><tr><td>${MAT[q.m].fn}</td><td>₪${fmt(q.fin)}</td></tr><tr><td>ייצור והתקנה</td><td>₪${fmt(q.lab+q.pr)}</td></tr><tr><td>סה״כ לפני מע״מ</td><td>₪${fmt(q.net)}</td></tr><tr><td>מע״מ</td><td>₪${fmt(q.vat)}</td></tr><tr class="tot"><td>סה״כ לתשלום</td><td>₪${fmt(q.tot)}</td></tr></table>
   <p class="m">ההצעה בתוקף ל-14 יום. המחיר כולל ייצור לפי המידות שלעיל; שינויים במידות או בחומר יתומחרו מחדש. תכנון הנדסי / היתרים – אינם כלולים אלא אם צוין.</p>
   <p style="margin-top:40px">חתימת הלקוח: ______________</p><script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);w.document.close()};
@@ -525,7 +526,7 @@ const range=a=>a.length===3&&typeof a[0]==='number'&&a[2]<a[0]?(()=>{const r=[];
 const PLANS=[];
 for(const[k,g]of Object.entries(GEN))for(const W of range(g.W))for(const H of range(g.H))if(!g.ok||g.ok(W,H))for(const s of(g.S||['']))PLANS.push({id:[k,W,H,s].filter(x=>x!=='').join('-'),k,W,H,s});
 function kgm(p){const v=p.split('×').map(Number);const a=v.length===3?2*(v[0]+v[1])*v[2]-4*v[2]*v[2]:v[0]*v[1];return a*7.85/1000}
-const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} · ${g.hl} ${fmt(x.H)}${x.s?' · '+SN[x.s]:''}`};
+const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} ${unitOf(g.W)} · ${g.hl} ${fmt(x.H)} ${unitOf(g.H)}${x.s?' · '+SN[x.s]:''}`};
 function build(x){const g=GEN[x.k];M=[];HW=[];const r=g.f(x.W,x.H,x.s);return{...x,name:r.name||g.name,notes:r.notes.filter(Boolean),hw:[...r.hw,...hwList()],parts:parts(),model:M}}
 const plan=id=>{if(id.startsWith('c:'))return customPlan(id);const x=PLANS.find(p=>p.id===id);return x?build(x):null};
 const st={k:'SG',w:'',h:'',s:'',shown:24,sel:null};
@@ -538,8 +539,8 @@ $('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.da
 function fillSel(){
  const ps=PLANS.filter(p=>p.k===st.k),g=GEN[st.k];
  const opt=(arr,v,f)=>`<option value="">הכול</option>`+[...new Set(arr)].map(x=>`<option value="${x}" ${x==v?'selected':''}>${f(x)}</option>`).join('');
- $('lw').textContent=g.wl;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w,x=>g.W.length&&g.wl.includes('מספר')?x:fmt(x)+' מ״מ');
- $('lh').textContent=g.hl;$('fh').innerHTML=opt(ps.map(p=>p.H),st.h,x=>fmt(x)+' מ״מ');
+ $('lw').textContent=`${g.wl} (${unitOf(g.W)})`;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w,x=>fmt(x)+' '+unitOf(g.W));
+ $('lh').textContent=`${g.hl} (${unitOf(g.H)})`;$('fh').innerHTML=opt(ps.map(p=>p.H),st.h,x=>fmt(x)+' '+unitOf(g.H));
  $('sw').style.display=g.S?'':'none';if(g.S)$('fs').innerHTML=opt(g.S,st.s,x=>SN[x]);
  [...$('types').children].forEach(b=>b.classList.toggle('on',b.dataset.k===st.k));
 }
@@ -562,13 +563,13 @@ function show(id){
  const V=k=>`<figure class="vw"><figcaption>${VIEWS[k].t}</figcaption>${view(k,k==='front'?{balloons:keys}:{})}</figure>`;
  const today=new Date().toLocaleDateString('he-IL');
  $('detail').innerHTML=`<div class="card" style="margin-top:8px"><button class="close no-print" id="x" aria-label="סגירה">✕</button>
- <h2>${p.name}${p.custom?' <span class="soon2">מידה מותאמת</span>':''}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
+ <h2>${p.name}${p.custom?' <span class="soon2">מידה מותאמת</span>':''}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)}</p>
  <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span><span>חלקים: <b>${p.parts.reduce((a,r)=>a+r[3],0)}</b></span></div>
  ${colorBar()}<div class="views">${V('front')}${V('side')}${V('top')}${V('iso')}</div>
  <table class="tb"><tr><td>שם: <b>${p.name}</b></td><td>קוד: <b dir="ltr">${id}</b></td><td>יחידות: מ״מ</td></tr><tr><td>קנ״מ: ללא (NTS)</td><td>תאריך הפקה: ${today}</td><td>גיליון 1/1 · גרסה 2.0</td></tr></table>
- <h2>רשימת חיתוך</h2><p class="muted" style="font-size:14px">המספרים תואמים לסימון בשרטוט החזית.</p><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th><th>חיתוך</th></tr>
+ <h2>רשימת חיתוך</h2><p class="muted" style="font-size:14px">המספרים תואמים לסימון בשרטוט החזית.</p><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל <span class="thunit">חתך במ״מ</span></th><th>אורך <span class="thunit">מ״מ</span></th><th>כמות</th><th>חיתוך</th></tr>
  ${p.parts.map(([n,pr,l,q,a],i)=>`<tr><td><b class="bn">${i+1}</b></td><td>${n}</td><td>${ltr(pr)}</td><td>${fmt(l)}</td><td>${q}</td><td>${a?`<b>${a}°</b>`:'90°'}</td></tr>`).join('')}</table></div>
- <h2>קנייה – פרופילים של 6 מ׳</h2><div class="tbl"><table><tr><th>פרופיל</th><th>יחידות 6 מ׳</th><th>מטר נטו</th><th>פחת</th></tr>
+ <h2>קנייה – פרופילים של 6 מ׳</h2><div class="tbl"><table><tr><th>פרופיל <span class="thunit">חתך במ״מ</span></th><th>מוטות <span class="thunit">6 מ׳</span></th><th>אורך נטו <span class="thunit">מ׳</span></th><th>פחת</th></tr>
  ${rows.map(r=>`<tr><td>${ltr(r.p)}</td><td><b>${r.bars}</b></td><td>${r.m.toFixed(1)}</td><td>${Math.round(r.waste*100)}%</td></tr>`).join('')}</table></div>
  <p class="muted" style="font-size:14px;margin-top:6px">חיתוך אופטימלי עם ${KERF} מ״מ עובי מסור לכל חיתוך.</p>
  ${cutHTML(rows)}

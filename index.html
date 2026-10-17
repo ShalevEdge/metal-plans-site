@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>תוכניות עבודה למסגרים | שרטוטים, מידות ורשימות חיתוך</title>
-<meta name="description" content="ספריית תוכניות עבודה למסגרים: שערים, מעקות, סורגים, פרגולות ומדרגות. מידות במ״מ, רשימת חיתוך וכמות פרופילים – חותכים נכון מהפעם הראשונה.">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<title>SHALVERO FORGE | מערכת העבודה החכמה למסגריות</title>
+<meta name="description" content="SHALVERO FORGE — מערכת העבודה החכמה למסגריות: תוכניות עבודה, שרטוטים, רשימות חיתוך, אופטימיזציית חומר, תמחור, מלאי ופרויקטים במקום אחד.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -64,15 +64,15 @@ footer a{color:var(--steel)}
 @media(max-width:700px){.sticky{display:flex}}
 .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--tx);text-decoration:none;font-weight:700;font-size:15px}.chip:hover{border-color:var(--or)}
 </style>
-</head>
+<link rel="stylesheet" href="premium.css"></head>
 <body>
 <section class="hero"><div class="wrap">
- <p class="tag">למסגרים ולבעלי מסגריות</p>
- <h1>התוכנית <span class="hl">כבר מוכנה</span></h1>
- <p class="sub">אלפי תוכניות עבודה. מידות במ״מ. רשימת חיתוך מחושבת.</p>
- <p class="muted" style="font-size:19px;max-width:640px">בוחרים עבודה, קוראים מידות וחותכים. כל תוכנית אומרת לך <b style="color:var(--tx)">איזה חלק לחתוך, באיזה אורך, וכמה פרופילים של 6 מטר לקנות</b> – והצעת המחיר מוכנה בדקות.</p>
+ <div class="forge-lockup" aria-label="SHALVERO FORGE"><span>SHALVERO</span><b>FORGE</b></div><p class="tag">מערכת העבודה החכמה למסגריות</p>
+ <h1>מהתוכנית <span class="hl">עד ההתקנה</span></h1>
+ <p class="sub">מתכננים. מתמחרים. חותכים. מבצעים.</p>
+ <p class="muted" style="font-size:19px;max-width:640px">SHALVERO FORGE מרכזת את העבודה של המסגריה במקום אחד. בוחרים עבודה, קוראים מידות וחותכים. כל תוכנית אומרת לך <b style="color:var(--tx)">איזה חלק לחתוך, באיזה אורך, וכמה פרופילים של 6 מטר לקנות</b> – והצעת המחיר מוכנה בדקות.</p>
  <p style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="hub.html">מרכז המסגריה ←</a><a class="btn ghost" href="new-job.html">+ עבודה חדשה</a><a class="btn" href="plans.html">לספריית התוכניות ←</a><a class="btn ghost" href="#calc">נסו את המחשבון</a><a class="btn ghost" href="order.html">הזמנת עבודה (ללקוחות)</a><a class="btn ghost" href="projects.html">הפרויקטים שלי</a></p>
- <div class="hero-img sk" id="heroSketch"></div>
+ <div class="unit-guide" aria-label="מקרא יחידות"><b>יחידות במערכת</b><span><i>מ״מ</i> מידות וחיתוכים</span><span><i>מ׳</i> אורך מוטות</span><span><i>ק״ג</i> משקל</span><span><i>מ״ר</i> שטח</span><span><i>₪</i> מחיר</span><span><i>יח׳</i> כמות</span></div><div class="hero-img sk" id="heroSketch"></div>
 </div></section>
 
 <section><div class="wrap">
@@ -175,7 +175,7 @@ footer a{color:var(--steel)}
 </div></section>
 
 <footer><div class="wrap">
- <p>© 2026 · תוכניות עבודה למסגרים</p>
+ <p>© 2026 · <b>SHALVERO FORGE</b> · מערכת העבודה החכמה למסגריות</p>
  <p>התוכניות מיועדות לעבודות מסגרות נפוצות ואינן מחליפות תכנון הנדסי.</p>
 </div></footer>
 
@@ -187,8 +187,9 @@ const svg=(b,vb='0 -6 320 222')=>`<svg viewBox="${vb}" fill="none" stroke-lineca
 const ltr=t=>`<span dir="ltr" style="unicode-bidi:isolate">${t}</span>`;
 const ln=(x1,y1,x2,y2,c=W,w=2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}"/>`;
 const rc=(x,y,w,h,c=W,s=2.5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" stroke="${c}" stroke-width="${s}"/>`;
+const du=t=>/(מ״מ|מ׳|יח׳)/.test(t)?t:t+' מ״מ';
 const dim=(x1,y,x2,t)=>ln(x1,y,x2,y,S,1)+ln(x1,y-5,x1,y+5,S,1)+ln(x2,y-5,x2,y+5,S,1)+
- `<text x="${(x1+x2)/2}" y="${y-6}" fill="#B93E07" font-size="12" font-family="Heebo" text-anchor="middle">${t}</text>`;
+ `<text x="${(x1+x2)/2}" y="${y-6}" fill="#B93E07" font-size="12" font-family="Heebo" text-anchor="middle">${du(t)}</text>`;
 const vdim=(x,y1,y2,t)=>ln(x,y1,x,y2,S,1)+ln(x-5,y1,x+5,y1,S,1)+ln(x-5,y2,x+5,y2,S,1)+
  `<text x="${x-6}" y="${(y1+y2)/2}" fill="#B93E07" font-size="12" font-family="Heebo" text-anchor="middle" transform="rotate(-90 ${x-6} ${(y1+y2)/2})">${t}</text>`;
 const bars=(x,y,w,h,n)=>{let s='';for(let i=1;i<n;i++)s+=ln(x+w*i/n,y,x+w*i/n,y+h,W,1.5);return s};
@@ -219,7 +220,7 @@ function calc(){
  const frameStock=Math.ceil(2/Math.max(per(L),1)*(L>6000?2:1))+Math.ceil(2/Math.max(per(inH),1));
  const barStock=Math.ceil(nb/per(inH));
  const tot=frameStock+barStock;
- out.innerHTML=`<div class="tbl"><table><tr><th>חלק</th><th>אורך (מ״מ)</th><th>כמות</th><th>פרופיל</th></tr>`+
+ out.innerHTML=`<div class="tbl"><table><tr><th>חלק</th><th>אורך <span class="thunit">מ״מ</span></th><th>כמות <span class="thunit">יח׳</span></th><th>פרופיל <span class="thunit">חתך במ״מ</span></th></tr>`+
   parts.map(r=>`<tr><td>${r[0]}</td><td>${r[1].toLocaleString()}</td><td>${r[2]}</td><td>${ltr(r[3])}</td></tr>`).join('')+
   `</table></div><p style="margin-top:14px">אורך כנף: <b>${L.toLocaleString()} מ״מ</b> (פתח + 300 חפיפה)</p>`+
   `<p>פרופילים של 6 מ׳ לקנייה: <b>${frameStock}</b> מסגרת + <b>${barStock}</b> מילוי = <b style="color:${O}">${tot}</b></p>`+

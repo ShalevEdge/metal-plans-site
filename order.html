@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>הזמנת עבודת מסגרות – הצעת מחיר מיידית | שערים, מעקות, פרגולות</title>
+<title>הזמנת עבודת מסגרות – הצעת מחיר מיידית | שערים, מעקות, פרגולות | SHALVERO FORGE</title>
 <meta name="description" content="בחרו שער, מעקה, פרגולה או עבודת מסגרות אחרת, הזינו מידות וקבלו הדמיה והערכת מחיר מיידית. שליחה בוואטסאפ.">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F3F4F6;--line:#D6DAE0;--or:#E8590C;--ort:#B93E07;--steel:#5B6670;--tx:#15181C}
@@ -22,16 +22,16 @@ label{display:flex;flex-direction:column;font-weight:700;font-size:14px;gap:4px}
 .btn{background:var(--or);color:#fff;font-weight:900;font-size:19px;padding:14px 28px;border:0;border-radius:10px;cursor:pointer;font-family:inherit}.btn:disabled{opacity:.5}
 @media(max-width:640px){.pv2{grid-template-columns:1fr}}
 </style>
-</head>
+<link rel="stylesheet" href="premium.css"></head>
 <body>
-<header><div class="w"><b>עבודות מסגרות לפי מידה</b></div></header>
+<header><div class="w order-head"><a href="index.html" class="brand forge-nav-brand"><span class="forge-mark">SF</span><span class="forge-brand-text"><strong>SHALVERO</strong><em>FORGE</em></span></a><span class="m">הזמנת עבודת מסגרות לפי מידה</span></div></header>
 <main class="w">
 <h1>הזמינו עבודה <span class="hl">לפי מידה</span></h1>
-<p class="m" style="font-size:17px">בוחרים מה צריך, מזינים מידות – ורואים הדמיה והערכת מחיר מיידית. שולחים בוואטסאפ ומקבלים הצעה סופית.</p>
+<p class="m" style="font-size:17px">בוחרים מה צריך, מזינים מידות – ורואים הדמיה והערכת מחיר מיידית. שולחים בוואטסאפ ומקבלים הצעה סופית.</p><div class="unit-guide compact"><b>יחידות</b><span><i>מ״מ</i> מידות</span><span><i>יח׳</i> כמות</span><span><i>₪</i> מחיר</span></div>
 <form id="of">
 <div class="card"><h2>1. מה צריך?</h2><div class="g">
- <label>סוג עבודה<select id="ot"></select></label><label><span id="lw">רוחב</span><input id="ow" type="number" inputmode="numeric"></label>
- <label><span id="lh">גובה</span><input id="oh" type="number" inputmode="numeric"></label><label id="osw">סגנון<select id="os"></select></label></div></div>
+ <label>סוג עבודה<select id="ot"></select></label><label><span class="field-label"><span id="lw">רוחב</span> <span id="lwu" class="unit">מ״מ</span></span><input id="ow" type="number" inputmode="numeric"></label>
+ <label><span class="field-label"><span id="lh">גובה</span> <span id="lhu" class="unit">מ״מ</span></span><input id="oh" type="number" inputmode="numeric"></label><label id="osw">סגנון<select id="os"></select></label></div></div>
 <div class="card"><h2>2. חומר וצבע</h2><div class="g"><label>חומר<select id="om"></select></label><label id="ocw">צבע<div id="oc"></div></label></div></div>
 <div class="card"><h2>3. איך זה ייראה</h2><div id="pv"></div><p id="pr"></p><p class="m">ההערכה כוללת חומר, צבע/גלוון, ייצור, התקנה בסיסית ומע״מ. המחיר הסופי לאחר מדידה במקום.</p></div>
 <div class="card"><h2>4. פרטים</h2><div class="g"><label>שם<input id="on" autocomplete="name"></label><label>טלפון<input id="op" type="tel" inputmode="tel" autocomplete="tel"></label>
@@ -109,8 +109,8 @@ function view(vk,o={}){
   if(vk==='front'||vk==='side'){const gy=0;if(y1>=gy-1)s+=`<line x1="${x0-S*.08}" y1="${gy}" x2="${x1+S*.08}" y2="${gy}" stroke="${ST}" stroke-width="1.2" stroke-dasharray="8 5" vector-effect="non-scaling-stroke"/>`}
   if(!iso){const L=(a,b,c,d,w=1)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${ST}" stroke-width="${w}" vector-effect="non-scaling-stroke"/>`,t=fs*.3;
    const yb=y1+fs*1.6,xl=x0-fs*1.6,T=(x,y,txt,r)=>`<text x="${x}" y="${y}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle"${r?` transform="rotate(-90 ${x} ${y})"`:''}>${txt}</text>`;
-   s+=L(x0,yb,x1,yb)+L(x0,yb-t,x0,yb+t)+L(x1,yb-t,x1,yb+t)+L(x0,y1+t,x0,yb-t,.6)+L(x1,y1+t,x1,yb-t,.6)+T((x0+x1)/2,yb-fs*.3,fmt(x1-x0));
-   s+=L(xl,y0,xl,y1)+L(xl-t,y0,xl+t,y0)+L(xl-t,y1,xl+t,y1)+T(xl-fs*.35,(y0+y1)/2,fmt(y1-y0),1)}
+   s+=L(x0,yb,x1,yb)+L(x0,yb-t,x0,yb+t)+L(x1,yb-t,x1,yb+t)+L(x0,y1+t,x0,yb-t,.6)+L(x1,y1+t,x1,yb-t,.6)+T((x0+x1)/2,yb-fs*.3,fmt(x1-x0)+' מ״מ');
+   s+=L(xl,y0,xl,y1)+L(xl-t,y0,xl+t,y0)+L(xl-t,y1,xl+t,y1)+T(xl-fs*.35,(y0+y1)/2,fmt(y1-y0)+' מ״מ',1)}
   if(vk==='front'&&o.balloons){const seen=new Set(),bl=[];
    o.balloons.forEach((pt,i)=>{const e=M.find(e=>e.n&&e.n+'|'+e.p+'|'+Math.round(e.len)===pt);if(!e)return;
     const fr=faces(e).find(f=>f.N[2]<-.5)||faces(e)[0],c=v.P(fr.fc);bl.push([c,i+1])});
@@ -355,13 +355,13 @@ function cutSVG(row){
  groups.forEach((g,r)=>{const y=r*(H+G);let x=0;
   s+=`<rect x="0" y="${y}" width="${W}" height="${H}" fill="url(#cw)" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
   for(const pc of g.b.pc){s+=`<rect x="${x}" y="${y}" width="${pc.l}" height="${H}" fill="${pc.j?'#FCDCC4':'#DCE1E6'}" stroke="${INK}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
-   if(pc.l>1100)s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.5}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">#${pc.i+1} · ${fmt(pc.l)}</text>`;
+   if(pc.l>1100)s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.5}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">#${pc.i+1} · ${fmt(pc.l)} מ״מ</text>`;
    else s+=`<text x="${x+pc.l/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" font-weight="700" text-anchor="middle" fill="${INK}">${pc.i+1}</text>`;
    x+=pc.l+KERF}
-  if(g.b.rem>200)s+=`<text x="${x+g.b.rem/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" text-anchor="middle" fill="${ST}">שארית ${fmt(g.b.rem)}</text>`;
+  if(g.b.rem>200)s+=`<text x="${x+g.b.rem/2}" y="${y+H*.68}" font-size="${H*.42}" font-family="Heebo" text-anchor="middle" fill="${ST}">שארית ${fmt(g.b.rem)} מ״מ</text>`;
   s+=`<text x="${W+120}" y="${y+H*.68}" font-size="${H*.55}" font-family="Heebo" font-weight="900" fill="${OT}">×${g.n}</text>`});
  return`<svg viewBox="-20 -20 ${W+900} ${hh+40}" direction="ltr" preserveAspectRatio="xMinYMin meet" style="width:100%;height:auto"><defs><pattern id="cw" width="160" height="160" patternUnits="userSpaceOnUse"><rect width="160" height="160" fill="#fff"/><path d="M0 160L160 0" stroke="#C9CED4" stroke-width="18"/></pattern></defs>${s}</svg>`}
-function cutHTML(rows){return`<h2>סימון חיתוכים על המוט</h2><p class="muted" style="font-size:14px">כל פס = מוט 6 מ׳. המספר תואם לרשימת החיתוך; ×N = כמה מוטות לחתוך בדיוק כך. חותכים משמאל לימין לפי הסדר, עובי מסור ${KERF} מ״מ.</p>`+rows.map(r=>`<div class="cutp"><b dir="ltr">${r.p}</b> – ${r.bars} מוטות${cutSVG(r)}</div>`).join('')}
+function cutHTML(rows){return`<h2>סימון חיתוכים על המוט</h2><p class="muted" style="font-size:14px">כל פס = מוט 6 מ׳. המספר תואם לרשימת החיתוך; אורכי החיתוך מסומנים במ״מ; ×N = כמה מוטות לחתוך בדיוק כך. חותכים משמאל לימין לפי הסדר, עובי מסור ${KERF} מ״מ.</p>`+rows.map(r=>`<div class="cutp"><b dir="ltr">${r.p}</b> – ${r.bars} מוטות${cutSVG(r)}</div>`).join('')}
 function dxf(p){
  M=p.model;const L=[];const add=(...a)=>L.push(...a);
  add('0','SECTION','2','HEADER','9','$INSUNITS','70','4','0','ENDSEC','0','SECTION','2','ENTITIES');
@@ -414,6 +414,7 @@ function getSet(){let s={};try{s=JSON.parse(localStorage.getItem(SETK)||'{}')}ca
 function putSet(s){try{localStorage.setItem(SETK,JSON.stringify(s))}catch(e){}}
 const kgOf=(rows,m)=>rows.reduce((a,r)=>a+r.kg,0)*MAT[m].rho/7.85;
 const nums=a=>range(a).filter(v=>typeof v==='number');
+const unitOf=a=>{const v=nums(a);return v.length&&Math.max(...v)>50?'מ״מ':'יח׳'};
 function customPlan(id){const[,k,w,h,s]=id.split(':');const g=GEN[k];if(!g)return null;
  const W=Math.round(+w),H=Math.round(+h),wr=nums(g.W),hr=nums(g.H);
  const inb=(v,r)=>{const lo=Math.min(...r),hi=Math.max(...r);return r.length<=1?v===r[0]:v>=lo*(lo<50?1:.8)&&v<=hi*(hi<50?1:1.2)};
@@ -425,14 +426,14 @@ function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
  return`<div class="tools no-print">
  <h2>חומר</h2><div class="trow"><label>סוג חומר<select id="mt">${Object.entries(MAT).map(([k,v])=>`<option value="${k}" ${k===m?'selected':''}>${v.n}</option>`).join('')}</select></label>
  <p id="mw" class="muted"></p></div>
- <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl}<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl}<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
+ <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl} (${unitOf(g.W)})<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl} (${unitOf(g.H)})<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
  <button class="btn" id="cgo">צור תוכנית</button></div><p class="muted" id="cerr" style="font-size:14px"></p>
  <h2>רשימת קנייה לספק</h2><div class="trow"><button class="btn" id="wa">שליחה בוואטסאפ</button><button class="btn ghost" id="cpl">העתקת הרשימה</button></div>
  <h2>הצעת מחיר ללקוח</h2><div class="qgrid">
   <label>שם העסק<input id="qb" value="${S.biz}"></label><label>טלפון העסק<input id="qp" value="${S.phone}" inputmode="tel"></label>
   <label>לוגו (תמונה)<input id="ql" type="file" accept="image/*"></label><label>שם הלקוח<input id="qc"></label>
   <label>מחיר חומר (₪/ק״ג)<input id="q1" type="number" step="0.5"></label><label>גימור – <span id="qfn"></span> (₪/ק״ג)<input id="q2" type="number" step="0.5"></label>
-  <label>שעות עבודה<input id="q3" type="number" step="0.5"></label><label>תעריף לשעה (₪)<input id="q4" type="number" value="${S.rate}"></label>
+  <label>שעות עבודה (ש׳)<input id="q3" type="number" step="0.5"></label><label>תעריף עבודה (₪/שעה)<input id="q4" type="number" value="${S.rate}"></label>
   <label>רווח (%)<input id="q5" type="number" value="${S.marg}"></label><label>מע״מ (%)<input id="q6" type="number" value="${S.vat}"></label>
  </div><div id="qsum" class="qsum"></div><p><button class="btn" id="qpdf">הפקת הצעת מחיר (PDF)</button></p>
  <p class="muted" style="font-size:13px">המחירים ברירת מחדל הם הערכה – עדכנו לפי הספק שלכם. ההגדרות נשמרות בדפדפן.</p></div>`}
@@ -458,7 +459,7 @@ function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=
   w.document.write(`<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>הצעת מחיר – ${p.name}</title><style>body{font-family:Heebo,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#15181C}h1{font-size:28px;margin:8px 0}table{width:100%;border-collapse:collapse;margin:12px 0}td{border-bottom:1px solid #ddd;padding:8px}.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #E8590C;padding-bottom:10px}.tot td{font-size:20px;font-weight:900;color:#B93E07}svg{width:100%;max-height:260px}.m{color:#5B6670;font-size:13px}</style></head><body>
   <div class="hd"><div><b style="font-size:20px">${S2.biz||'שם העסק'}</b><br>${S2.phone||''}</div>${S2.logo?`<img src="${S2.logo}" style="max-height:80px">`:''}</div>
   <h1>הצעת מחיר</h1><p>לכבוד: <b>${$('qc').value||'________'}</b> · תאריך: ${d}</p>
-  <p><b>${p.name}</b> – ${sz(p)} (מ״מ) · חומר: ${MAT[q.m].n} · גימור: ${MAT[q.m].fn}</p>${iso}
+  <p><b>${p.name}</b> – ${sz(p)} · חומר: ${MAT[q.m].n} · גימור: ${MAT[q.m].fn}</p>${iso}
   <table><tr><td>חומר ומתכלים</td><td>₪${fmt(q.mat+q.cons)}</td></tr><tr><td>${MAT[q.m].fn}</td><td>₪${fmt(q.fin)}</td></tr><tr><td>ייצור והתקנה</td><td>₪${fmt(q.lab+q.pr)}</td></tr><tr><td>סה״כ לפני מע״מ</td><td>₪${fmt(q.net)}</td></tr><tr><td>מע״מ</td><td>₪${fmt(q.vat)}</td></tr><tr class="tot"><td>סה״כ לתשלום</td><td>₪${fmt(q.tot)}</td></tr></table>
   <p class="m">ההצעה בתוקף ל-14 יום. המחיר כולל ייצור לפי המידות שלעיל; שינויים במידות או בחומר יתומחרו מחדש. תכנון הנדסי / היתרים – אינם כלולים אלא אם צוין.</p>
   <p style="margin-top:40px">חתימת הלקוח: ______________</p><script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);w.document.close()};
@@ -469,7 +470,7 @@ const range=a=>a.length===3&&typeof a[0]==='number'&&a[2]<a[0]?(()=>{const r=[];
 const PLANS=[];
 for(const[k,g]of Object.entries(GEN))for(const W of range(g.W))for(const H of range(g.H))if(!g.ok||g.ok(W,H))for(const s of(g.S||['']))PLANS.push({id:[k,W,H,s].filter(x=>x!=='').join('-'),k,W,H,s});
 function kgm(p){const v=p.split('×').map(Number);const a=v.length===3?2*(v[0]+v[1])*v[2]-4*v[2]*v[2]:v[0]*v[1];return a*7.85/1000}
-const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} · ${g.hl} ${fmt(x.H)}${x.s?' · '+SN[x.s]:''}`};
+const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} ${unitOf(g.W)} · ${g.hl} ${fmt(x.H)} ${unitOf(g.H)}${x.s?' · '+SN[x.s]:''}`};
 function build(x){const g=GEN[x.k];M=[];HW=[];const r=g.f(x.W,x.H,x.s);return{...x,name:r.name||g.name,notes:r.notes.filter(Boolean),hw:[...r.hw,...hwList()],parts:parts(),model:M}}
 const plan=id=>{if(id.startsWith('c:'))return customPlan(id);const x=PLANS.find(p=>p.id===id);return x?build(x):null};
 
@@ -482,7 +483,7 @@ $('ot').innerHTML=CATS.map(([c,ks])=>{const k2=ks.filter(k=>POP.includes(k));ret
 $('om').innerHTML=Object.entries(MAT).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
 $('oc').innerHTML=Object.entries(PN).map(([k,n])=>`<button type="button" data-c="${k}" title="${n}" style="background:${PAINTS[k][0]}"></button>`).join('');
 function setType(k){const g=GEN[k],ws=nums(g.W),hs=nums(g.H);st.k=k;st.W=ws[Math.floor(ws.length/2)];st.H=hs[Math.floor(hs.length/2)];st.s=g.S?g.S[0]:'';
- $('lw').textContent=g.wl+(Math.max(...ws)>50?' (מ״מ)':'');$('lh').textContent=g.hl+(Math.max(...hs)>50?' (מ״מ)':'');$('ow').value=st.W;$('oh').value=st.H;
+ $('lw').textContent=g.wl;$('lwu').textContent=unitOf(g.W);$('lh').textContent=g.hl;$('lhu').textContent=unitOf(g.H);$('ow').value=st.W;$('oh').value=st.H;
  $('osw').style.display=g.S?'':'none';if(g.S)$('os').innerHTML=g.S.map(s=>`<option value="${s}">${SN[s]}</option>`).join('');upd()}
 function estimate(p){const m=MAT[st.m];M=p.model;const {rows}=pack(p.parts),kg=kgOf(rows,st.m),pc=p.parts.reduce((a,r)=>a+r[3],0);
  const hrs=Math.max(2,2+pc*.12+kg*.03)+4,base=(kg*(m.ppk+m.fin)*1.08+hrs*180)*1.25*1.18,r=v=>Math.round(v/100)*100;return{lo:r(base*.85),hi:r(base*1.15),kg}}
@@ -498,7 +499,7 @@ $('om').onchange=e=>{st.m=e.target.value;upd()};$('oc').onclick=e=>{const b=e.ta
 $('oph').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);$('phv').innerHTML=`<img src="${u}" alt="תמונת הפתח"><p class="m">אחרי השליחה – צרפו את התמונה בצ׳אט הוואטסאפ שנפתח.</p>`};
 $('of').onsubmit=e=>{e.preventDefault();const msg=$('omsg'),name=$('on').value.trim(),ph=$('op').value.trim();
  if(!name||!/^0\d[\d-]{7,10}$/.test(ph.replace(/\s/g,''))){msg.textContent='נא למלא שם וטלפון תקין';return}
- const p=st.p,g=GEN[st.k],txt=`בקשה להצעת מחיר\nעבודה: ${p.name}\n${sz(p)} (מ״מ)\nחומר: ${MAT[st.m].n}${st.m==='fe'?' · צבע: '+PN[st.c]:''}\nהערכה באתר: ₪${st.e.lo}–₪${st.e.hi}\nשם: ${name}\nטלפון: ${ph}\nיישוב: ${$('ocity').value}\nהערות: ${$('ont').value}\nקוד: ${p.id}${$('oph').files[0]?'\n(אצרף תמונה של הפתח)':''}`;
+ const p=st.p,g=GEN[st.k],txt=`בקשה להצעת מחיר\nעבודה: ${p.name}\n${sz(p)}\nחומר: ${MAT[st.m].n}${st.m==='fe'?' · צבע: '+PN[st.c]:''}\nהערכה באתר: ₪${st.e.lo}–₪${st.e.hi}\nשם: ${name}\nטלפון: ${ph}\nיישוב: ${$('ocity').value}\nהערות: ${$('ont').value}\nקוד: ${p.id}${$('oph').files[0]?'\n(אצרף תמונה של הפתח)':''}`;
  if(!WA_NUMBER){msg.textContent='שליחת הבקשות תיפתח בקרוב';return}
  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');msg.textContent='נפתח וואטסאפ – לחצו "שלח" כדי להעביר את הבקשה ✓'};
 setType('SG');
