@@ -184,8 +184,8 @@ function doPrint(){const s=readPanel(),card=document.querySelector('#detail .car
 /* סימון אזורים בגיליון לפי כותרות (להסתרה בהדפסה) */
 function tagSections(card){const map=[['רשימת חיתוך','cut'],['קנייה','buy'],['סימון חיתוכים','bars'],['פרזול','hw'],['הערות','hw']];let key='draw';
  for(const el of[...card.children]){if(el.matches('.tools,.ws,.ws-pr,.no-print'))continue;
-  if(el.tagName==='H2'){const t=el.textContent;const m=map.find(([a])=>t.includes(a));key=m?m[1]:'other'}
-  if(el.tagName==='H2'&&key==='draw')continue;el.dataset.sec=el.dataset.sec||key}}
+  if(el.tagName==='H2'){const m=map.find(([a])=>el.textContent.includes(a));if(m)key=m[1]}
+  el.dataset.sec=el.dataset.sec||key}}
 
 /* ---------- סגנון ---------- */
 const css=`
@@ -215,6 +215,10 @@ const css=`
 @media print{
  *{color:#000!important;text-shadow:none!important;box-shadow:none!important}
  html,body{overflow:visible!important;height:auto!important;background:#fff!important}
+ main,main.wrap{max-width:none!important;margin:0!important;padding:0!important;width:auto!important}
+ #detail .card,#detail .card *,#detail .card.weld-plan-v2{box-shadow:none!important;filter:none!important}
+ #detail .card{overflow:visible!important}
+ body::before,body::after,main::before,main::after,#detail::before,#detail::after,#detail .card::before,#detail .card::after{display:none!important;content:none!important}
  body:has(#detail .card) main>*:not(#detail),body:has(#detail .card) #nav,body:has(#detail .card) .more,body.ws-printing main>*:not(#detail),body.ws-printing #nav,body.ws-printing header,body.ws-printing footer,body.ws-printing .more,body.ws-printing #more,body.ws-printing .type-picker-btn{display:none!important}
  #detail,#detail:not(:empty){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;margin:0!important;background:#fff!important;max-height:none!important;height:auto!important;transform:none!important}
  #detail .card{max-width:none!important;width:auto!important;margin:0!important;padding:0!important;transform:none!important;border:0!important;border-radius:0!important;filter:none!important}
@@ -226,7 +230,7 @@ const css=`
  .ws{border:2px solid #000!important;break-before:page;padding:6mm}.ws-s{break-inside:auto}.ws-s>summary{border-bottom:1px solid #999;font-size:16pt}
  .ws-s>summary::after{display:none}.ws-b{font-size:12pt}.ws-chk li,.ws-steps>li,.ws-leg>div{break-inside:avoid}
  .ws-tip{border:1px solid #000!important;border-right:4px solid #000!important}
- .pr-hide-draw [data-sec=draw],.pr-hide-guide [data-sec=guide],.pr-hide-cut [data-sec=cut],.pr-hide-buy [data-sec=buy],.pr-hide-bars [data-sec=bars],.pr-hide-hw [data-sec=hw],[data-sec=other]{display:none!important}
+ .pr-hide-draw [data-sec=draw],.pr-hide-guide [data-sec=guide],.pr-hide-cut [data-sec=cut],.pr-hide-buy [data-sec=buy],.pr-hide-bars [data-sec=bars],.pr-hide-hw [data-sec=hw]{display:none!important}
  .pr-big .views,.pr-scale .views{display:block!important}
  .pr-big .vw,.pr-scale .vw{break-after:page;page-break-after:always;border:0!important;padding:0!important;text-align:center}
  .pr-big .vw figcaption,.pr-scale .vw figcaption{font-size:14pt;border:0!important;text-align:right}
