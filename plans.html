@@ -495,7 +495,7 @@ function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
   <label>רווח (%)<input id="q5" type="number" value="${S.marg}"></label><label>מע״מ (%)<input id="q6" type="number" value="${S.vat}"></label>
  </div><div id="qsum" class="qsum"></div><p><button class="btn" id="qpdf">הפקת הצעת מחיר (PDF)</button></p>
  <p class="muted" style="font-size:13px">המחירים ברירת מחדל הם הערכה – עדכנו לפי הספק שלכם. ההגדרות נשמרות בדפדפן.</p></div>`}
-function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=GEN[p.k];
+function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=GEN[p.k],projectUid=new URLSearchParams(location.search).get('project'),project=projectUid?MP.projects().find(x=>x.uid===projectUid):null;
  const hours=()=>Math.max(2,Math.round((2+p.parts.reduce((a,r)=>a+r[3],0)*.12+kgOf(rows,'fe')*.03)*2)/2);
  const fillMat=()=>{const m=$('mt').value,mm=MAT[m];$('mw').textContent=`משקל משוער: ${fmt(kgOf(rows,m))} ק״ג${m==='al'?' · באלומיניום: לבדוק זמינות פרופילים וריתוך TIG':''}`;
   $('q1').value=S.ppk[m]??mm.ppk;$('q2').value=S.fin[m]??mm.fin;$('qfn').textContent=mm.fn;calc()};
@@ -504,6 +504,7 @@ function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=
   p.q={m,kg,mat,cons,fin,lab,pr,net,vat,tot:net+vat,h:v(3),r:v(4)};
   $('qsum').innerHTML=`<table><tr><td>חומר (${fmt(kg)} ק״ג)</td><td>₪${fmt(mat)}</td></tr><tr><td>אלקטרודות, דיסקים ומתכלים (8%)</td><td>₪${fmt(cons)}</td></tr><tr><td>${MAT[m].fn}</td><td>₪${fmt(fin)}</td></tr><tr><td>עבודה (${v(3)} ש׳ × ₪${v(4)})</td><td>₪${fmt(lab)}</td></tr><tr><td>רווח (${v(5)}%)</td><td>₪${fmt(pr)}</td></tr><tr><td><b>לפני מע״מ</b></td><td><b>₪${fmt(net)}</b></td></tr><tr><td>מע״מ (${v(6)}%)</td><td>₪${fmt(vat)}</td></tr><tr><td><b>סה״כ ללקוח</b></td><td><b style="color:var(--ort);font-size:20px">₪${fmt(net+vat)}</b></td></tr></table>`};
  $('q3').value=hours();fillMat();
+ if(project){$('qc').value=project.cust||'';const pb=document.createElement('button');pb.className='btn ghost';pb.type='button';pb.textContent='שמור מחיר בפרויקט';$('qpdf').parentElement.appendChild(pb);pb.onclick=()=>{const list=MP.projects(),x=list.find(v=>v.uid===projectUid);if(!x)return;x.price=Math.round(p.q?.tot||0);if(['ליד','מדידה','הצעת מחיר'].includes(x.status))x.status='הצעת מחיר';x.updatedAt=new Date().toISOString();MP.saveProjects(list);pb.textContent='נשמר בפרויקט ✓'}}
  $('mt').onchange=()=>{S.mat=$('mt').value;putSet(S);fillMat()};
  ['q1','q2','q3','q4','q5','q6'].forEach(i=>$(i).oninput=()=>{const m=$('mt').value;if(i==='q1')S.ppk[m]=+$('q1').value;if(i==='q2')S.fin[m]=+$('q2').value;if(i==='q4')S.rate=+$('q4').value;if(i==='q5')S.marg=+$('q5').value;if(i==='q6')S.vat=+$('q6').value;putSet(S);calc()});
  $('qb').oninput=()=>{S.biz=$('qb').value;putSet(S)};$('qp').oninput=()=>{S.phone=$('qp').value;putSet(S)};
@@ -512,7 +513,7 @@ function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=
  const list=()=>{const m=$('mt').value;return`רשימת חומר – ${p.name} · ${sz(p)} (${MAT[m].n})\n`+rows.map(r=>`• ${r.p} – ${r.bars} יח׳ באורך 6 מ׳`).join('\n')+(p.hw.length?'\n\nנוסף:\n'+p.hw.map(h=>'• '+h).join('\n'):'')+`\n\nקוד תוכנית: ${p.id}`};
  $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(list()),'_blank');
  $('cpl').onclick=()=>navigator.clipboard?.writeText(list()).then(()=>$('cpl').textContent='הועתק ✓',()=>{});
- $('opt').onclick=()=>{const G={};for(const r of p.parts){(G[r[1]]??=[]).push({length:r[2],qty:r[3],note:r[0]})}localStorage.setItem('mp_optimizer_input_v1',JSON.stringify({planId:p.id,planName:p.name,groups:Object.entries(G).map(([profile,parts])=>({profile,parts}))}));location.href='optimizer.html'};
+ $('opt').onclick=()=>{const G={};for(const r of p.parts){(G[r[1]]??=[]).push({length:r[2],qty:r[3],note:r[0]})}localStorage.setItem('mp_optimizer_input_v1',JSON.stringify({planId:p.id,planName:p.name,projectUid:projectUid||'',groups:Object.entries(G).map(([profile,parts])=>({profile,parts}))}));location.href='optimizer.html'};
  $('qpdf').onclick=()=>{const q=p.q,S2=getSet(),d=new Date().toLocaleDateString('he-IL');M=p.model;const iso=view('iso',{thumb:1});
   const w=window.open('','_blank');if(!w){alert('יש לאפשר חלונות קופצים');return}
   w.document.write(`<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>הצעת מחיר – ${p.name}</title><style>body{font-family:Heebo,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#15181C}h1{font-size:28px;margin:8px 0}table{width:100%;border-collapse:collapse;margin:12px 0}td{border-bottom:1px solid #ddd;padding:8px}.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #E8590C;padding-bottom:10px}.tot td{font-size:20px;font-weight:900;color:#B93E07}svg{width:100%;max-height:260px}.m{color:#5B6670;font-size:13px}</style></head><body>
