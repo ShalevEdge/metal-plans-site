@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shalevedge.github.io/metal-plans-site/sitemap.xml

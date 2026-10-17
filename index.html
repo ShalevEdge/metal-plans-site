@@ -60,6 +60,7 @@ summary{font-weight:700;cursor:pointer;font-size:18px}
 footer{padding:40px 0 100px;color:var(--steel);font-size:14px}
 footer a{color:var(--steel)}
 @media(max-width:700px){.sticky{display:flex}}
+.chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--tx);text-decoration:none;font-weight:700;font-size:15px}.chip:hover{border-color:var(--or)}
 </style>
 </head>
 <body>
@@ -80,6 +81,11 @@ footer a{color:var(--steel)}
   <li>רשימת חיתוך מוכנה: חלק, אורך, כמות</li>
   <li>כמה פרופילים של 6 מטר לקנות – בלי פחת מיותר</li>
   <li>PDF להורדה + פתיחה נוחה מהטלפון באתר העבודה</li>
+  <li>מחשבון הצעת מחיר ללקוח + PDF עם הלוגו שלך</li>
+  <li>כל מידה שתרצו – מחולל מידה מותאמת אישית</li>
+  <li>בחירת חומר: ברזל, מגולוון, אלומיניום, נירוסטה</li>
+  <li>שליחת רשימת קנייה לספק בוואטסאפ בלחיצה</li>
+  <li>מתקינים כאפליקציה בטלפון – עובד גם בלי קליטה</li>
  </ul>
 </div></section>
 
@@ -96,6 +102,17 @@ footer a{color:var(--steel)}
  <h2>דוגמאות מהספרייה</h2>
  <p class="muted" style="margin:-12px 0 20px">לחצו על סוג עבודה כדי לראות את כל המידות</p>
  <div class="grid sk-grid" id="sketches"></div>
+</div></section>
+
+<section id="guides"><div class="wrap">
+ <h2>מדריכים לפי <span class="hl">סוג עבודה</span></h2>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">שערים ודלתות</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/sg.html">שער נגרר</a><a class="chip" href="guides/dg.html">שער כנף כפול</a><a class="chip" href="guides/pp.html">פשפש</a><a class="chip" href="guides/dr.html">דלת פלדה</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">מעקות, גדרות וסורגים</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/fn.html">גדר (מקטע)</a><a class="chip" href="guides/rl.html">מעקה</a><a class="chip" href="guides/gr.html">סורג חלון</a><a class="chip" href="guides/sr.html">מעקה מדרגות</a><a class="chip" href="guides/pb.html">מחסום חניה</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">מדרגות וסולמות</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/st.html">מדרגות</a><a class="chip" href="guides/ld.html">סולם קבוע</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">הצללה ומבנים</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/pg.html">פרגולה</a><a class="chip" href="guides/cn.html">גגון לקיר</a><a class="chip" href="guides/cp.html">סככת חניה (קרפורט)</a><a class="chip" href="guides/sd.html">מחסן (שלד)</a><a class="chip" href="guides/sk.html">סוכה (שלד)</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">חוץ, גינה ובית</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/mz.html">מסתור מזגן</a><a class="chip" href="guides/gs.html">כלוב בלוני גז</a><a class="chip" href="guides/br.html">מתקן אופניים</a><a class="chip" href="guides/bq.html">מנגל עומד</a><a class="chip" href="guides/ps.html">מעמד עציצים מדורג</a><a class="chip" href="guides/bi.html">מסתור פחים</a><a class="chip" href="guides/sw.html">נדנדה (מסגרת A)</a><a class="chip" href="guides/sp.html">מתקן קרקעי לפאנלים סולאריים</a><a class="chip" href="guides/fr.html">מתקן לעצי הסקה</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">ריהוט</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/tb.html">שולחן</a><a class="chip" href="guides/bn.html">ספסל</a><a class="chip" href="guides/sh.html">מדפייה</a><a class="chip" href="guides/bd.html">מסגרת מיטה</a><a class="chip" href="guides/cr.html">מתלה בגדים</a><a class="chip" href="guides/cf.html">שולחן קפה</a><a class="chip" href="guides/bs.html">שרפרף / כיסא בר</a></p>
+ <p style="font-weight:900;color:var(--ort);margin:14px 0 6px">סדנה ותעשייה</p><p style="display:flex;flex-wrap:wrap;gap:8px"><a class="chip" href="guides/ct.html">עגלת עבודה</a><a class="chip" href="guides/wt.html">שולחן ריתוך</a><a class="chip" href="guides/rk.html">מדף מחסן כבד</a></p>
 </div></section>
 
 <section id="calc"><div class="wrap">
@@ -135,7 +152,7 @@ footer a{color:var(--steel)}
   <label for="ln">שם</label><input id="ln" required autocomplete="name">
   <label for="lp">טלפון</label><input id="lp" type="tel" required autocomplete="tel" inputmode="tel">
   <p style="margin-top:18px;text-align:center"><button class="btn" type="submit">עדכנו אותי</button></p>
-  <p class="muted" style="font-size:13px;text-align:center;margin-top:10px">נשתמש בפרטים רק כדי לעדכן אתכם על תוכניות חדשות. אפשר לבקש הסרה בכל עת.</p>
+  <p class="muted" style="font-size:13px;text-align:center;margin-top:10px">השליחה פותחת וואטסאפ עם ההודעה מוכנה. נשתמש בפרטים רק לעדכונים; אפשר לבקש הסרה בכל עת.</p>
   <p class="muted" id="leadMsg" style="text-align:center;margin-top:10px" role="status"></p>
  </form>
 </div></section>
@@ -194,17 +211,17 @@ function calc(){
 }
 ['w','h','p'].forEach(i=>document.getElementById(i).addEventListener('input',calc));calc();
 
-// לחבר כתובת לקבלת לידים (Formspree / Make / Google Sheets). כל עוד ריק – הטופס לא מדווח הצלחה מזויפת
-const LEAD_ENDPOINT='';
-document.getElementById('lead').addEventListener('submit',async e=>{
+// לידים: נשלחים לוואטסאפ של בעל האתר. WA_NUMBER בפורמט בינלאומי בלי + (למשל 972501234567)
+const WA_NUMBER='';
+document.getElementById('lead').addEventListener('submit',e=>{
  e.preventDefault();const msg=document.getElementById('leadMsg');
- const data={name:document.getElementById('ln').value.trim(),phone:document.getElementById('lp').value.trim()};
- if(!/^0\d[\d-]{7,10}$/.test(data.phone.replace(/\s/g,''))){msg.textContent='בדקו את מספר הטלפון';return}
- if(!LEAD_ENDPOINT){msg.textContent='ההרשמה לעדכונים תיפתח בקרוב';return}
- try{const r=await fetch(LEAD_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)});
-  if(!r.ok)throw 0;msg.textContent='תודה! נעדכן אתכם ראשונים.';e.target.reset()}
- catch(err){msg.textContent='משהו השתבש, נסו שוב'}
+ const name=document.getElementById('ln').value.trim(),phone=document.getElementById('lp').value.trim();
+ if(!/^0\d[\d-]{7,10}$/.test(phone.replace(/\s/g,''))){msg.textContent='בדקו את מספר הטלפון';return}
+ if(!WA_NUMBER){msg.textContent='ההרשמה לעדכונים תיפתח בקרוב';return}
+ const txt=`שלום! אשמח לקבל עדכונים על תוכניות חדשות.\nשם: ${name}\nטלפון: ${phone}`;
+ window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');
+ msg.textContent='נפתח וואטסאפ – לחצו "שלח" כדי להשלים את ההרשמה ✓';e.target.reset();
 });
-</script>
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
 </body>
 </html>

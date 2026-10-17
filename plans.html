@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
 <title>ספריית התוכניות | תוכניות עבודה למסגרים</title>
 <meta name="description" content="מאות תוכניות עבודה למסגרים: שערים נגררים, שערי כנף, פשפשים, מעקות, סורגים וגדרות – שרטוט, רשימת חיתוך וכמות פרופילים.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,6 +70,10 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 @media(max-width:700px){.views{grid-template-columns:1fr}}
 @media print{.views{grid-template-columns:1fr 1fr}.vw{break-inside:avoid}}
 .types{display:block}.grp{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.gt{font-weight:900;font-size:14px;color:var(--ort);flex-basis:100%;margin-top:4px}
+.types{display:block}.grp{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}.gt{font-weight:900;font-size:14px;color:var(--ort);flex-basis:100%;margin-top:4px}
+.tools{border-top:2px solid var(--line);margin-top:20px}.trow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.trow label,.qgrid label{display:flex;flex-direction:column;font-weight:700;font-size:14px;gap:4px}
+.tools input,.tools select{padding:10px;font-size:16px;border:1px solid var(--steel);border-radius:8px;background:#fff;color:var(--tx);min-width:140px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:10px}.qsum table{margin-top:12px}.soon2{font-size:13px;background:var(--or);color:#fff;border-radius:6px;padding:2px 8px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -385,6 +390,63 @@ Object.assign(GEN,{
 const CATS=[['שערים ודלתות',['SG','DG','PP','DR']],['מעקות, גדרות וסורגים',['RL','SR','FN','GR','PB']],['מדרגות וסולמות',['ST','LD']],
  ['הצללה ומבנים',['PG','CN','CP','SD','SK']],['ריהוט',['TB','CF','BN','BS','BD','SH','CR']],['סדנה ותעשייה',['WT','CT','RK']],['חוץ, גינה ובית',['MZ','GS','BI','BR','BQ','PS','FR','SW','SP']]];
 
+// ===== plan tools: material, custom size, supplier list, quote =====
+const MAT={fe:{n:'ברזל שחור (לצביעה)',rho:7.85,ppk:9,fin:4,fn:'צביעה'},ga:{n:'ברזל מגולוון',rho:7.85,ppk:9,fin:6,fn:'גלוון חם'},al:{n:'אלומיניום',rho:2.7,ppk:38,fin:0,fn:'ללא'},ss:{n:'נירוסטה 304',rho:7.93,ppk:42,fin:0,fn:'ליטוש'}};
+const SETK='mp_settings_v1';
+function getSet(){let s={};try{s=JSON.parse(localStorage.getItem(SETK)||'{}')}catch(e){}return Object.assign({mat:'fe',ppk:{},fin:{},rate:180,marg:25,vat:18,biz:'',phone:'',logo:''},s)}
+function putSet(s){try{localStorage.setItem(SETK,JSON.stringify(s))}catch(e){}}
+const kgOf=(rows,m)=>rows.reduce((a,r)=>a+r.kg,0)*MAT[m].rho/7.85;
+const nums=a=>range(a).filter(v=>typeof v==='number');
+function customPlan(id){const[,k,w,h,s]=id.split(':');const g=GEN[k];if(!g)return null;
+ const W=Math.round(+w),H=Math.round(+h),wr=nums(g.W),hr=nums(g.H);
+ const inb=(v,r)=>{const lo=Math.min(...r),hi=Math.max(...r);return r.length<=1?v===r[0]:v>=lo*(lo<50?1:.8)&&v<=hi*(hi<50?1:1.2)};
+ if(!Number.isFinite(W)||!Number.isFinite(H)||!inb(W,wr)||!inb(H,hr))return{err:`מחוץ לטווח: ${g.wl} ${Math.min(...wr)}–${Math.max(...wr)}, ${g.hl} ${Math.min(...hr)}–${Math.max(...hr)}`};
+ if(g.ok&&!g.ok(W,H))return{err:'שילוב המידות לא הגיוני לסוג הזה (למשל שיפוע חריג)'};
+ const S=g.S?(g.S.includes(s)?s:g.S[0]):'';return build({id,k,W,H,s:S,custom:1})}
+function toolsHTML(p,rows){const S=getSet(),g=GEN[p.k],m=S.mat;
+ const so=g.S?`<label>סגנון<select id="cs">${g.S.map(x=>`<option value="${x}" ${x===p.s?'selected':''}>${SN[x]}</option>`).join('')}</select></label>`:'';
+ return`<div class="tools no-print">
+ <h2>חומר</h2><div class="trow"><label>סוג חומר<select id="mt">${Object.entries(MAT).map(([k,v])=>`<option value="${k}" ${k===m?'selected':''}>${v.n}</option>`).join('')}</select></label>
+ <p id="mw" class="muted"></p></div>
+ <h2>מידה מותאמת אישית</h2><div class="trow"><label>${g.wl}<input id="cw" type="number" inputmode="numeric" value="${p.W}"></label><label>${g.hl}<input id="ch" type="number" inputmode="numeric" value="${p.H}"></label>${so}
+ <button class="btn" id="cgo">צור תוכנית</button></div><p class="muted" id="cerr" style="font-size:14px"></p>
+ <h2>רשימת קנייה לספק</h2><div class="trow"><button class="btn" id="wa">שליחה בוואטסאפ</button><button class="btn ghost" id="cpl">העתקת הרשימה</button></div>
+ <h2>הצעת מחיר ללקוח</h2><div class="qgrid">
+  <label>שם העסק<input id="qb" value="${S.biz}"></label><label>טלפון העסק<input id="qp" value="${S.phone}" inputmode="tel"></label>
+  <label>לוגו (תמונה)<input id="ql" type="file" accept="image/*"></label><label>שם הלקוח<input id="qc"></label>
+  <label>מחיר חומר (₪/ק״ג)<input id="q1" type="number" step="0.5"></label><label>גימור – <span id="qfn"></span> (₪/ק״ג)<input id="q2" type="number" step="0.5"></label>
+  <label>שעות עבודה<input id="q3" type="number" step="0.5"></label><label>תעריף לשעה (₪)<input id="q4" type="number" value="${S.rate}"></label>
+  <label>רווח (%)<input id="q5" type="number" value="${S.marg}"></label><label>מע״מ (%)<input id="q6" type="number" value="${S.vat}"></label>
+ </div><div id="qsum" class="qsum"></div><p><button class="btn" id="qpdf">הפקת הצעת מחיר (PDF)</button></p>
+ <p class="muted" style="font-size:13px">המחירים ברירת מחדל הם הערכה – עדכנו לפי הספק שלכם. ההגדרות נשמרות בדפדפן.</p></div>`}
+function bindTools(p,rows){const S=getSet(),$=id=>document.getElementById(id),g=GEN[p.k];
+ const hours=()=>Math.max(2,Math.round((2+p.parts.reduce((a,r)=>a+r[3],0)*.12+kgOf(rows,'fe')*.03)*2)/2);
+ const fillMat=()=>{const m=$('mt').value,mm=MAT[m];$('mw').textContent=`משקל משוער: ${fmt(kgOf(rows,m))} ק״ג${m==='al'?' · באלומיניום: לבדוק זמינות פרופילים וריתוך TIG':''}`;
+  $('q1').value=S.ppk[m]??mm.ppk;$('q2').value=S.fin[m]??mm.fin;$('qfn').textContent=mm.fn;calc()};
+ const calc=()=>{const m=$('mt').value,kg=kgOf(rows,m),v=i=>+$('q'+i).value||0;
+  const mat=kg*v(1),cons=mat*.08,fin=kg*v(2),lab=v(3)*v(4),sub=mat+cons+fin+lab,pr=sub*v(5)/100,net=sub+pr,vat=net*v(6)/100;
+  p.q={m,kg,mat,cons,fin,lab,pr,net,vat,tot:net+vat,h:v(3),r:v(4)};
+  $('qsum').innerHTML=`<table><tr><td>חומר (${fmt(kg)} ק״ג)</td><td>₪${fmt(mat)}</td></tr><tr><td>אלקטרודות, דיסקים ומתכלים (8%)</td><td>₪${fmt(cons)}</td></tr><tr><td>${MAT[m].fn}</td><td>₪${fmt(fin)}</td></tr><tr><td>עבודה (${v(3)} ש׳ × ₪${v(4)})</td><td>₪${fmt(lab)}</td></tr><tr><td>רווח (${v(5)}%)</td><td>₪${fmt(pr)}</td></tr><tr><td><b>לפני מע״מ</b></td><td><b>₪${fmt(net)}</b></td></tr><tr><td>מע״מ (${v(6)}%)</td><td>₪${fmt(vat)}</td></tr><tr><td><b>סה״כ ללקוח</b></td><td><b style="color:var(--ort);font-size:20px">₪${fmt(net+vat)}</b></td></tr></table>`};
+ $('q3').value=hours();fillMat();
+ $('mt').onchange=()=>{S.mat=$('mt').value;putSet(S);fillMat()};
+ ['q1','q2','q3','q4','q5','q6'].forEach(i=>$(i).oninput=()=>{const m=$('mt').value;if(i==='q1')S.ppk[m]=+$('q1').value;if(i==='q2')S.fin[m]=+$('q2').value;if(i==='q4')S.rate=+$('q4').value;if(i==='q5')S.marg=+$('q5').value;if(i==='q6')S.vat=+$('q6').value;putSet(S);calc()});
+ $('qb').oninput=()=>{S.biz=$('qb').value;putSet(S)};$('qp').oninput=()=>{S.phone=$('qp').value;putSet(S)};
+ $('ql').onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas'),sc=Math.min(1,240/im.width,120/im.height);c.width=im.width*sc;c.height=im.height*sc;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.logo=c.toDataURL('image/png');putSet(S)};im.src=rd.result};rd.readAsDataURL(f)};
+ $('cgo').onclick=()=>{const s=$('cs')?$('cs').value:'',id=`c:${p.k}:${$('cw').value}:${$('ch').value}:${s}`,t=customPlan(id);if(!t||t.err){$('cerr').textContent=t?t.err:'שגיאה';return}location.hash=id};
+ const list=()=>{const m=$('mt').value;return`רשימת חומר – ${p.name} ${fmt(p.W)}×${fmt(p.H)} (${MAT[m].n})\n`+rows.map(r=>`• ${r.p} – ${r.bars} יח׳ באורך 6 מ׳`).join('\n')+(p.hw.length?'\n\nנוסף:\n'+p.hw.map(h=>'• '+h).join('\n'):'')+`\n\nקוד תוכנית: ${p.id}`};
+ $('wa').onclick=()=>window.open('https://wa.me/?text='+encodeURIComponent(list()),'_blank');
+ $('cpl').onclick=()=>navigator.clipboard?.writeText(list()).then(()=>$('cpl').textContent='הועתק ✓',()=>{});
+ $('qpdf').onclick=()=>{const q=p.q,S2=getSet(),d=new Date().toLocaleDateString('he-IL');M=p.model;const iso=view('iso',{thumb:1});
+  const w=window.open('','_blank');if(!w){alert('יש לאפשר חלונות קופצים');return}
+  w.document.write(`<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><title>הצעת מחיר – ${p.name}</title><style>body{font-family:Heebo,Arial,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;color:#15181C}h1{font-size:28px;margin:8px 0}table{width:100%;border-collapse:collapse;margin:12px 0}td{border-bottom:1px solid #ddd;padding:8px}.hd{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #E8590C;padding-bottom:10px}.tot td{font-size:20px;font-weight:900;color:#B93E07}svg{width:100%;max-height:260px}.m{color:#5B6670;font-size:13px}</style></head><body>
+  <div class="hd"><div><b style="font-size:20px">${S2.biz||'שם העסק'}</b><br>${S2.phone||''}</div>${S2.logo?`<img src="${S2.logo}" style="max-height:80px">`:''}</div>
+  <h1>הצעת מחיר</h1><p>לכבוד: <b>${$('qc').value||'________'}</b> · תאריך: ${d}</p>
+  <p><b>${p.name}</b> – ${sz(p)} (מ״מ) · חומר: ${MAT[q.m].n} · גימור: ${MAT[q.m].fn}</p>${iso}
+  <table><tr><td>חומר ומתכלים</td><td>₪${fmt(q.mat+q.cons)}</td></tr><tr><td>${MAT[q.m].fn}</td><td>₪${fmt(q.fin)}</td></tr><tr><td>ייצור והתקנה</td><td>₪${fmt(q.lab+q.pr)}</td></tr><tr><td>סה״כ לפני מע״מ</td><td>₪${fmt(q.net)}</td></tr><tr><td>מע״מ</td><td>₪${fmt(q.vat)}</td></tr><tr class="tot"><td>סה״כ לתשלום</td><td>₪${fmt(q.tot)}</td></tr></table>
+  <p class="m">ההצעה בתוקף ל-14 יום. המחיר כולל ייצור לפי המידות שלעיל; שינויים במידות או בחומר יתומחרו מחדש. תכנון הנדסי / היתרים – אינם כלולים אלא אם צוין.</p>
+  <p style="margin-top:40px">חתימת הלקוח: ______________</p><script>onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);w.document.close()};
+}
+
 // ===== catalog + UI =====
 const range=a=>a.length===3&&typeof a[0]==='number'&&a[2]<a[0]?(()=>{const r=[];for(let v=a[0];v<=a[1];v+=a[2])r.push(v);return r})():a;
 const PLANS=[];
@@ -400,7 +462,7 @@ function pack(parts){
 }
 const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} · ${g.hl} ${fmt(x.H)}${x.s?' · '+SN[x.s]:''}`};
 function build(x){const g=GEN[x.k];M=[];HW=[];const r=g.f(x.W,x.H,x.s);return{...x,name:r.name||g.name,notes:r.notes.filter(Boolean),hw:[...r.hw,...hwList()],parts:parts(),model:M}}
-const plan=id=>{const x=PLANS.find(p=>p.id===id);return x?build(x):null};
+const plan=id=>{if(id.startsWith('c:'))return customPlan(id);const x=PLANS.find(p=>p.id===id);return x?build(x):null};
 const st={k:'SG',w:'',h:'',s:'',shown:24,sel:null};
 const $=id=>document.getElementById(id);
 function thumb(x){const p=build(x);M=p.model;return view('iso',{thumb:1})}
@@ -428,14 +490,14 @@ function render(){
 }
 $('list').onclick=e=>{const b=e.target.closest('.item');if(b)location.hash=b.dataset.id};
 function show(id){
- const p=plan(id);if(!p){$('detail').innerHTML='';document.body.style.overflow='';return}
+ const p=plan(id);if(p&&p.err){alert(p.err);return}if(!p){$('detail').innerHTML='';document.body.style.overflow='';return}
  if(p.k!==st.k){st.k=p.k;st.w=st.h=st.s='';fillSel()}st.sel=id;render();
  M=p.model;const keys=p.parts.map(([n,pr,l])=>n+'|'+pr+'|'+l);
  const {rows,joins}=pack(p.parts),bars=rows.reduce((a,r)=>a+r.bars,0),kg=rows.reduce((a,r)=>a+r.kg,0);
  const V=k=>`<figure class="vw"><figcaption>${VIEWS[k].t}</figcaption>${view(k,k==='front'?{balloons:keys}:{})}</figure>`;
  const today=new Date().toLocaleDateString('he-IL');
  $('detail').innerHTML=`<div class="card" style="margin-top:8px"><button class="close no-print" id="x" aria-label="סגירה">✕</button>
- <h2>${p.name}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
+ <h2>${p.name}${p.custom?' <span class="soon2">מידה מותאמת</span>':''}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
  <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span><span>חלקים: <b>${p.parts.reduce((a,r)=>a+r[3],0)}</b></span></div>
  <div class="views">${V('front')}${V('side')}${V('top')}${V('iso')}</div>
  <table class="tb"><tr><td>שם: <b>${p.name}</b></td><td>קוד: <b dir="ltr">${id}</b></td><td>יחידות: מ״מ</td></tr><tr><td>קנ״מ: ללא (NTS)</td><td>תאריך הפקה: ${today}</td><td>גיליון 1/1 · גרסה 2.0</td></tr></table>
@@ -447,10 +509,10 @@ function show(id){
  ${joins.length?`<div class="warn">⚠️ ארוך מ-6 מ׳ – נדרש חיבור / ריתוך המשך: ${joins.join(', ')}</div>`:''}
  <h2>פרזול, חיפוי ואביזרים</h2><ul style="padding-inline-start:20px">${p.hw.map(h=>`<li>${h}</li>`).join('')}</ul>
  <h2>הערות</h2><ul style="padding-inline-start:20px">${p.notes.map(h=>`<li>${h}</li>`).join('')}</ul>
- <div class="warn">תבנית עבודה בלבד. פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
+ ${toolsHTML(p,rows)} פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
  <p class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" onclick="print()">הדפסה / שמירה כ-PDF</button><button class="btn ghost" id="cp">העתקת קישור</button></p></div>`;
  $('cp').onclick=()=>{navigator.clipboard?.writeText(location.href).then(()=>$('cp').textContent='הקישור הועתק ✓',()=>{})};
- $('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
+ bindTools(p,rows);$('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
 }
 function closeD(){history.pushState(null,'',location.pathname+location.search);show('')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});
@@ -458,6 +520,7 @@ $('detail').addEventListener('click',e=>{if(e.target.id==='detail')closeD()});
 window.onhashchange=()=>show(decodeURIComponent(location.hash.slice(1)));
 const q=new URLSearchParams(location.search).get('type');if(q&&GEN[q])st.k=q;
 fillSel();render();if(location.hash)show(decodeURIComponent(location.hash.slice(1)));
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 </script>
 </body>
