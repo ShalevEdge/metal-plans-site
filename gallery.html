@@ -1,0 +1,53 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>גלריית לפני/אחרי | SHALVERO FORGE</title>
+<meta name="description" content="גלריית עבודות לפני ואחרי לכל פרויקט – תמונות נשמרות בטלפון ואפשר לשתף ללקוחות בוואטסאפ.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css">
+<style>
+.ga-add{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.ga-add label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:14px}.ga-add select,.ga-add input{padding:10px;font-size:16px;border-radius:8px;font-family:inherit}
+.ga-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px}
+.ga-p{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}.ga-p h3{margin:0 0 8px;font-size:18px}
+.ga-ba{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ga-ba figure{margin:0;position:relative}.ga-ba img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;cursor:zoom-in}
+.ga-ba figcaption{position:absolute;top:6px;inset-inline-start:6px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:2px 8px;border-radius:99px}
+.ga-ba .x{position:absolute;bottom:6px;inset-inline-end:6px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:99px;width:28px;height:28px;cursor:pointer}
+.ga-emp{aspect-ratio:1;border:2px dashed var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--steel);font-size:13px}
+.ga-th{display:flex;gap:6px;overflow:auto;margin-top:6px}.ga-th img{width:54px;height:54px;object-fit:cover;border-radius:6px}
+.ga-lb{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:70;display:flex;align-items:center;justify-content:center}.ga-lb img{max-width:95vw;max-height:92vh}
+</style></head>
+<body><div id="nav"></div><main class="wrap">
+<p class="tag">GALLERY</p><h1>📸 גלריית לפני / אחרי</h1>
+<p style="color:var(--steel)">מצלמים את המקום לפני העבודה ואת התוצאה אחרי – לכל פרויקט. התמונות נשמרות <b>בטלפון/במחשב הזה בלבד</b> (לא בענן), ואפשר לשתף אותן ללקוחות חדשים.</p>
+<div class="ga-add"><label>פרויקט<select id="pj"></select></label><label>או שם חופשי<input id="pn" placeholder="למשל: שער בבית של משה"></label>
+<label>סוג<select id="kd"><option value="before">לפני</option><option value="after">אחרי</option></select></label>
+<label class="btn" style="cursor:pointer">📷 הוספת תמונה<input id="fl" type="file" accept="image/*" capture="environment" multiple hidden></label></div>
+<div class="ga-grid" id="gr"></div>
+</main>
+<script src="app.js"></script>
+<script>
+try{nav.innerHTML=MP.nav('gallery.html')}catch(e){}
+(function(){
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let P=[];try{P=MP.projects()||[]}catch(e){}
+pj.innerHTML='<option value="">— בחירה —</option>'+P.map(p=>`<option value="${E(p.uid||p.id)}">${E(p.name||'פרויקט')}${p.cust?' · '+E(p.cust):''}</option>`).join('');
+let db;const op=indexedDB.open('forge_gallery',1);op.onupgradeneeded=()=>op.result.createObjectStore('ph',{keyPath:'id',autoIncrement:true});
+op.onsuccess=()=>{db=op.result;load()};op.onerror=()=>gr.innerHTML='<p>הדפדפן לא מאפשר שמירת תמונות (מצב גלישה פרטית?).</p>';
+const tx=m=>db.transaction('ph',m).objectStore('ph');
+function shrink(f){return new Promise(r=>{const i=new Image(),u=URL.createObjectURL(f);i.onload=()=>{const k=Math.min(1,1600/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>r(b||f),'image/jpeg',.85)};i.onerror=()=>r(f);i.src=u})}
+fl.onchange=async()=>{const key=pj.value||('free:'+pn.value.trim());const name=pj.value?pj.selectedOptions[0].textContent:pn.value.trim();if(key==='free:'){alert('בוחרים פרויקט או כותבים שם');fl.value='';return}
+ for(const f of fl.files){const b=await shrink(f);await new Promise(r=>{const q=tx('readwrite').add({key,name,kind:kd.value,blob:b,at:Date.now()});q.onsuccess=r;q.onerror=r})}fl.value='';load()};
+const urls=[];
+function load(){urls.forEach(URL.revokeObjectURL);urls.length=0;const all=[];tx('readonly').openCursor().onsuccess=e=>{const c=e.target.result;if(c){all.push(c.value);c.continue()}else draw(all)}}
+function draw(all){if(!all.length){gr.innerHTML='<p style="color:var(--steel)">עדיין אין תמונות. בוחרים פרויקט ← "לפני" ← מצלמים.</p>';return}
+ const G={};for(const x of all)(G[x.key]=G[x.key]||{name:x.name,b:[],a:[]})[x.kind==='after'?'a':'b'].push(x);
+ const U=x=>{const u=URL.createObjectURL(x.blob);urls.push(u);return u};
+ const fig=(x,l)=>x?`<figure><img src="${U(x)}" data-id="${x.id}" alt="${l}"><figcaption>${l}</figcaption><button class="x" data-del="${x.id}" title="מחיקה">✕</button></figure>`:`<div class="ga-emp">אין תמונת ${l}</div>`;
+ gr.innerHTML=Object.entries(G).map(([k,g])=>{const b=g.b[g.b.length-1],a=g.a[g.a.length-1],rest=[...g.b,...g.a].filter(x=>x!==a&&x!==b);
+  return`<div class="ga-p"><h3>${E(g.name)}</h3><div class="ga-ba">${fig(b,'לפני')}${fig(a,'אחרי')}</div>${rest.length?`<div class="ga-th">${rest.map(x=>`<img src="${U(x)}" data-id="${x.id}" alt="">`).join('')}</div>`:''}<div class="row" style="margin-top:8px"><button class="btn ghost" data-sh="${E(k)}">שיתוף 📤</button></div></div>`}).join('');
+ gr.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('למחוק את התמונה?')){tx('readwrite').delete(+b.dataset.del).onsuccess=load}});
+ gr.querySelectorAll('img[data-id]').forEach(i=>i.onclick=()=>{const d=document.createElement('div');d.className='ga-lb';d.innerHTML=`<img src="${i.src}">`;d.onclick=()=>d.remove();document.body.appendChild(d)});
+ gr.querySelectorAll('[data-sh]').forEach(b=>b.onclick=async()=>{const g=G[b.dataset.sh],fs=[...g.b.slice(-1),...g.a.slice(-1)].map((x,i)=>new File([x.blob],(i?'after':'before')+'.jpg',{type:'image/jpeg'}));
+  if(navigator.canShare&&navigator.canShare({files:fs})){try{await navigator.share({files:fs,title:g.name,text:g.name+' – לפני ואחרי'})}catch(e){}}else alert('בדפדפן הזה אין שיתוף קבצים. אפשר ללחוץ על תמונה, לשמור אותה ולשלוח.')})}
+})();
+</script></body></html>

@@ -1,0 +1,47 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אישור הצעת מחיר | SHALVERO FORGE</title><meta name="robots" content="noindex">
+<link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:Heebo,Arial,sans-serif;background:#eef1f4;color:#111;margin:0;padding:16px}
+.q{max-width:760px;margin:0 auto;background:#fff;border-radius:16px;padding:24px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+h1{margin:0 0 4px;font-size:28px}.mut{color:#555}table{width:100%;border-collapse:collapse;margin:16px 0}td{padding:10px;border-bottom:1px solid #ddd;font-size:17px}td:last-child{text-align:left;font-weight:700}
+.tot td{font-size:22px;font-weight:900;border-top:2px solid #111}
+canvas{width:100%;height:200px;border:2px dashed #888;border-radius:12px;touch-action:none;background:#fafafa;display:block}
+label{display:block;font-weight:700;margin:12px 0 4px}input[type=text]{width:100%;padding:12px;font-size:18px;border:1px solid #bbb;border-radius:10px;box-sizing:border-box;font-family:inherit}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:16px}.chk input{width:22px;height:22px}
+.b{font:inherit;font-size:19px;font-weight:900;padding:14px 18px;border-radius:12px;border:0;cursor:pointer;background:#f97316;color:#fff}.g{background:#e5e7eb;color:#111}.ok{background:#16a34a}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.sig{max-width:280px;border-bottom:1px solid #111}.done{background:#dcfce7;border:1px solid #16a34a;border-radius:12px;padding:12px;font-weight:700}
+.note{font-size:13px;color:#666;margin-top:14px}
+@media print{body{background:#fff;padding:0}.q{box-shadow:none}.np{display:none!important}}
+</style></head><body><div class="q" id="app"></div>
+<script>
+(function(){
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dec=s=>{try{s=s.replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(escape(atob(s))))}catch(e){return null}};
+const m=location.hash.match(/d=([^&]+)/),d=m&&dec(m[1]);
+if(!d){app.innerHTML='<h1>הקישור לא תקין</h1><p class="mut">בקשו מבעל העסק לשלוח שוב את הקישור להצעת המחיר.</p>';return}
+const SK='forge_signed_'+d.no;let saved=null;try{saved=JSON.parse(localStorage.getItem(SK))}catch(e){}
+const until=new Date(new Date(d.date).getTime()+(d.valid||14)*864e5).toISOString().slice(0,10).split('-').reverse().join('/');
+function head(){return`<h1>הצעת מחיר ${E(d.no)}</h1><p class="mut">${E(d.biz||'')}${d.bp?' · '+E(d.bp):''} · תאריך ${E(d.date.split('-').reverse().join('/'))} · בתוקף עד ${until}</p>
+ <p>לכבוד: <b>${E(d.cust||'')}</b></p><table><tr><td>עבודה</td><td>${E(d.item)}</td></tr>${d.mat?`<tr><td>חומר</td><td>${E(d.mat)}</td></tr>`:''}${d.net?`<tr><td>לפני מע״מ</td><td>${E(d.net)}</td></tr>`:''}<tr class="tot"><td>סה״כ לתשלום</td><td>${E(d.tot)}</td></tr></table>`}
+if(saved){signed(saved);return}
+app.innerHTML=head()+`<div class="np"><label>שם מלא</label><input type="text" id="nm" value="${E(d.cust||'')}"><label>חתימה (באצבע או בעכבר)</label><canvas id="cv"></canvas>
+<div class="row"><button class="b g" id="clr">ניקוי חתימה</button></div>
+<div class="chk"><input type="checkbox" id="ag"><label for="ag" style="margin:0;font-weight:400">קראתי ואני מאשר/ת את הצעת המחיר, המידות והמחיר שלמעלה.</label></div>
+<div class="row"><button class="b ok" id="go">✍️ אישור וחתימה</button></div><p class="note">החתימה נשמרת במכשיר שלך ובמסמך שתורידו. זהו אישור הזמנה פשוט בין הצדדים – לא חתימה אלקטרונית מאושרת לפי חוק.</p></div>`;
+const cv=document.getElementById('cv'),cx=cv.getContext('2d');let drawn=false,dn=false;
+const fit=()=>{const r=cv.getBoundingClientRect(),k=devicePixelRatio||1;cv.width=r.width*k;cv.height=r.height*k;cx.scale(k,k);cx.lineWidth=2.6;cx.lineCap='round';cx.lineJoin='round';cx.strokeStyle='#0b1f4d'};fit();
+const pt=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+cv.onpointerdown=e=>{dn=true;cv.setPointerCapture(e.pointerId);const[x,y]=pt(e);cx.beginPath();cx.moveTo(x,y)};
+cv.onpointermove=e=>{if(!dn)return;const[x,y]=pt(e);cx.lineTo(x,y);cx.stroke();drawn=true};
+cv.onpointerup=cv.onpointercancel=()=>dn=false;
+clr.onclick=()=>{cx.clearRect(0,0,cv.width,cv.height);drawn=false};
+go.onclick=()=>{const n=nm.value.trim();if(!n)return alert('נא למלא שם מלא');if(!drawn)return alert('נא לחתום במסגרת');if(!ag.checked)return alert('נא לסמן שקראת ואישרת');
+ const s={n,img:cv.toDataURL('image/png'),at:new Date().toLocaleString('he-IL')};try{localStorage.setItem(SK,JSON.stringify(s))}catch(e){}signed(s)};
+function signed(s){app.innerHTML=head()+`<div class="done">✅ ההצעה אושרה ונחתמה על ידי ${E(s.n)} · ${E(s.at)}</div><p>חתימה:</p><img class="sig" src="${s.img}" alt="חתימה">
+ <div class="row np"><button class="b" id="pr">⬇️ שמירה כ-PDF / הדפסה</button>${d.bp?'<button class="b ok" id="wa">📲 שליחת אישור לבעל העסק</button>':''}</div>`;
+ pr.onclick=()=>print();const w=document.getElementById('wa');if(w)w.onclick=()=>{let p=String(d.bp).replace(/\D/g,'');if(p.startsWith('0'))p='972'+p.slice(1);
+  location.href='https://wa.me/'+p+'?text='+encodeURIComponent(`✅ אני ${s.n} מאשר/ת את הצעת המחיר ${d.no} – ${d.item}, סה״כ ${d.tot}. נחתם ב-${s.at}.`)}}
+})();
+</script></body></html>

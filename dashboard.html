@@ -1,0 +1,67 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>דשבורד וגרפים | SHALVERO FORGE</title>
+<meta name="description" content="דשבורד לעסק המסגרות: הכנסות לפי חודש, פרויקטים לפי שלב, יתרות לגבייה ותזכורות וואטסאפ ללקוחות בלחיצה.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css">
+<style>
+.d-k{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.d-k div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.d-k b{display:block;font-size:28px;color:var(--ort)}.d-k span{color:var(--steel);font-size:14px}
+.d-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:820px){.d-g{grid-template-columns:1fr}}
+.d-c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.d-c h2{margin:0 0 10px;font-size:20px}
+.d-bars{display:flex;align-items:flex-end;gap:6px;height:190px;border-bottom:1px solid var(--line);padding-top:10px}
+.d-bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;min-width:0}
+.d-bars i{display:block;width:100%;background:linear-gradient(180deg,#fbbf24,#f97316);border-radius:6px 6px 0 0;transition:height .6s}
+.d-bars small{font-size:11px;color:var(--steel);white-space:nowrap}.d-bars em{font-style:normal;font-size:11px;color:var(--tx)}
+.d-h{display:flex;flex-direction:column;gap:6px}.d-h div{display:grid;grid-template-columns:120px 1fr 34px;gap:8px;align-items:center;font-size:14px}
+.d-h i{display:block;height:14px;border-radius:7px;background:linear-gradient(90deg,#f97316,#fbbf24)}
+.d-r{display:flex;flex-direction:column;gap:8px}.d-r .it{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.d-r .it b{color:var(--tx)}.d-r .it span{color:var(--steel);font-size:14px}.d-tag{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--or);color:var(--ort)}
+.d-empty{color:var(--steel);padding:10px 0}
+</style></head>
+<body><div id="nav"></div><main class="wrap">
+<p class="tag">DASHBOARD</p><h1>דשבורד העסק</h1>
+<p style="color:var(--steel)">הכול מחושב מהפרויקטים שלך (מסך "פרויקטים"). מעדכנים שם סכום, מקדמה, תאריך ושלב – והגרפים מתעדכנים לבד.</p>
+<div class="d-k" id="kpi"></div>
+<div class="d-g">
+ <section class="d-c"><h2>💰 הכנסות לפי חודש (12 חודשים)</h2><div class="d-bars" id="rev"></div></section>
+ <section class="d-c"><h2>🏗️ פרויקטים לפי שלב</h2><div class="d-h" id="stg"></div></section>
+ <section class="d-c"><h2>🧾 יתרות לגבייה</h2><div class="d-r" id="bal"></div></section>
+ <section class="d-c"><h2>📲 תזכורות וואטסאפ ללקוחות</h2><p style="color:var(--steel);margin-top:0;font-size:14px">לחיצה פותחת וואטסאפ עם הודעה מוכנה. שולחים בעצמכם – אין שליחה אוטומטית.</p><div class="d-r" id="rem"></div></section>
+</div>
+</main>
+<script src="app.js"></script>
+<script>
+try{nav.innerHTML=MP.nav('dashboard.html')}catch(e){}
+(function(){
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const M=n=>'₪'+Math.round(+n||0).toLocaleString('en-US');
+let P=[];try{P=MP.projects()||[]}catch(e){try{P=JSON.parse(localStorage.getItem('mp_projects')||'[]')}catch(_){}}
+let S={};try{S=MP.settings()}catch(e){}
+const ST=['ליד','מדידה','הצעת מחיר','אושר','חומרים הוזמנו','חיתוך','ריתוך','צבע/גלוון','מוכן להתקנה','הותקן','שולם'];
+const WON=new Set(ST.slice(3));const OPEN=new Set(ST.slice(3,10));
+const won=P.filter(p=>WON.has(p.status)),open=P.filter(p=>OPEN.has(p.status));
+const owed=p=>Math.max(0,(+p.price||0)-(+p.dep||0)-(p.status==='שולם'?Infinity:0));
+const totOwed=P.filter(p=>p.status!=='שולם').filter(p=>WON.has(p.status)).reduce((a,p)=>a+owed(p),0);
+kpi.innerHTML=[[P.length,'פרויקטים במערכת'],[open.length,'בעבודה עכשיו'],[M(won.reduce((a,p)=>a+(+p.price||0),0)),'סך עבודות שאושרו'],[M(totOwed),'נשאר לגבות'],[P.filter(p=>['ליד','מדידה','הצעת מחיר'].includes(p.status)).length,'לידים והצעות פתוחות']].map(([b,s])=>`<div><b>${b}</b><span>${s}</span></div>`).join('');
+// revenue by month
+const now=new Date(),mon=[];for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);mon.push({k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),l:(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2),v:0})}
+for(const p of won){const k=String(p.date||p.updatedAt||'').slice(0,7);const m=mon.find(x=>x.k===k);if(m)m.v+=+p.price||0}
+const mx=Math.max(1,...mon.map(m=>m.v));
+rev.innerHTML=mon.map(m=>`<div title="${m.l}: ${M(m.v)}"><em>${m.v?Math.round(m.v/1000)+'K':''}</em><i style="height:${m.v/mx*150}px"></i><small>${m.l}</small></div>`).join('');
+// stages
+const cnt=ST.map(s=>[s,P.filter(p=>p.status===s).length]),cm=Math.max(1,...cnt.map(c=>c[1]));
+stg.innerHTML=cnt.map(([s,n])=>`<div><span>${s}</span><i style="width:${n/cm*100}%;opacity:${n?1:.15}"></i><b>${n}</b></div>`).join('');
+// balances
+const bl=P.filter(p=>WON.has(p.status)&&p.status!=='שולם'&&owed(p)>0).sort((a,b)=>owed(b)-owed(a));
+bal.innerHTML=bl.length?bl.map(p=>`<div class="it"><div><b>${E(p.name||'פרויקט')}</b><br><span>${E(p.cust||'')} · ${E(p.status)}</span></div><b>${M(owed(p))}</b></div>`).join(''):'<p class="d-empty">אין יתרות פתוחות 👌</p>';
+// reminders
+const ph=v=>{v=String(v||'').replace(/\D/g,'');return v.startsWith('0')?'972'+v.slice(1):v};
+const biz=S.biz?` – ${S.biz}`:'';const R=[];
+for(const p of P){if(!p.phone)continue;const nm=p.cust||'',it=p.name||'העבודה';
+ if(p.status==='אושר'&&!(+p.dep))R.push([p,'מקדמה',`שלום ${nm}, תודה שאישרת את ${it}! כדי שנזמין חומרים ונתחיל, נשמח לקבל את המקדמה. תודה${biz}`]);
+ if(p.due&&OPEN.has(p.status)&&p.status!=='הותקן')R.push([p,'תאריך התקנה',`שלום ${nm}, תזכורת: ההתקנה של ${it} מתוכננת ל-${p.due.split('-').reverse().join('/')}. נא לוודא גישה למקום. תודה${biz}`]);
+ if(p.status==='הותקן'&&owed(p)>0)R.push([p,'יתרה',`שלום ${nm}, ${it} הותקן 🎉 נשאר לתשלום ${M(owed(p))}. אפשר בהעברה/ביט. תודה רבה${biz}`])}
+rem.innerHTML=R.length?R.map(([p,t,m])=>`<div class="it"><div><span class="d-tag">${t}</span> <b>${E(p.name||'')}</b><br><span>${E(p.cust||'')} · ${E(p.phone)}</span></div><a class="btn" target="_blank" rel="noopener" href="https://wa.me/${ph(p.phone)}?text=${encodeURIComponent(m)}">שליחה 📲</a></div>`).join(''):'<p class="d-empty">אין תזכורות כרגע. תזכורות מופיעות כשיש לפרויקט טלפון לקוח ו: אושר בלי מקדמה · תאריך יעד · הותקן ונשארה יתרה.</p>';
+})();
+</script></body></html>
