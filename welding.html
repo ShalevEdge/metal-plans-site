@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מרכז הריתוך | SHALVERO FORGE</title>
+<meta name="description" content="מרכז ריתוך מקצועי למסגריה: בחירת אלקטרודה וזרם, תנוחות, מחברים, פגמים, בדיקות, בטיחות וסימני ריתוך.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css">
+</head>
+<body><div id="nav"></div><main class="wrap">
+<div class="forge-lockup compact"><span>SHALVERO</span><b>FORGE</b></div><p class="tag">WELDING INTELLIGENCE · SMAW</p>
+<h1>מרכז <span class="hl">הריתוך</span></h1>
+<p class="muted" style="font-size:17px;max-width:850px">כלי עבודה מקצועי לריתוך מבנים באלקטרודה מצופה: פרמטרי פתיחה, זיהוי פגמים, תנוחות, איכות ובטיחות. המטרה היא לחבר את הידע ישירות לעבודה במסגריה — לא להחליף WPS, תקן, הוראות יצרן או הסמכת רתך.</p>
+<div class="notice"><b>תחום הידע בגרסה הזו:</b> הספר שנלמד עוסק בעיקר ב-SMAW / אלקטרודה מצופה. MIG ו-TIG ייכנסו כמנועים נפרדים כאשר יהיה לנו מקור מקצועי מלא עבורם.</div>
+
+<section class="weld-section"><p class="section-kicker">01 · פרמטרי פתיחה</p><h2>Weld Setup Assistant</h2>
+<div class="card"><div class="formgrid">
+<label>עובי חומר / דופן <span class="unit">מ״מ</span><input id="th" type="number" step="0.1" min="0.5" value="3"></label>
+<label>סוג אלקטרודה<select id="el"><option>E6013</option><option>E7018</option><option value="GEN">כללית / לפי יצרן</option></select></label>
+<label>קוטר אלקטרודה <span class="unit">מ״מ</span><select id="dia"><option>2.5</option><option selected>3.2</option><option>4.0</option><option>5.0</option></select></label>
+<label>סוג מחבר<select id="joint"><option value="fillet">קמץ / פינה – מילאת</option><option value="butt">השקה</option><option value="lap">חפייה</option></select></label>
+<label>תנוחה<select id="pos"><option>F1</option><option>F2</option><option>F3</option><option>F4</option><option>G1</option><option>G2</option><option>G3</option><option>G4</option></select></label>
+</div><div id="setup" style="margin-top:14px"></div></div></section>
+
+<section class="weld-section"><p class="section-kicker">02 · יסודות התהליך</p><h2>קשת, ידית ואלקטרודה</h2><div class="grid">
+<div class="card"><h3>אורך קשת</h3><p class="muted">המרחק בין קצה ליבת האלקטרודה לאמבט הריתוך. בתרגילי הספר מופיעה קשת עבודה קצרה של כ-3 מ״מ כדוגמת לימוד; בפועל יש להתאים לסוג האלקטרודה ולתנוחה.</p></div>
+<div class="card"><h3>זווית תנועה</h3><p class="muted">הטיית האלקטרודה ביחס לכיוון ההתקדמות. שינוי הזווית משנה רוחב, תפיחה וחדירה. ב-SMAW הספר מלמד בדרך כלל תנועת משיכה.</p></div>
+<div class="card"><h3>זווית פעולה</h3><p class="muted">הזווית במישור הניצב לכיוון התנועה. במחבר קמץ סימטרי נקודת מוצא אופיינית היא סביב 45° בין שני החלקים.</p></div>
+<div class="card"><h3>צידוד / Weave</h3><p class="muted">תנועה רוחבית להרחבת הזחל, שליטה בשוליים ושיפור ההתכה. בריתוך רב-שכבתי תנועת השורש, המילוי והכיסוי עשויה להשתנות.</p></div>
+<div class="card"><h3>ציפוי האלקטרודה</h3><p class="muted">הציפוי מסייע לייצוב הקשת, להגנה על אמבט הריתוך, ליצירת סיגים ולשליטה בתהליך. אין לעבוד עם ליבה שקולף ממנה הציפוי.</p></div>
+<div class="card"><h3>קוטביות</h3><p class="muted"><b>DCEN</b> – האלקטרודה בקוטב השלילי. <b>DCEP</b> – האלקטרודה בקוטב החיובי. הבחירה נקבעת לפי האלקטרודה, היישום והוראות היצרן.</p></div>
+</div><div class="card" style="margin-top:12px"><h3>משפחות אלקטרודות – לא כולן אותו דבר</h3><div class="grid"><div><b>E6013 · רוטילית</b><p class="muted">אלקטרודה נפוצה ללימוד ולעבודות מסגרות. בדוגמת הספר Ø3.2 מ״מ מופיע תחום טיפוסי של 75–125A.</p></div><div><b>E7018 · בסיסית / דלת מימן</b><p class="muted">דורשת הקפדה גבוהה יותר על יובש וטכניקה. בדוגמת הספר Ø3.2 מ״מ מופיע 120–170A.</p></div><div><b>E308L · נירוסטה</b><p class="muted">הספר מדגים כי עבור קוטר דומה היא נוטה לעבוד בזרמים נמוכים יותר מפלדה פחמנית, בין היתר בגלל פיזור חום שונה.</p></div><div><b>הסמכת רתך</b><p class="muted">הסמכה אינה “רתך לכל דבר”: תהליך, חומר, עובי, תנוחה וסוג ציפוי האלקטרודה משפיעים על תחום ההסמכה.</p></div></div></div></section><section class="weld-section"><p class="section-kicker">03 · תנוחות ומחברים</p><h2>שפה אחידה במסגריה</h2><div class="grid weld-pos" id="positions"></div>
+<div class="card weld-joints"><h3>מונחי מחבר חשובים</h3><div class="grid"><div><b>מחבר השקה</b><p class="muted">שני רכיבים המצויים בקירוב באותו מישור. בחדירה חלקית, מידת הריתוך מתארת את עומק החדירה.</p></div><div><b>מחבר קמץ / T</b><p class="muted">חיבור של רכיב לרכיב בזווית, לרוב עם ריתוך מילאת. יש להתייחס לצלע, צוואר, שורש ועומק התכה.</p></div><div><b>מחבר חפייה</b><p class="muted">שני רכיבים חופפים; איכות ההתאמה וניקיון השפות משפיעים ישירות על התפר.</p></div><div><b>ריתוך הכלבה / תקים</b><p class="muted">תפיסות זמניות לקיבוע המכלול. סדר נכון של התקים מסייע לשמור על המידות ולהקטין עיוותים.</p></div></div></div></section>
+
+<section class="weld-section"><p class="section-kicker">04 · פגמים</p><h2>Defect Diagnostics</h2>
+<div class="card"><div class="formgrid"><label>חיפוש פגם / תסמין<input id="dq" placeholder="לדוגמה: סיגים, חוסר חדירה, קעקוע"></label></div><div id="defects" class="defect-grid"></div></div></section>
+
+<section class="weld-section"><p class="section-kicker">05 · בקרת איכות</p><h2>איזו בדיקה נותנת איזה מידע?</h2><div class="grid" id="inspections"></div></section>
+
+<section class="weld-section"><p class="section-kicker">06 · סימני ריתוך</p><h2>איך לקרוא הוראת ריתוך בשרטוט</h2>
+<div class="card symbol-card"><div class="weld-symbol-demo"><span class="arrow">↙</span><span class="ref"></span><span class="fillet">△</span><span class="tail">⌁</span></div><div class="grid"><div><b>קו ייחוס</b><p class="muted">הקו שעליו מופיע סמל הריתוך והמידות.</p></div><div><b>חץ</b><p class="muted">מצביע על המחבר שאליו מתייחסת ההוראה.</p></div><div><b>זנב / מזלג</b><p class="muted">משמש לנתונים משלימים כגון תהליך הריתוך או הערה.</p></div><div><b>מידת ריתוך</b><p class="muted">בהשקה: חדירה מלאה עשויה להופיע ללא מידה; בחדירה חלקית המידה מתארת עומק. במילאת המידה מתארת את גודל הריתוך לפי שיטת הסימון הרלוונטית.</p></div></div><p class="muted wi-note">לפני ייצור לפי סימן תקני יש לבדוק את התקן/השרטוט העדכני של הפרויקט. המסך נועד להבנה ותיאום בתוך המסגריה.</p></div></section>
+
+<section class="weld-section"><p class="section-kicker">07 · חום, לחות ועיוות</p><h2>דברים שהמסגריה חייבת לזכור</h2><div class="grid">
+<div class="card"><h3>חימום מוקדם</h3><p class="muted">עשוי לסייע בהתכה, להאט את קצב הקירור, לאדות לחות ולהפחית סיכון לסידוק מימני. הצורך והטמפרטורה אינם נקבעים לפי המסך הזה אלא לפי חומר, עובי, WPS ותקן.</p></div>
+<div class="card"><h3>סידוק מימני</h3><p class="muted">לחות היא מקור למימן בקשת. בפלדות רגישות הסידוק עלול להתפתח באיחור; לכן יש משמעות לאלקטרודות דלות מימן, אחסון יבש ובקרת תהליך.</p></div>
+<div class="card"><h3>עיוותים</h3><p class="muted">החימום והקירור גורמים להתפשטות והתכווצות לא אחידות. תכנון סדר ריתוך, תקים, ריתום מבוקר וסימטריה יכולים לצמצם עיוותים.</p></div>
+<div class="card"><h3>התחלה / עצירה</h3><p class="muted">נקודות התחלה, החלפת אלקטרודה וסיום רגישות לפגמים. יש לנקות סיגים היטב ולבנות חיבור המשכי ללא מכתש או תפיחה מיותרת.</p></div>
+</div></section>
+
+<section class="weld-section"><p class="section-kicker">08 · בטיחות</p><h2>Pre-Weld Safety Check</h2><div class="card"><div id="safety" class="safety-list"></div><button class="btn ghost" id="resetSafety" style="margin-top:12px">איפוס בדיקה</button></div></section>
+
+<section class="weld-section"><p class="section-kicker">09 · מקור וגבולות</p><h2>איך הידע משמש במערכת</h2><div class="card"><p>המודול נבנה מסיכום מקצועי של <b>„ריתוך מבנים באלקטרודה מצופה”</b>, יצחק נוימן, משרד העבודה, מהדורת 2019. לא הועתקו לסביבת האתר האיורים או עמודי הספר.</p><p class="muted">הספר הוא מקור לימודי. תקנים, WPS, הוראות יצרן, מפרט פרויקט והסמכת הרתך הם המקור המחייב לעבודה בפועל. בפרויקטים קונסטרוקטיביים או בטיחותיים נדרש גורם מוסמך בהתאם לדין ולמפרט.</p></div></section>
+</main>
+<script src="app.js"></script><script src="welding.js"></script><script>
+nav.innerHTML=MP.nav('welding.html');
+const $=id=>document.getElementById(id),q=new URLSearchParams(location.search);if(q.get('t'))th.value=q.get('t');if(q.get('d'))dia.value=q.get('d');
+function renderSetup(){const r=WELD.recommend(th.value,{electrode:el.value,diameter:dia.value}),p=WELD.positions.find(x=>x.code===pos.value),amps=r.amps?`${r.amps[0]}–${r.amps[1]} A`:'לפי נתוני יצרן / WPS';setup.innerHTML=`<div class="wi-grid"><div><span>קוטר מותר לפי טבלת העובי</span><b>${r.band?.diameters||'מחוץ לטווח הטבלה'} מ״מ</b></div><div><span>טווח זרם פתיחה</span><b>${amps}</b></div><div><span>תנוחה</span><b>${p?.code} · ${p?.name}</b></div><div><span>הכנת מחבר</span><b>${r.band?.prep||'לפי WPS/תקן'}</b></div></div>${r.warning?`<div class="warn" style="margin-top:12px">${r.warning}</div>`:''}<div class="notice" style="margin-top:12px"><b>לפני הצתה:</b> ודא ניקיון, הארקה טובה, קשת מתאימה, אלקטרודה יבשה והתאמת הזרם בפועל לפי האלקטרודה, התנוחה והיצרן.</div>`}
+['th','el','dia','joint','pos'].forEach(id=>$(id).addEventListener('input',renderSetup));renderSetup();
+positions.innerHTML=WELD.positions.map(x=>`<div class="card"><span class="weld-code">${x.code}</span><h3>${x.name}</h3><p class="muted">${x.note}</p><span class="pill">${x.level}</span></div>`).join('');
+function renderDefects(){const z=dq.value.trim().toLowerCase(),D=WELD.defects.filter(x=>!z||`${x.name} ${x.look} ${x.causes.join(' ')}`.toLowerCase().includes(z));defects.innerHTML=D.map(x=>`<details class="defect"><summary><b>${x.name}</b><span>${x.look}</span></summary><div class="defect-body"><b>גורמים אפשריים</b><ul>${x.causes.map(v=>`<li>${v}</li>`).join('')}</ul><b>כיווני בדיקה/תיקון</b><ul>${x.actions.map(v=>`<li>${v}</li>`).join('')}</ul></div></details>`).join('')||'<div class="empty">לא נמצא פגם תואם.</div>'}dq.addEventListener('input',renderDefects);renderDefects();
+inspections.innerHTML=WELD.inspections.map(x=>`<div class="card"><span class="pill">${x.type}</span><h3>${x.name}</h3><p class="muted">${x.detect}</p></div>`).join('');
+function renderSafety(){const saved=JSON.parse(localStorage.getItem('mp_weld_safety')||'[]');safety.innerHTML=WELD.safety.map((x,i)=>`<label class="safety-row"><input type="checkbox" data-i="${i}" ${saved.includes(i)?'checked':''}><span>${x}</span></label>`).join('');safety.querySelectorAll('input').forEach(c=>c.onchange=()=>{const a=[...safety.querySelectorAll('input:checked')].map(x=>+x.dataset.i);localStorage.setItem('mp_weld_safety',JSON.stringify(a))})}renderSafety();resetSafety.onclick=()=>{localStorage.removeItem('mp_weld_safety');renderSafety()};
+</script></body></html>

@@ -98,6 +98,7 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
  <section id="detail"></section>
 </main>
 <footer><div class="wrap">התוכניות הן תבניות עבודה לעבודות מסגרות נפוצות ואינן מחליפות תכנון הנדסי. יש לוודא התאמה לתקנים הרלוונטיים (למשל ת״י 1142 למעקות, ת״י 900-21.03 לשערים חשמליים) ולתנאי האתר.</div></footer>
+<script src="welding.js"></script>
 <script>
 // ===== 3D engine: model -> cut list + 4 projected views =====
 const OR='#E8590C',OT='#B93E07',INK='#1F2328',ST='#6B7680',STOCK=6000,KERF=3;
@@ -445,7 +446,7 @@ function moreHTML(p){const c=calcs(p),ang=p.parts.filter(r=>r[4]);
  return`<div class="tools no-print">
  <h2>חיתוכי זווית</h2>${ang.length?`<ul style="padding-inline-start:20px">${ang.map(r=>`<li>#${p.parts.indexOf(r)+1} ${r[0]} – חיתוך קצוות בזווית <b>${r[4]}°</b> (משלים ${90-r[4]}° על המסור)</li>`).join('')}</ul>`:''}<p class="muted" style="font-size:14px">שאר החלקים – חיתוך ישר 90°. במסגרות אפשר לחתוך פינות ב-45°: מוסיפים לאורך החלק את רוחב הפרופיל.</p>
  <h2>צבע וגימור</h2><table><tr><td>שטח לצביעה</td><td><b>${c.A.toFixed(1)} מ״ר</b></td></tr><tr><td>יסוד + 2 שכבות (כיסוי ~8 מ״ר לליטר)</td><td><b>${c.lit.toFixed(1)} ליטר</b> (כ-${(c.lit/3).toFixed(1)} ל׳ לשכבה)</td></tr></table>
- <h2>ריתוך</h2><table><tr><td>אורך ריתוך משוער</td><td><b>${c.wm.toFixed(1)} מ׳</b></td></tr><tr><td>אלקטרודות 2.5 מ״מ</td><td>~${c.elec} יח׳</td></tr><tr><td>או חוט MIG 0.8 מ״מ</td><td>~${c.wire.toFixed(2)} ק״ג · גז ~${fmt(c.gasL)} ליטר</td></tr><tr><td>זמן קשת נטו</td><td>~${c.hrs.toFixed(1)} שעות</td></tr></table>
+ <h2>ריתוך</h2><table><tr><td>אורך ריתוך משוער</td><td><b>${c.wm.toFixed(1)} מ׳</b></td></tr><tr><td>מתכלים – הערכת כמות בלבד</td><td>~${c.elec} אלקטרודות 2.5 מ״מ</td></tr><tr><td>זמן קשת נטו</td><td>~${c.hrs.toFixed(1)} שעות</td></tr></table>${window.WELD?WELD.renderPlanCard(p):''}
  <h2>בדיקת קורה (מנחה)</h2><div class="trow"><label>חלק<select id="lb">${p.parts.map((r,i)=>`<option value="${i}">#${i+1} ${r[0]} (${r[1]})</option>`).join('')}</select></label>
  <label>מפתח בין תמיכות (מ״מ)<input id="ls" type="number"></label><label>עומס (ק״ג למטר)<input id="lw" type="number" value="50"></label></div><div id="lr" style="margin-top:8px"></div>
  <p class="muted" style="font-size:13px"><b>בדיקת המחשה בלבד:</b> קורה פשוטה בעומס אחיד, פלדה S235, ללא בדיקת חיבורים, עיגונים, פיתול, עומסי רוח/מכה/רטט או מצבי קצה אחרים. הערכים 140 MPa ומפתח/200 הם ספי המחשה במחשבון ואינם אישור הנדסי. עבודה קונסטרוקטיבית או בטיחותית מחייבת תכנון ואישור מהנדס לפי המקרה והתקנים.</p>
