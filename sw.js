@@ -1,4 +1,4 @@
-const C='mp-v9';
+const C='mp-v10';
 const CORE=['./','./index.html','./hub.html','./new-job.html','./plans.html','./optimizer.html','./workshop.html','./inventory.html','./projects.html','./smart.html','./welding.html','./account.html','./pricing.html','./order.html','./app.css','./premium.css','./app.js','./welding.js','./welding-v2.js','./manifest.json','./icon-192.png','./icon-512.png'];
 const put=async(r,res)=>{if(!res||!res.ok)return res;const c=await caches.open(C);await c.put(r,res.clone());return res};
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
