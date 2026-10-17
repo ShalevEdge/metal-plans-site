@@ -58,6 +58,16 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
  #detail svg{background:#fff;max-height:none}.card{border:1px solid #999;background:#fff}
  th{background:#eee;color:#000}td,th{border-color:#bbb}.warn{background:#f5f5f5;color:#000}.muted{color:#444}
 }
+.views{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.vw{margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+.vw figcaption{font-weight:900;font-size:15px;color:var(--ort);border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:4px}
+.vw svg{width:100%;height:auto;max-height:420px;display:block}
+#detail .vw svg{background:none;border:0;padding:0;max-height:420px}
+.tb{margin:4px 0 8px;font-size:13px}.tb td{border:1px solid var(--tx);padding:6px 8px}
+.bn{display:inline-block;min-width:24px;height:24px;border:1.5px solid var(--ort);color:var(--ort);border-radius:50%;text-align:center;line-height:21px;font-size:13px}
+.item svg{width:100%;height:110px;display:block;margin-bottom:6px}
+@media(max-width:700px){.views{grid-template-columns:1fr}}
+@media print{.views{grid-template-columns:1fr 1fr}.vw{break-inside:avoid}}
 </style>
 </head>
 <body>
@@ -68,8 +78,9 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
   <p class="muted" id="total"></p>
   <div class="types" id="types"></div>
   <div class="filters">
-   <div><label for="fw">רוחב / אורך</label><select id="fw"></select></div>
-   <div><label for="fh">גובה</label><select id="fh"></select></div>
+   <div><label for="fw" id="lw">רוחב</label><select id="fw"></select></div>
+   <div><label for="fh" id="lh">גובה</label><select id="fh"></select></div>
+   <div id="sw"><label for="fs">סגנון</label><select id="fs"></select></div>
   </div>
   <p class="count" id="count"></p>
  </div>
@@ -79,251 +90,284 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 </main>
 <footer><div class="wrap">התוכניות הן תבניות עבודה לעבודות מסגרות נפוצות ואינן מחליפות תכנון הנדסי. יש לוודא התאמה לתקנים הרלוונטיים (למשל ת״י 1142 למעקות, ת״י 900-21.03 לשערים חשמליים) ולתנאי האתר.</div></footer>
 <script>
-const OR='#E8590C',OT='#B93E07',WH='#1F2328',ST='#6B7680',FILL='#DCE1E6',STOCK=6000,KERF=3;
+// ===== 3D engine: model -> cut list + 4 projected views =====
+const OR='#E8590C',OT='#B93E07',INK='#1F2328',ST='#6B7680',STOCK=6000,KERF=3;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
 const ltr=t=>`<span dir="ltr">${t}</span>`;
-const R=(x,y,w,h,c=WH,f=FILL)=>({t:'r',x,y,w,h,c,f});
-const Lh=(x1,y1,x2,y2,c=ST,d)=>({t:'l',x1,y1,x2,y2,c,d});
-const C=(x,y,r)=>({t:'c',x,y,r});
-const D=(x1,y1,x2,y2,t)=>({x1,y1,x2,y2,t});
-
-function draw(W,H,shapes,dims,thumb){
- const M=Math.max(W,H),pad=M*(thumb?.04:.13),fs=M/26;
- let s='';
- for(const r of shapes){
-  if(r.t==='r')s+=`<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="${r.f}" stroke="${r.c}" stroke-width="1.4" vector-effect="non-scaling-stroke"/>`;
-  else if(r.t==='l')s+=`<line x1="${r.x1}" y1="${r.y1}" x2="${r.x2}" y2="${r.y2}" stroke="${r.c}" stroke-width="1.4" ${r.d?'stroke-dasharray="6 5"':''} vector-effect="non-scaling-stroke"/>`;
-  else s+=`<circle cx="${r.x}" cy="${r.y}" r="${r.r}" fill="none" stroke="${OR}" stroke-width="1.6" vector-effect="non-scaling-stroke"/>`;
- }
- if(!thumb)for(const d of dims){
-  const t=fs*.35,ln=(a,b,c,e)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${e}" stroke="${ST}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
-  if(d.y1===d.y2){s+=ln(d.x1,d.y1,d.x2,d.y2)+ln(d.x1,d.y1-t,d.x1,d.y1+t)+ln(d.x2,d.y2-t,d.x2,d.y2+t)+
-   `<text x="${(d.x1+d.x2)/2}" y="${d.y1-fs*.35}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle">${d.t}</text>`}
-  else{const cy=(d.y1+d.y2)/2,cx=d.x1-fs*.35;s+=ln(d.x1,d.y1,d.x2,d.y2)+ln(d.x1-t,d.y1,d.x1+t,d.y1)+ln(d.x2-t,d.y2,d.x2+t,d.y2)+
-   `<text x="${cx}" y="${cy}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle" transform="rotate(-90 ${cx} ${cy})">${d.t}</text>`}
- }
- const x0=Math.min(0,...shapes.map(r=>r.t==='r'?r.x:r.t==='l'?Math.min(r.x1,r.x2):r.x-r.r));
- const x1=Math.max(W,...shapes.map(r=>r.t==='r'?r.x+r.w:r.t==='l'?Math.max(r.x1,r.x2):r.x+r.r));
- const y1=Math.max(H,...shapes.map(r=>r.t==='r'?r.y+r.h:r.t==='l'?Math.max(r.y1,r.y2):r.y+r.r));
- const y0=Math.min(0,...shapes.map(r=>r.t==='r'?r.y:r.t==='l'?Math.min(r.y1,r.y2):r.y-r.r));
- return `<svg viewBox="${x0-pad} ${y0-pad} ${x1-x0+2*pad} ${y1-y0+2*pad}" direction="ltr" role="img" aria-label="שרטוט">${s}</svg>`;
+const sec=p=>{const v=p.split('×').map(Number);return[v[0],v[1]]};
+let M=[],HW=[];
+// element = two caps (3D point arrays) extruded between them
+function elem(A,B,role,n,p,len){M.push({A,B,role,n,p,len})}
+function box(x,y,z,dx,dy,dz,role='m',n,p,len){const r=(zz)=>[[x,y,zz],[x+dx,y,zz],[x+dx,y+dy,zz],[x,y+dy,zz]];elem(r(z),r(z+dz),role,n,p,len)}
+// members: along x / y / z. section [a,b]: a = visible face, b = depth. rot swaps.
+function bx(n,p,x,y,z,len,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];box(x,y,z,len,a,b,role,n,p,len)}
+function by(n,p,x,y,z,len,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];box(x,y,z,a,len,b,role,n,p,len)}
+function bz(n,p,x,y,z,len,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];box(x,y,z,b,a,len,role,n,p,len)}
+// slanted member in XY plane (extruded along z)
+function sxy(n,p,x0,y0,x1,y1,z,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];const L=Math.hypot(x1-x0,y1-y0),nx=-(y1-y0)/L*a,ny=(x1-x0)/L*a;
+ const q=zz=>[[x0,y0,zz],[x1,y1,zz],[x1+nx,y1+ny,zz],[x0+nx,y0+ny,zz]];elem(q(z),q(z+b),role,n,p,Math.round(L))}
+// slanted member in ZY plane (extruded along x)
+function szy(n,p,z0,y0,z1,y1,x,role='m',rot){let[a,b]=sec(p);if(rot)[a,b]=[b,a];const L=Math.hypot(z1-z0,y1-y0),nz=-(y1-y0)/L*a,ny=(z1-z0)/L*a;
+ const q=xx=>[[xx,y0,z0],[xx,y1,z1],[xx,y1+ny,z1+nz],[xx,y0+ny,z0+nz]];elem(q(x),q(x+b),role,n,p,Math.round(L))}
+function frame(nr,ns,p,x,y,z,w,h){const[a]=sec(p);bx(nr,p,x,y,z,w);bx(nr,p,x,y+h-a,z,w);by(ns,p,x,y+a,z,h-2*a);by(ns,p,x+w-a,y+a,z,h-2*a);return a}
+const SN={v:'מוטות אנכיים',h:'פרופילים אופקיים (פרטיות)',s:'פח מלא',m:'רשת מרותכת',q:'משבצות',l:'תריסים',d1:'חיפוי צד אחד',d2:'חיפוי שני צדדים'};
+function infill(s,x,y,z,w,h,df,o={}){
+ const bp=o.bp||'20×20×1.5',bw=sec(bp)[0],gap=o.gap||100,nm=o.nm||'מוט מילוי';
+ if(s==='v'||s==='q'){const n=Math.max(0,Math.ceil((w-gap)/(gap+bw))),sp=(w-n*bw)/(n+1),zc=z+(df-sec(bp)[1])/2;
+  for(let i=0;i<n;i++)by(nm,bp,x+sp+i*(bw+sp),y,zc,h);
+  if(s==='q'){const k=Math.max(0,Math.ceil((h-gap)/(gap+bw))),sv=(h-k*bw)/(k+1);for(let i=0;i<k;i++)bx(o.nh||'מוט אופקי',bp,x,y+sv+i*(bw+sv),zc-sec(bp)[1],w)}
+  return`מרווח בין מוטות: ${fmt(sp)} מ״מ`}
+ if(s==='h'){const n=Math.max(1,Math.ceil((h-20)/80)),g=(h-n*60)/(n+1),zc=z+(df-20)/2;
+  for(let i=0;i<n;i++)bx('פרופיל מילוי אופקי','60×20×1.5',x,y+g+i*(60+g),zc,w);return`${n} פרופילים אופקיים, מרווח ${fmt(g)} מ״מ`}
+ if(s==='s'||s==='m'){const k=Math.max(0,Math.ceil(h/900)-1),zc=z+(df-20)/2;
+  for(let i=1;i<=k;i++)bx('קורת חיזוק','40×20×2',x,y+i*h/(k+1)-20,zc,w);
+  box(x,y,z+df/2-1,w,h,2,s==='s'?'sheet':'mesh');
+  HW.push(s==='s'?`פח 1.5 מ״מ ${fmt(w)}×${fmt(h)}`:`רשת מרותכת 50×50×4 ${fmt(w)}×${fmt(h)}`);return s==='s'?'פח מרותך למסגרת + קורות חיזוק':'רשת מרותכת למסגרת + קורות חיזוק'}
+ return'';
 }
-function barsAcross(inner,bw=20,gap=100){const n=Math.max(0,Math.ceil((inner-gap)/(gap+bw)));return {n,sp:(inner-n*bw)/(n+1)}}
-function vbars(x0,inner,y,h,bw=20){const {n,sp}=barsAcross(inner,bw);const a=[];for(let i=0;i<n;i++)a.push(R(x0+sp+i*(bw+sp),y,bw,h));return {a,n,sp}}
-</script>
-<script>
+function parts(){const m=new Map();for(const e of M)if(e.n){const k=e.n+'|'+e.p+'|'+Math.round(e.len);m.has(k)?m.get(k)[3]++:m.set(k,[e.n,e.p,Math.round(e.len),1])}return[...m.values()]}
+function hwList(){const c=new Map();for(const h of HW)c.set(h,(c.get(h)||0)+1);return[...c].map(([h,q])=>q>1?`${q}× ${h}`:h)}
+// ---- projection ----
+const VIEWS={
+ front:{t:'חזית',V:[0,0,-1],P:p=>[p[0],-p[1]]},
+ side:{t:'מבט צד',V:[1,0,0],P:p=>[p[2],-p[1]]},
+ top:{t:'מבט על',V:[0,1,0],P:p=>[p[0],-p[2]]},
+ iso:{t:'איזומטרי',V:[.57735,.57735,-.57735],P:p=>[(p[0]+p[2])*.7071,(p[0]-2*p[1]-p[2])*.4082]}};
+const COL={m:['#DCE1E6','#F1F3F5','#B9C1CA'],post:['#F9C7A3','#FCDCC4','#F0A06B'],wheel:['#F9C7A3','#FCDCC4','#F0A06B'],sheet:['#C9D3DC','#DCE3EA','#AEB9C4'],
+ mesh:['url(#mh)','url(#mh)','url(#mh)'],wood:['#EADBC8','#F3E7D8','#D9C3A8'],wall:['url(#wh)','#ECEDEF','#DADCE0'],track:['#9AA3AB','#B5BCC3','#7E8890'],conc:['#E3E5E8','#EEF0F2','#CDD1D6']};
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+function faces(e){const A=e.A,B=e.B,n=A.length,f=[A,[...B].reverse()];for(let i=0;i<n;i++){const j=(i+1)%n;f.push([A[i],A[j],B[j],B[i]])}
+ const c=[0,1,2].map(k=>(A.reduce((s,p)=>s+p[k],0)+B.reduce((s,p)=>s+p[k],0))/(2*n));
+ return f.map(F=>{const fc=[0,1,2].map(k=>F.reduce((s,p)=>s+p[k],0)/F.length);let N=[0,0,0];
+  for(let i=0;i<F.length;i++){const a=F[i],b=F[(i+1)%F.length];N[0]+=(a[1]-b[1])*(a[2]+b[2]);N[1]+=(a[2]-b[2])*(a[0]+b[0]);N[2]+=(a[0]-b[0])*(a[1]+b[1])}
+  const l=Math.hypot(...N)||1;N=N.map(v=>v/l);if(dot(N,[fc[0]-c[0],fc[1]-c[1],fc[2]-c[2]])<0)N=N.map(v=>-v);return{F,N,fc}})}
+const DEFS=`<defs><pattern id="mh" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M0 0L14 14M14 0L0 14" stroke="#7E8890" stroke-width=".8"/></pattern><pattern id="wh" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#ECEDEF"/><path d="M0 12L12 0" stroke="#AEB4BB" stroke-width=".8"/></pattern></defs>`;
+function view(vk,o={}){
+ const v=VIEWS[vk],iso=vk==='iso',polys=[];
+ for(const e of M)for(const f of faces(e)){if(dot(f.N,v.V)<=1e-6)continue;
+  const d=dot(f.fc,v.V),cat=iso?(f.N[1]>.5?1:(f.N[2]<-.5?0:2)):0,fill=(COL[e.role]||COL.m)[cat];
+  polys.push({d,pts:f.F.map(v.P),fill,e})}
+ polys.sort((a,b)=>a.d-b.d);
+ const all=polys.flatMap(p=>p.pts);if(!all.length)return'';
+ let x0=Math.min(...all.map(p=>p[0])),x1=Math.max(...all.map(p=>p[0])),y0=Math.min(...all.map(p=>p[1])),y1=Math.max(...all.map(p=>p[1]));
+ const S=Math.max(x1-x0,y1-y0),fs=S/24,pad=o.thumb?S*.03:S*.16;let s='';
+ for(const p of polys)s+=`<polygon points="${p.pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${p.fill}" stroke="${INK}" stroke-width="${o.thumb?.6:.9}" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
+ if(!o.thumb){
+  if(vk==='front'||vk==='side'){const gy=0;if(y1>=gy-1)s+=`<line x1="${x0-S*.08}" y1="${gy}" x2="${x1+S*.08}" y2="${gy}" stroke="${ST}" stroke-width="1.2" stroke-dasharray="8 5" vector-effect="non-scaling-stroke"/>`}
+  if(!iso){const L=(a,b,c,d,w=1)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${ST}" stroke-width="${w}" vector-effect="non-scaling-stroke"/>`,t=fs*.3;
+   const yb=y1+fs*1.6,xl=x0-fs*1.6,T=(x,y,txt,r)=>`<text x="${x}" y="${y}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle"${r?` transform="rotate(-90 ${x} ${y})"`:''}>${txt}</text>`;
+   s+=L(x0,yb,x1,yb)+L(x0,yb-t,x0,yb+t)+L(x1,yb-t,x1,yb+t)+L(x0,y1+t,x0,yb-t,.6)+L(x1,y1+t,x1,yb-t,.6)+T((x0+x1)/2,yb-fs*.3,fmt(x1-x0));
+   s+=L(xl,y0,xl,y1)+L(xl-t,y0,xl+t,y0)+L(xl-t,y1,xl+t,y1)+T(xl-fs*.35,(y0+y1)/2,fmt(y1-y0),1)}
+  if(vk==='front'&&o.balloons){const seen=new Set(),bl=[];
+   o.balloons.forEach((pt,i)=>{const e=M.find(e=>e.n&&e.n+'|'+e.p+'|'+Math.round(e.len)===pt);if(!e)return;
+    const fr=faces(e).find(f=>f.N[2]<-.5)||faces(e)[0],c=v.P(fr.fc);bl.push([c,i+1])});
+   const r=fs*.62;for(const[[cx,cy],k] of bl)s+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*1.6}" y2="${cy-r*1.6}" stroke="${OT}" stroke-width=".8" vector-effect="non-scaling-stroke"/><circle cx="${cx+r*2.3}" cy="${cy-r*2.3}" r="${r}" fill="#fff" stroke="${OT}" stroke-width="1.2" vector-effect="non-scaling-stroke"/><text x="${cx+r*2.3}" y="${cy-r*2.3+r*.38}" fill="${OT}" font-size="${r*1.1}" font-family="Heebo" font-weight="700" text-anchor="middle">${k}</text>`}
+ }
+ return`<svg viewBox="${x0-pad} ${y0-pad} ${x1-x0+2*pad} ${y1-y0+2*pad}" direction="ltr" role="img" aria-label="${v.t}">${DEFS}${s}</svg>`;
+}
+
+// ===== generators (3D). Each f() fills M / HW and returns {hw,notes,name?} =====
+const S4=['v','h','s','m'];
 const GEN={
- SG:{name:'שער נגרר',wl:'רוחב פתח',W:[3000,6000,250],H:[1200,1400,1600,1800,2000],f(W,H){
-  const big=W>4000,f=big?80:60,p=big?'80×40×2.5':'60×40×2',L=W+300,inH=H-2*f,inL=L-2*f;
-  const b=vbars(f,inL,f,inH);
-  return{L,H,parts:[['קורה עליונה + תחתונה',p,L,2],['עמוד קצה',p,inH,2],['מוט מילוי','20×20×1.5',inH,b.n]],
-   shapes:[R(0,0,L,f),R(0,H-f,L,f),R(0,f,f,inH),R(L-f,f,f,inH),...b.a,C(L*.18,H+45,45),C(L*.82,H+45,45),Lh(-250,H+90,L+250,H+90)],
-   dims:[D(0,-L*.05,L,-L*.05,fmt(L)),D(-L*.05,0,-L*.05,H,fmt(H))],
-   hw:['2 גלגלי מסילה מתאימים למשקל הכנף',`מסילה תחתונה באורך ~${fmt(2*W+300)} מ״מ`,'מוביל עליון עם גלגלות + עצר קצה'],
-   notes:[`כנף = פתח + 300 מ״מ חפיפה`,`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'לשער ממונע – לפי ת״י 900-21.03, כולל מניעת לכידה']}}},
- DG:{name:'שער כנף כפול',wl:'רוחב פתח',W:[2500,4500,250],H:[1200,1400,1600,1800,2000],f(W,H){
-  const f=W<=3500?50:60,p=f===50?'50×50×2':'60×40×2',lw=(W-30)/2,inH=H-2*f,inW=lw-2*f,xs=[10,20+lw];
-  let sh=[R(-100,-60,100,H+160,OR,'none'),R(W,-60,100,H+160,OR,'none')],n=0,sp=0;
-  for(const x of xs){const b=vbars(x+f,inW,f,inH);n=b.n;sp=b.sp;sh.push(R(x,0,lw,f),R(x,H-f,lw,f),R(x,f,f,inH),R(x+lw-f,f,f,inH),...b.a)}
-  return{L:W,H,parts:[['קורה עליונה + תחתונה',p,lw,4],['עמוד כנף',p,inH,4],['מוט מילוי','20×20×1.5',inH,n*2]],
-   shapes:sh,dims:[D(0,-W*.06,W,-W*.06,fmt(W)),D(-W*.09,0,-W*.09,H,fmt(H))],
-   hw:['4 צירים (2 לכל כנף)','בריח רצפה + מנעול מרכזי','עצר אמצעי'],
-   notes:[`רוחב כנף: ${fmt(lw)} מ״מ (מרווח 10 מ״מ בצירים ובאמצע)`,`מרווח בין מוטות: ${fmt(sp)} מ״מ`]}}},
- PP:{name:'פשפש',wl:'רוחב פתח',W:[900,1200,100],H:[1800,1900,2000,2100],f(W,H){
-  const f=40,p='40×40×2',lw=W-20,inH=H-2*f,inW=lw-2*f,seg=(inH-f)/2,x=10;
-  const top=vbars(x+f,inW,f,seg),bot=vbars(x+f,inW,f*2+seg,seg);
-  return{L:W,H,parts:[['קורה עליונה + תחתונה',p,lw,2],['עמוד כנף',p,inH,2],['קורת אמצע',p,inW,1],['מוט מילוי','20×20×1.5',seg,top.n*2]],
-   shapes:[R(-80,-50,80,H+100,OR,'none'),R(W,-50,80,H+100,OR,'none'),R(x,0,lw,f),R(x,H-f,lw,f),R(x,f,f,inH),R(x+lw-f,f,f,inH),R(x+f,f+seg,inW,f),...top.a,...bot.a],
-   dims:[D(0,-H*.05,W,-H*.05,fmt(W)),D(-H*.09,0,-H*.09,H,fmt(H))],
-   hw:['2–3 צירים','מנעול + ידית','עצר'],notes:[`רוחב כנף: ${fmt(lw)} מ״מ`,`מרווח בין מוטות: ${fmt(top.sp)} מ״מ`]}}},
- RL:{name:'מעקה',wl:'אורך מעקה',W:[1000,6000,500],H:[1050],f(Len,H){
-  const np=Math.ceil(Len/1500)+1,seg=(Len-np*50)/(np-1),postL=H-40,balL=H-40-90;
-  let sh=[R(0,0,Len,40)],nb=0,sp=0;
-  for(let i=0;i<np;i++){const x=i*(seg+50);sh.push(R(x,40,50,postL,OR));if(i<np-1){const b=vbars(x+50,seg,40,balL);nb+=b.n;sp=b.sp;sh.push(R(x+50,H-90,seg,20),...b.a)}}
-  sh.push(Lh(-200,H,Len+200,H));
-  return{L:Len,H,parts:[['מאחז יד','60×40×2',Len,1],['עמוד','50×50×2',postL,np],['קורה תחתונה','40×20×2',seg,np-1],['שבכה (מוט)','20×20×1.5',balL,nb]],
-   shapes:sh,dims:[D(0,-Len*.05,Len,-Len*.05,fmt(Len)),D(-Len*.05,0,-Len*.05,H,fmt(H))],
-   hw:[`${np} פלטות בסיס 120×120×8 + 4 ברגי עיגון לכל עמוד`],
-   notes:[`${np} עמודים במרחק ${fmt(seg+50)} מ״מ`,`מרווח בין מוטות: ${fmt(sp)} מ״מ`,'מרווח מהרצפה לקורה התחתונה: 70 מ״מ','גובה, מרווחים ועומסים – לאמת מול ת״י 1142 לפני ביצוע']}}},
- GR:{name:'סורג חלון',wl:'רוחב',W:[600,2000,100],H:[600,1600,100],f(W,H){
-  const f=25,inW=W-2*f,inH=H-2*f,b=vbars(f,inW,f,inH,16),nh=Math.max(1,Math.ceil(inH/600)-1);
-  const hs=[];for(let i=1;i<=nh;i++)hs.push(R(f,f+inH*i/(nh+1)-15,inW,30,WH,'#B9C1CA'));
-  return{L:W,H,parts:[['מסגרת אופקית','25×25×2',W,2],['מסגרת אנכית','25×25×2',inH,2],['מוט אנכי','16×16×1.5',inH,b.n],['פס אופקי (פלח)','30×5',inW,nh]],
-   shapes:[R(0,0,W,f,OR),R(0,H-f,W,f,OR),R(0,f,f,inH,OR),R(W-f,f,f,inH,OR),...b.a,...hs],
-   dims:[D(0,-H*.07,W,-H*.07,fmt(W)),D(-W*.07,0,-W*.07,H,fmt(H))],
-   hw:['4–6 אוזני עיגון / ברגי טריז'],notes:[`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'במידה של חלון יציאת חירום – להתקין סורג נפתח']}}},
- FN:{name:'גדר (מקטע)',wl:'אורך מקטע',W:[2000,2500,3000],H:[1000,1200,1400,1600,1800,2000],f(L,H){
-  const inL=L-60,pickH=H-100,nr=H>1500?3:2,b=vbars(30,inL,0,pickH);
-  const rails=[];for(let i=0;i<nr;i++)rails.push(R(30,150+(pickH-300)*i/(nr-1),inL,20,WH,'#B9C1CA'));
-  return{L,H,parts:[['עמוד (כולל 400 ביסוס)','60×60×2',H+400,2],['קורת חיבור','40×20×1.5',inL,nr],['מוט גדר','20×20×1.5',pickH,b.n]],
-   shapes:[R(-30,-40,60,H+440,OR),R(L-30,-40,60,H+440,OR),...b.a,...rails,Lh(-250,H,L+250,H),Lh(-60,H+400,L+60,H+400,ST,1)],
-   dims:[D(0,-L*.05,L,-L*.05,fmt(L)+' (מרכז-מרכז)'),D(-L*.06,0,-L*.06,H,fmt(H))],
-   hw:['בטון לביסוס עמודים (בור 300×300×400)'],notes:[`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'מרווח מהקרקע: 100 מ״מ','בגדר רציפה – עמוד משותף בין מקטעים (להפחית עמוד אחד לכל מקטע נוסף)']}}},
- ST:{name:'מדרגות',wl:'רוחב מדרגות',hl:'גובה קומה',W:[800,1000,1200],H:[1000,3000,250],f(W,H){
-  const n=Math.round(H/175),r=H/n,g=Math.min(300,Math.max(250,630-2*r)),nt=n-1,run=nt*g,sl=Math.round(Math.hypot(run+g,H)),inW=W-100;
-  const sh=[Lh(-300,H,run+300,H),Lh(run,0,run+900,0)];
-  for(let i=1;i<=nt;i++)sh.push(R((i-1)*g,H-i*r,g,30));
-  sh.push(Lh(0,H,run,0,WH),Lh(180,H,run+180,0,WH));
-  return{L:run,H,parts:[['קורת צד (מיתר)','100×50×3',sl,2],['מסגרת שלח – חזית/גב','40×20×2',inW,nt*2],['מסגרת שלח – צד','40×20×2',g-40,nt*2],['זווית תמיכה לשלח','40×40×4',g,nt*2]],
-   shapes:sh,dims:[D(0,H+H*.08,run,H+H*.08,fmt(run)),D(-H*.08,0,-H*.08,H,fmt(H))],
-   hw:['פלטות עיגון לרצפה ולתקרה העליונה','משטחי דריכה (עץ / פח מרוג) – לא כלולים'],
-   notes:[`${n} רומים של ${fmt(r)} מ״מ, שלח ${fmt(g)} מ״מ (2R+G = ${fmt(2*r+g)})`,`רוחב נטו בין המיתרים: ${fmt(inW)} מ״מ`,'נדרש מעקה / מאחז יד – לפי תקנות התכנון והבנייה ות״י 1142']}}},
- PG:{name:'פרגולה',wl:'אורך',hl:'עומק',W:[3000,6000,500],H:[2500,3000,3500,4000],f(L,Dp){
+ SG:{name:'שער נגרר',wl:'רוחב פתח',hl:'גובה',W:[3000,6000,100],H:[1200,1400,1600,1800,2000],S:S4,f(W,H,s){
+  const big=W>4000,p=big?'80×40×2.5':'60×40×2',L=W+300,y0=80,h=H-y0;
+  const a=frame('קורה עליונה + תחתונה','עמוד קצה',p,0,y0,0,L,h),ni=infill(s,a,y0+a,0,L-2*a,h-2*a,40);
+  box(L*.18-40,0,0,80,80,40,'wheel');box(L*.82-40,0,0,80,80,40,'wheel');box(-200,-12,5,L+400,12,30,'track');
+  return{hw:['2 גלגלי מסילה מתאימים למשקל הכנף',`מסילה תחתונה ${fmt(W+L)} מ״מ`,'מוביל עליון עם גלגלות + עצר קצה'],
+   notes:['כנף = פתח + 300 מ״מ חפיפה; מרווח 80 מ״מ לגלגלים',ni,'לשער ממונע – לפי ת״י 900-21.03, כולל מניעת לכידה']}}},
+ DG:{name:'שער כנף כפול',wl:'רוחב פתח',hl:'גובה',W:[2500,4500,100],H:[1200,1400,1600,1800,2000],S:S4,f(W,H,s){
+  const p=W<=3500?'50×50×2':'60×40×2',[a,b]=sec(p),lw=(W-30)/2,y0=50,h=H-y0,zp=(100-b)/2;let ni='';
+  by('עמוד ציר (כולל 500 ביסוס)','100×100×3',-100,-500,0,H+500,'post');by('עמוד ציר (כולל 500 ביסוס)','100×100×3',W,-500,0,H+500,'post');
+  for(const x of[10,20+lw]){frame('קורה עליונה + תחתונה','עמוד כנף',p,x,y0,zp,lw,h);ni=infill(s,x+a,y0+a,zp,lw-2*a,h-2*a,b)}
+  return{hw:['4 צירים (2 לכל כנף)','בריח רצפה + מנעול מרכזי','בטון ביסוס לעמודים 400×400×500'],notes:[`רוחב כנף ${fmt(lw)} מ״מ; מרווח 10 מ״מ בצירים ובאמצע`,ni]}}},
+ PP:{name:'פשפש',wl:'רוחב פתח',hl:'גובה',W:[800,1200,50],H:[1800,1900,2000,2100],S:S4,f(W,H,s){
+  const p='40×40×2',a=40,lw=W-20,y0=50,h=H-y0,zp=20,seg=(h-3*a)/2;
+  by('עמוד (כולל 500 ביסוס)','80×80×3',-80,-500,0,H+500,'post');by('עמוד (כולל 500 ביסוס)','80×80×3',W,-500,0,H+500,'post');
+  frame('קורה עליונה + תחתונה','עמוד כנף',p,10,y0,zp,lw,h);bx('קורת אמצע',p,10+a,y0+a+seg,zp,lw-2*a);
+  const ni=infill(s,10+a,y0+a,zp,lw-2*a,seg,a);infill(s,10+a,y0+2*a+seg,zp,lw-2*a,seg,a);
+  return{hw:['2–3 צירים','מנעול + ידית','עצר'],notes:[`רוחב כנף ${fmt(lw)} מ״מ`,ni]}}},
+ FN:{name:'גדר (מקטע)',wl:'אורך מקטע',hl:'גובה',W:[1500,3000,250],H:[800,2200,200],S:S4,f(L,H,s){
+  by('עמוד (כולל 400 ביסוס)','60×60×2',-30,-400,0,H+400,'post');by('עמוד (כולל 400 ביסוס)','60×60×2',L-30,-400,0,H+400,'post');
+  const inL=L-60,nr=H>1500?3:2;for(let i=0;i<nr;i++)bx('קורת חיבור','40×20×1.5',30,150+(H-370)*i/(nr-1),30,inL);
+  const ni=infill(s,30,100,10,inL,H-100,20,{nm:'מוט גדר'});
+  return{hw:['בטון לביסוס עמודים (בור 300×300×400)'],notes:['מרכז-מרכז עמודים = אורך המקטע',ni,'מרווח מהקרקע 100 מ״מ; בגדר רציפה עמוד משותף בין מקטעים']}}},
+ RL:{name:'מעקה',wl:'אורך',hl:'גובה',W:[1000,8000,250],H:[900,1050,1100],S:['v','s','m'],f(Len,H,s){
+  const np=Math.ceil(Len/1500)+1,seg=(Len-np*50)/(np-1);let ni='';
+  box(0,H-40,-5,Len,40,60,'m','מאחז יד','60×40×2',Len);
+  for(let i=0;i<np;i++){const x=i*(seg+50);by('עמוד','50×50×2',x,0,0,H-40,'post');
+   if(i<np-1){box(x+50,70,5,seg,20,40,'m','קורה תחתונה','40×20×2',seg);ni=infill(s,x+50,90,0,seg,H-130,50,{nm:'שבכה (מוט)'})}}
+  return{hw:[`${np} פלטות בסיס 120×120×8 + 4 ברגי עיגון`],notes:[`${np} עמודים, מרחק ${fmt(seg+50)} מ״מ`,ni,'מרווח מהרצפה 70 מ״מ; גובה ומרווחים – לאמת מול ת״י 1142']}}},
+ GR:{name:'סורג חלון',wl:'רוחב',hl:'גובה',W:[500,2400,100],H:[500,2000,100],S:['v','q'],f(W,H,s){
+  const a=frame('מסגרת אופקית','מסגרת אנכית','25×25×2',0,0,0,W,H);let ni;
+  if(s==='v'){ni=infill('v',a,a,0,W-2*a,H-2*a,25,{bp:'16×16×1.5',nm:'מוט אנכי'});const nh=Math.max(1,Math.ceil((H-2*a)/600)-1);
+   for(let i=1;i<=nh;i++)box(a,a+(H-2*a)*i/(nh+1)-15,-5,W-2*a,30,5,'m','פס אופקי (פלח)','30×5',W-2*a)}
+  else ni=infill('q',a,a,0,W-2*a,H-2*a,25,{bp:'16×16×1.5',gap:120,nm:'מוט אנכי',nh:'מוט אופקי'});
+  return{hw:['4–6 אוזני עיגון / ברגי טריז'],notes:[ni,s==='q'?'מוטות אופקיים מרותכים על פני האנכיים':'פסים אופקיים מרותכים בחזית','בחלון יציאת חירום – סורג נפתח']}}},
+ DR:{name:'דלת פלדה',wl:'רוחב משקוף',hl:'גובה',W:[700,1100,50],H:[1900,2400,50],S:['d1','d2'],f(W,H,s){
+  by('משקוף – צד','60×40×2',0,0,0,H,'post');by('משקוף – צד','60×40×2',W-60,0,0,H,'post');bx('משקוף – עליון','60×40×2',60,H-60,0,W-120,'post');
+  const lw=W-130,lh=H-75;frame('כנף – אופקי','כנף – אנכי','40×40×2',65,10,0,lw,lh);bx('כנף – קורת אמצע','40×40×2',105,10+lh/2-20,0,lw-80);
+  box(65,10,-2,lw,lh,2,'sheet');HW.push(`פח 1.5 מ״מ ${fmt(lw)}×${fmt(lh)}`);if(s==='d2'){box(65,10,40,lw,lh,2,'sheet');HW.push(`פח 1.5 מ״מ ${fmt(lw)}×${fmt(lh)}`)}
+  return{hw:['3 צירים כבדים','מנעול צילינדר + ידית','6 עוגני משקוף',...(s==='d2'?['בידוד צמר סלעים 40 מ״מ – אופציונלי']:[])],notes:[`כנף ${fmt(lw)}×${fmt(lh)} מ״מ, מרווח 5 מ״מ סביב`,'מרווח מהרצפה 10 מ״מ']}}},
+ ST:{name:'מדרגות',wl:'רוחב מדרגות',hl:'גובה קומה',W:[700,1500,100],H:[1000,4000,100],f(W,H){
+  const n=Math.round(H/175),r=H/n,g=Math.min(300,Math.max(250,630-2*r)),nt=n-1,run=nt*g;
+  sxy('קורת צד (מיתר)','100×50×3',0,0,run,H-r,0);sxy('קורת צד (מיתר)','100×50×3',0,0,run,H-r,W-50);
+  for(let i=1;i<=nt;i++){const tx=(i-1)*g,ty=i*r-40;
+   bz('מסגרת שלח – חזית/גב','40×20×2',tx,ty,50,W-100);bz('מסגרת שלח – חזית/גב','40×20×2',tx+g-20,ty,50,W-100);
+   bx('מסגרת שלח – צד','40×20×2',tx+20,ty,50,g-40);bx('מסגרת שלח – צד','40×20×2',tx+20,ty,W-70,g-40);
+   box(tx,i*r,0,g,4,W,'wood')}
+  box(run,H-200,0,700,200,W,'conc');
+  return{hw:['פלטות עיגון לרצפה ולתקרה העליונה','משטחי דריכה (עץ / פח מרוג) – לא כלולים'],
+   notes:[`${n} רומים של ${fmt(r)} מ״מ, שלח ${fmt(g)} מ״מ (2R+G = ${fmt(2*r+g)})`,`רוחב נטו בין המיתרים ${fmt(W-100)} מ״מ`,'נדרש מעקה / מאחז יד – לפי תקנות התכנון והבנייה ות״י 1142']}}},
+ SR:{name:'מעקה מדרגות',wl:'אורך אופקי',hl:'הפרש גובה',W:[1500,6000,250],H:[750,3500,250],ok:(L,H)=>{const a=Math.atan2(H,L)*180/Math.PI;return a>=25&&a<=42},f(L,H){
+  const k=H/L,sl=Math.hypot(L,H),np=Math.ceil(sl/1200)+1,rh=900,nb=Math.ceil((L-np*50)/120),n=Math.max(2,Math.round(H/175)),gs=L/n,rs=H/n;
+  let st=[[0,0]];for(let i=0;i<n;i++)st.push([i*gs,(i+1)*rs],[(i+1)*gs,(i+1)*rs]);st.push([L,0]);
+  elem(st.map(p=>[p[0],p[1],60]),st.map(p=>[p[0],p[1],900]),'conc');
+  sxy('מאחז יד (משופע)','60×40×2',0,rh-40,L,H+rh-40,-5,'m',1);sxy('קורה תחתונה (משופעת)','40×20×2',0,120,L,H+120,5,'m',1);
+  for(let i=0;i<np;i++){const x=i*(L-50)/(np-1);by('עמוד','50×50×2',x,k*x,0,rh-40+k*25,'post')}
+  for(let i=1;i<=nb;i++){const x=i*L/(nb+1)-10;by('מוט אנכי','20×20×1.5',x,k*x+140,15,rh-180)}
+  return{hw:[`${np} פלטות עיגון צד / רום`],notes:[`שיפוע ${Math.round(Math.atan2(H,L)*180/Math.PI)}°, אורך משופע ${fmt(sl)} מ״מ`,'גובה 900 מ״מ מעל אף המדרגה, מרווח ≤100 מ״מ – לאמת מול ת״י 1142','חיתוך קצוות המוטות בזווית השיפוע']}}},
+ PG:{name:'פרגולה',wl:'אורך',hl:'עומק',W:[2500,8000,250],H:[2000,5000,250],f(L,D){
   const Hh=2500,np=L>4000?3:2,nr=Math.ceil((L+300)/450)+1,sp=(L+300)/(nr-1);
-  const sh=[R(-150,0,L+300,120),Lh(-400,Hh,L+400,Hh)];
-  for(let i=0;i<np;i++)sh.push(R(i*(L-100)/(np-1),120,100,Hh-120,OR));
-  for(let i=0;i<nr;i++)sh.push(R(-150+i*sp-20,-80,40,80));
-  return{L,H:Hh,parts:[['עמוד','100×100×3',Hh-120,np*2],['קורה ראשית','120×60×3',L+300,2],['קורת רוחב (רפטר)','80×40×2',Dp+300,nr]],
-   shapes:sh,dims:[D(0,-L*.08,L,-L*.08,fmt(L)),D(-L*.09,0,-L*.09,Hh,fmt(Hh))],
-   hw:[`${np*2} פלטות בסיס 200×200×10 + 4 ברגי עיגון לכל עמוד`],
-   notes:[`עומק ${fmt(Dp)} מ״מ, בליטה 150 מ״מ מכל צד`,`${nr} קורות רוחב במרווח ${fmt(sp)} מ״מ`,'פרגולה עם כיסוי (פוליקרבונט / פאנל) – נדרשת בדיקת מהנדס לעומסי רוח']}}},
- CN:{name:'גגון לקיר',wl:'רוחב',hl:'בליטה מהקיר',W:[1500,4000,500],H:[1000,1200,1500],f(W,P){
-  const na=Math.ceil(W/900)+1,drop=Math.round(P*.1),bl=Math.round(Math.hypot(P*.6,600));
-  const sh=[R(-120,-300,120,1300,ST,'none'),R(0,0,60,40,OR),Lh(0,20,P,20+drop,WH),Lh(0,60,P,60+drop,WH),R(P-60,drop,60,40,OR),Lh(0,700,P*.6,40+P*.06,WH)];
-  return{L:P,H:700,parts:[['קורת קיר','60×40×2',W,1],['קורה קדמית','60×40×2',W,1],['זרוע','60×40×2',P,na],['תומכת אלכסונית','40×40×2',bl,na]],
-   shapes:sh,dims:[D(0,-120,P,-120,fmt(P)),D(-200,60,-200,700,'600')],
-   hw:[`${na*2+2} ברגי עיגון כימי לקיר`,'פוליקרבונט 8–10 מ״מ + אטמים – לא כלול'],
-   notes:[`רוחב ${fmt(W)} מ״מ, ${na} זרועות במרווח ${fmt(W/(na-1))} מ״מ`,`שיפוע 10% (ירידה ${fmt(drop)} מ״מ)`,'עיגון לקיר בטון/בלוק מלא בלבד']}}},
- TB:{name:'שולחן',wl:'אורך',hl:'גובה',W:[1200,2400,200],H:[750,900],f(L,H){
-  const Dp=L<=1600?800:900,t=30,lf=L-100,df=Dp-100-80,lg=H-t-40,shelf=H>=900;
-  const sh=[R(0,0,L,t,ST,'#EADBC8'),R(50,t,lf,40),R(50,t+40,40,lg),R(L-90,t+40,40,lg),Lh(-200,H,L+200,H)];
-  if(shelf)sh.push(R(90,H-220,lf-80,40));
-  const parts=[['מסגרת עליונה – אורך','40×40×2',lf,2],['מסגרת עליונה – רוחב','40×40×2',df,2],['רגל','40×40×2',lg,4]];
-  if(shelf)parts.push(['מדף תחתון – אורך','40×40×2',lf-80,2],['מדף תחתון – רוחב','40×40×2',df,2]);
-  return{L,H,name:shelf?'שולחן עבודה':'שולחן',parts,shapes:sh,dims:[D(0,-L*.06,L,-L*.06,fmt(L)),D(-L*.07,0,-L*.07,H,fmt(H))],
-   hw:['4 רגליות מתכווננות M10','משטח עליון 30 מ״מ – לא כלול',...(shelf?['משטח מדף תחתון – לא כלול']:[])],
-   notes:[`עומק ${fmt(Dp)} מ״מ, המסגרת נסוגה 50 מ״מ מקצה המשטח`,shelf?'גובה עבודה בעמידה – מדף תחתון בגובה 220 מ״מ':'גובה ישיבה סטנדרטי']}}},
- SH:{name:'מדפייה',wl:'רוחב',hl:'גובה',W:[800,1000,1200],H:[1500,1800,2000],f(W,H){
-  const dp=400,ns=H>=1800?5:4,lw=W-80,ld=dp-80;
-  const sh=[R(0,0,40,H,OR),R(W-40,0,40,H,OR),Lh(-150,H,W+150,H)];
-  for(let i=0;i<ns;i++)sh.push(R(40,H-140-i*(H-140)/(ns-1),lw,40));
-  return{L:W,H,parts:[['עמוד','40×40×2',H,4],['קורת מדף – אורך','40×20×2',lw,ns*2],['קורת מדף – עומק','40×20×2',ld,ns*2]],
-   shapes:sh,dims:[D(0,-H*.05,W,-H*.05,fmt(W)),D(-H*.07,0,-H*.07,H,fmt(H))],
-   hw:[`${ns} משטחי מדף ${fmt(W)}×${dp} (עץ / פח) – לא כלולים`,'2 זוויות עיגון לקיר נגד התהפכות'],
-   notes:[`עומק ${dp} מ״מ, ${ns} מדפים`,'לעומס כבד – להוסיף אלכסון בגב']}}},
- BN:{name:'ספסל',wl:'אורך',hl:'גובה',W:[1200,1500,1800,2000],H:[450],f(L,H){
-  const dp=400,t=30,lf=L-100,df=dp-80,lg=H-t-40;
-  return{L,H,parts:[['מסגרת – אורך','40×40×2',lf,2],['מסגרת – רוחב','40×40×2',df,2],['רגל','40×40×2',lg,4],['חיזוק תחתון','40×20×2',lf-80,1]],
-   shapes:[R(0,0,L,t,ST,'#EADBC8'),R(50,t,lf,40),R(50,t+40,40,lg),R(L-90,t+40,40,lg),R(90,H-150,lf-80,20),Lh(-150,H,L+150,H)],
-   dims:[D(0,-L*.06,L,-L*.06,fmt(L)),D(-L*.08,0,-L*.08,H,fmt(H))],
-   hw:['4 רגליות','משטח ישיבה 30 מ״מ – לא כלול'],notes:[`עומק ${dp} מ״מ`]}}},
- DR:{name:'דלת פלדה',wl:'רוחב משקוף',hl:'גובה',W:[800,900,1000],H:[2000,2100,2200],f(W,H){
-  const fr=60,lw=W-2*fr-10,lh=H-fr-15,lf=40;
-  return{L:W,H,parts:[['משקוף – צד','60×40×2',H,2],['משקוף – עליון','60×40×2',W-2*fr,1],['כנף – אופקי (עליון/אמצע/תחתון)','40×40×2',lw,3],['כנף – אנכי','40×40×2',lh-2*lf,2]],
-   shapes:[R(0,0,fr,H,OR),R(W-fr,0,fr,H,OR),R(fr,0,W-2*fr,fr,OR),R(fr+5,fr+5,lw,lf),R(fr+5,fr+5+lh-lf,lw,lf),R(fr+5,fr+5+lf,lf,lh-2*lf),R(fr+5+lw-lf,fr+5+lf,lf,lh-2*lf),R(fr+5+lf,fr+5+lh/2-lf/2,lw-2*lf,lf),C(fr+5+lw-110,H*.52,22),Lh(-200,H,W+200,H)],
-   dims:[D(0,-H*.05,W,-H*.05,fmt(W)),D(-H*.06,0,-H*.06,H,fmt(H))],
-   hw:['פח 1.5 מ״מ לחיפוי 2 צדדים (או צד אחד + בידוד)','3 צירים כבדים','מנעול צילינדר + ידית','6 עוגני משקוף'],
-   notes:[`כנף ${fmt(lw)}×${fmt(lh)} מ״מ, מרווח 5 מ״מ סביב`,'מרווח מהרצפה: 10 מ״מ']}}},
- SR:{name:'מעקה מדרגות',wl:'אורך אופקי',hl:'הפרש גובה',W:[2000,5000,500],H:[1000,3000,500],ok:(L,H)=>{const a=Math.atan2(H,L)*180/Math.PI;return a>=25&&a<=42},f(L,H){
-  const sl=Math.round(Math.hypot(L,H)),np=Math.ceil(sl/1200)+1,rh=900,bl=rh-40-120,nb=Math.ceil((L-np*50)/120),k=H/L;
-  const sh=[Lh(0,H,L,0,ST),Lh(0,H-rh,L,-rh,WH),Lh(0,H-rh+40,L,-rh+40,WH),Lh(0,H-120,L,-120,WH)];
-  for(let i=0;i<np;i++){const x=i*(L-50)/(np-1);sh.push(R(x,H-rh-k*x,50,rh,OR))}
-  for(let i=1;i<=nb;i++){const x=i*L/(nb+1);sh.push(Lh(x,H-rh+40-k*x,x,H-120-k*x,WH))}
-  return{L,H:H+rh,parts:[['מאחז יד (משופע)','60×40×2',sl,1],['עמוד','50×50×2',rh,np],['קורה תחתונה (משופעת)','40×20×2',sl,1],['מוט אנכי','20×20×1.5',bl,nb]],
-   shapes:sh,dims:[D(0,H+H*.1,L,H+H*.1,fmt(L)),D(-L*.06,0,-L*.06,H,fmt(H))],
-   hw:[`${np} פלטות עיגון צד/רום`],
-   notes:[`שיפוע ${Math.round(Math.atan2(H,L)*180/Math.PI)}°, אורך משופע ${fmt(sl)} מ״מ`,'גובה 900 מ״מ מעל אף המדרגה, מרווח ≤100 מ״מ – לאמת מול ת״י 1142','חיתוך קצוות המוטות בזווית השיפוע']}}},
- LD:{name:'סולם קבוע',wl:'רוחב',hl:'גובה',W:[400,500],H:[2000,6000,500],f(W,H){
-  const nr=Math.floor(H/280),rl=W-60,sh=[R(0,0,30,H,OR),R(W-30,0,30,H,OR),Lh(-150,H,W+150,H)];
-  for(let i=1;i<=nr;i++)sh.push(R(30,H-i*280,rl,25));
-  return{L:W,H,parts:[['קורת צד','50×30×2',H,2],['שלב','25×25×2',rl,nr],['זרוע עיגון לקיר','40×40×3',200,Math.ceil(H/1500)*2]],
-   shapes:sh,dims:[D(0,-H*.04,W,-H*.04,fmt(W)),D(-H*.05,0,-H*.05,H,fmt(H))],
-   hw:['ברגי עיגון כימי לקיר'],notes:[`${nr} שלבים במרווח 280 מ״מ`,'סולם מעל 3 מ׳ – נדרש כלוב / אמצעי נגד נפילה לפי תקנות הבטיחות']}}},
- MZ:{name:'מסתור מזגן',wl:'רוחב',hl:'גובה',W:[900,1000,1100,1200],H:[700,800,900,1000],f(W,H){
-  const f=30,dp=450,ns=Math.floor((H-2*f)/60),sh=[R(0,0,W,f,OR),R(0,H-f,W,f,OR),R(0,f,f,H-2*f,OR),R(W-f,f,f,H-2*f,OR)];
-  for(let i=0;i<ns;i++)sh.push(R(f,f+15+i*60,W-2*f,10,WH,'#B9C1CA'));
-  return{L:W,H,parts:[['מסגרת חזית – אופקי','30×30×2',W,2],['מסגרת חזית – אנכי','30×30×2',H-2*f,2],['זרוע עומק לקיר','30×30×2',dp-f,4],['תריס (פלח)','40×3',W-2*f,ns]],
-   shapes:sh,dims:[D(0,-H*.07,W,-H*.07,fmt(W)),D(-W*.07,0,-W*.07,H,fmt(H))],
-   hw:['4 פלטות עיגון לקיר'],notes:[`עומק ${dp} מ״מ, ${ns} תריסים בזווית 45°`,'להשאיר לפחות 300 מ״מ מרווח מול המאוורר','דלת שירות / חיבור בברגים לגישה טכנאי']}}},
- GS:{name:'כלוב בלוני גז',wl:'מספר בלונים',hl:'גובה',W:[2,3,4],H:[1500],f(N,H){
-  const W=N*400+100,dp=450;
-  return{L:W,H,name:`כלוב ל-${N} בלוני גז`,parts:[['עמוד','40×40×2',H,4],['מסגרת – רוחב','40×20×2',W-80,4],['מסגרת – עומק','40×20×2',dp-80,4],['מסגרת דלת','30×30×2',W-100,2],['מסגרת דלת – אנכי','30×30×2',H-160,2]],
-   shapes:[R(0,0,40,H,OR),R(W-40,0,40,H,OR),R(40,0,W-80,20),R(40,H-80,W-80,20),R(50,30,W-100,H-90,WH,'none'),Lh(-150,H,W+150,H)],
-   dims:[D(0,-H*.05,W,-H*.05,fmt(W)),D(-H*.06,0,-H*.06,H,fmt(H))],
-   hw:['רשת מרותכת 50×50 לדפנות ולדלת','2 צירים + סוגר למנעול'],notes:[`רוחב ${fmt(W)} מ״מ, עומק ${dp} מ״מ`,'אוורור מלא – אין לסגור בפח','מיקום והתקנה – לפי דרישות ספק הגז']}}},
- BR:{name:'מתקן אופניים',wl:'מספר אופניים',hl:'גובה',W:[3,4,5,6,8,10],H:[400],f(N,H){
-  const L=N*400+200,sh=[R(0,H-40,L,40),Lh(-150,H,L+150,H)];
-  for(let i=0;i<=N;i++){const x=100+i*400-10;sh.push(R(x,0,20,H-40,OR))}
-  sh.push(R(0,0,L,20));
-  return{L,H,name:`מתקן ל-${N} אופניים`,parts:[['קורת בסיס','40×40×2',L,2],['קורת בסיס – רוחב','40×40×2',320,2],['מפריד אנכי','20×20×1.5',H-60,(N+1)*2],['קורה עליונה','20×20×1.5',L,2]],
-   shapes:sh,dims:[D(0,-H*.25,L,-H*.25,fmt(L)),D(-L*.04,0,-L*.04,H,fmt(H))],
-   hw:['4 ברגי עיגון לרצפה'],notes:[`מרווח 400 מ״מ בין אופניים, רוחב חריץ ~${fmt(400-20)} מ״מ`]}}},
- BD:{name:'מסגרת מיטה',wl:'רוחב מזרן',hl:'אורך מזרן',W:[900,1400,1600,1800],H:[1900,2000],f(W,Lm){
-  const ns=Math.floor(Lm/350),sh=[R(0,0,W,40,OR),R(0,Lm-40,W,40,OR),R(0,40,40,Lm-80,OR),R(W-40,40,40,Lm-80,OR)];
-  for(let i=1;i<=ns;i++)sh.push(R(40,i*Lm/(ns+1)-10,W-80,20));
-  if(W>=1400)sh.push(R(W/2-20,40,40,Lm-80));
-  const parts=[['מסגרת – אורך','40×40×2',Lm,2],['מסגרת – רוחב','40×40×2',W-80,2],['פס תמיכה','40×20×2',W-80,ns],['רגל','40×40×2',300,W>=1400?6:4]];
-  if(W>=1400)parts.push(['קורת אמצע','40×40×2',Lm-80,1]);
-  return{L:W,H:Lm,parts,shapes:sh,dims:[D(0,-Lm*.05,W,-Lm*.05,fmt(W)),D(-W*.08,0,-W*.08,Lm,fmt(Lm))],
-   hw:['רגליות / פקקי פלסטיק','בסיס עץ / דיקט 12 מ״מ – אופציונלי'],notes:[`מבט על. ${ns} פסי תמיכה`,'גובה רגל 300 מ״מ']}}}
+  for(const z of[0,D-100])for(let i=0;i<np;i++)by('עמוד','100×100×3',i*(L-100)/(np-1),0,z,Hh-120,'post');
+  bx('קורה ראשית','120×60×3',-150,Hh-120,20,L+300);bx('קורה ראשית','120×60×3',-150,Hh-120,D-80,L+300);
+  for(let i=0;i<nr;i++)bz('קורת רוחב (רפטר)','80×40×2',-150+i*sp-(i===nr-1?40:0),Hh,-150,D+300);
+  return{hw:[`${np*2} פלטות בסיס 200×200×10 + 4 ברגי עיגון לכל עמוד`],notes:[`גובה 2,500 מ״מ, בליטה 150 מ״מ מכל צד`,`${nr} קורות רוחב במרווח ${fmt(sp)} מ״מ`,'פרגולה עם כיסוי (פוליקרבונט / פאנל) – נדרשת בדיקת מהנדס לעומסי רוח']}}},
+ CN:{name:'גגון לקיר',wl:'רוחב',hl:'בליטה מהקיר',W:[1000,6000,250],H:[800,2000,100],f(W,P){
+  const na=Math.ceil(W/900)+1,yw=2600,dr=Math.round(P*.1);
+  box(-200,yw-900,P,W+400,1300,150,'wall');
+  bx('קורת קיר','60×40×2',0,yw,P-40,W,'post');bx('קורה קדמית','60×40×2',0,yw-dr,0,W,'post');
+  for(let i=0;i<na;i++){const x=i*(W-40)/(na-1);szy('זרוע','60×40×2',0,yw-dr+60,P,yw+60,x);szy('תומכת אלכסונית','40×40×2',P,yw-600,P*.4,yw-dr*.6+60,x)}
+  return{hw:[`${na*2+2} ברגי עיגון כימי לקיר`,`פוליקרבונט 8–10 מ״מ ${fmt(W)}×${fmt(P+100)} + אטמים – לא כלול`],notes:[`${na} זרועות במרווח ${fmt((W-40)/(na-1))} מ״מ`,`שיפוע 10% (ירידה ${fmt(dr)} מ״מ)`,'עיגון לקיר בטון / בלוק מלא בלבד']}}},
+ LD:{name:'סולם קבוע',wl:'רוחב',hl:'גובה',W:[350,400,450,500,550,600],H:[1500,8000,250],f(W,H){
+  const nr=Math.floor((H-100)/280);box(-200,0,230,W+400,H+200,100,'wall');
+  by('קורת צד','50×30×2',0,0,0,H,'post');by('קורת צד','50×30×2',W-50,0,0,H,'post');
+  for(let i=1;i<=nr;i++)bx('שלב','25×25×2',50,i*280,2.5,W-100);
+  const nb=Math.ceil(H/1500);for(let i=0;i<nb;i++){const y=H-200-i*1500;if(y<200)break;bz('זרוע עיגון לקיר','40×40×3',5,y,30,200);bz('זרוע עיגון לקיר','40×40×3',W-45,y,30,200)}
+  return{hw:['ברגי עיגון כימי לקיר'],notes:[`${nr} שלבים במרווח 280 מ״מ`,'מרחק 200 מ״מ מהקיר','סולם מעל 3 מ׳ – נדרש כלוב / אמצעי נגד נפילה לפי תקנות הבטיחות']}}},
+ MZ:{name:'מסתור מזגן',wl:'רוחב',hl:'גובה',W:[700,1500,50],H:[500,1200,50],S:['l','m'],f(W,H,s){
+  const dp=450,y0=0;box(-150,-150,dp,W+300,H+300,120,'wall');
+  frame('מסגרת חזית – אופקי','מסגרת חזית – אנכי','30×30×2',0,y0,0,W,H);
+  for(const x of[0,W-30])for(const y of[0,H-30])bz('זרוע עומק לקיר','30×30×2',x,y,30,dp-30);
+  let ni;if(s==='l'){const ns=Math.floor((H-60)/60);for(let i=0;i<ns;i++){const y=45+i*60;szy('תריס (פלח)','40×3',4,y,32,y+28,30)}ni=`${ns} תריסים בזווית 45°`;
+   M.filter(e=>e.n==='תריס (פלח)').forEach(e=>{e.len=W-60;e.A=e.A.map(p=>p);e.B=e.B.map(p=>[W-30,p[1],p[2]])})}
+  else ni=infill('m',30,30,0,W-60,H-60,30);
+  return{hw:['4 פלטות עיגון לקיר'],notes:[`עומק ${dp} מ״מ`,ni,'להשאיר לפחות 300 מ״מ מרווח מול המאוורר','חיבור החזית בברגים – לגישת טכנאי']}}},
+ TB:{name:'שולחן',wl:'אורך',hl:'גובה',W:[800,3000,100],H:[750,800,900,1000],f(L,H){
+  const Dp=L<=1600?800:900,t=30,lf=L-100,df=Dp-100,lg=H-t-40,sh=H>=900;
+  const ring=(y,nl,nw)=>{bx(nl,'40×40×2',50,y,50,lf);bx(nl,'40×40×2',50,y,50+df-40,lf);bz(nw,'40×40×2',50,y,90,df-80);bz(nw,'40×40×2',50+lf-40,y,90,df-80)};
+  ring(H-t-40,'מסגרת עליונה – אורך','מסגרת עליונה – רוחב');if(sh)ring(180,'מדף תחתון – אורך','מדף תחתון – רוחב');
+  for(const x of[50,50+lf-40])for(const z of[50,50+df-40])by('רגל','40×40×2',x,0,z,lg,'post');
+  box(0,H-t,0,L,t,Dp,'wood');if(sh)box(50,220,50,lf,18,df,'wood');
+  return{name:H>=900?'שולחן עבודה':'שולחן',hw:['4 רגליות מתכווננות M10',`משטח ${fmt(L)}×${fmt(Dp)}×30 – לא כלול`,...(sh?[`משטח מדף ${fmt(lf)}×${fmt(df)} – לא כלול`]:[])],
+   notes:[`עומק ${fmt(Dp)} מ״מ; המסגרת נסוגה 50 מ״מ מקצה המשטח`,H>=900?'גובה עבודה בעמידה; מדף תחתון בגובה 220 מ״מ':'גובה ישיבה סטנדרטי']}}},
+ BN:{name:'ספסל',wl:'אורך',hl:'גובה',W:[1000,2400,100],H:[420,450,480],f(L,H){
+  const dp=400,lf=L-100,df=dp-80,lg=H-30-40;
+  bx('מסגרת – אורך','40×40×2',50,H-70,40,lf);bx('מסגרת – אורך','40×40×2',50,H-70,dp-80,lf);bz('מסגרת – רוחב','40×40×2',50,H-70,80,df-80);bz('מסגרת – רוחב','40×40×2',50+lf-40,H-70,80,df-80);
+  for(const x of[50,50+lf-40])for(const z of[40,dp-80])by('רגל','40×40×2',x,0,z,lg,'post');
+  bx('חיזוק תחתון','40×20×2',90,150,dp/2-10,lf-80,'m',1);box(0,H-30,0,L,30,dp,'wood');
+  return{hw:['4 רגליות',`משטח ישיבה ${fmt(L)}×${dp}×30 – לא כלול`],notes:[`עומק ${dp} מ״מ`]}}},
+ SH:{name:'מדפייה',wl:'רוחב',hl:'גובה',W:[600,2000,100],H:[1000,2400,100],f(W,H){
+  const dp=400,ns=H>=2000?6:H>=1500?5:4;
+  for(const x of[0,W-40])for(const z of[0,dp-40])by('עמוד','40×40×2',x,0,z,H,'post');
+  for(let i=0;i<ns;i++){const y=100+i*(H-140)/(ns-1);
+   bx('קורת מדף – אורך','40×20×2',40,y,0,W-80);bx('קורת מדף – אורך','40×20×2',40,y,dp-20,W-80);
+   bz('קורת מדף – עומק','40×20×2',0,y,40,dp-80);bz('קורת מדף – עומק','40×20×2',W-20,y,40,dp-80);box(40,y+40,20,W-80,15,dp-40,'wood')}
+  return{hw:[`${ns} משטחי מדף ${fmt(W-80)}×${dp-40} (עץ / פח) – לא כלולים`,'2 זוויות עיגון לקיר נגד התהפכות'],notes:[`עומק ${dp} מ״מ, ${ns} מדפים`,'לעומס כבד – להוסיף אלכסון בגב']}}},
+ GS:{name:'כלוב בלוני גז',wl:'מספר בלונים',hl:'גובה',W:[1,2,3,4,5,6],H:[1300,1500,1700],f(N,H){
+  const W=N*400+100,dp=450;if(N===1){}
+  for(const x of[0,W-40])for(const z of[0,dp-40])by('עמוד','40×40×2',x,0,z,H,'post');
+  for(const y of[0,H-20]){bx('מסגרת – רוחב','40×20×2',40,y,0,W-80,'m',1);bx('מסגרת – רוחב','40×20×2',40,y,dp-40,W-80,'m',1);bz('מסגרת – עומק','40×20×2',0,y,40,dp-80,'m',1);bz('מסגרת – עומק','40×20×2',W-40,y,40,dp-80,'m',1)}
+  frame('מסגרת דלת','מסגרת דלת – אנכי','30×30×2',50,40,-35,W-100,H-80);box(80,70,-20,W-160,H-140,2,'mesh');
+  box(0,0,dp-2,W,H,2,'mesh');box(0,0,0,2,H,dp,'mesh');box(W-2,0,0,2,H,dp,'mesh');
+  return{name:`כלוב ל-${N} בלוני גז`,hw:['רשת מרותכת 50×50 לדפנות, גב ודלת','2 צירים + סוגר למנעול'],notes:[`רוחב ${fmt(W)} מ״מ, עומק ${dp} מ״מ`,'אוורור מלא – אין לסגור בפח','מיקום והתקנה – לפי דרישות ספק הגז']}}},
+ BR:{name:'מתקן אופניים',wl:'מספר אופניים',hl:'גובה',W:[2,20,1],H:[400],f(N,H){
+  const L=N*400+200;
+  bx('קורת בסיס','40×40×2',0,0,0,L);bx('קורת בסיס','40×40×2',0,0,360,L);bz('קורת בסיס – רוחב','40×40×2',0,0,40,320);bz('קורת בסיס – רוחב','40×40×2',L-40,0,40,320);
+  for(let i=0;i<=N;i++){const x=100+i*400-10;by('מפריד אנכי','20×20×1.5',x,40,10,H-60,'post');by('מפריד אנכי','20×20×1.5',x,40,370,H-60,'post')}
+  bx('קורה עליונה','20×20×1.5',0,H-20,10,L);bx('קורה עליונה','20×20×1.5',0,H-20,370,L);
+  return{name:`מתקן ל-${N} אופניים`,hw:['4 ברגי עיגון לרצפה'],notes:[`מרווח 400 מ״מ בין אופניים`,`אורך כולל ${fmt(L)} מ״מ`]}}},
+ BD:{name:'מסגרת מיטה',wl:'רוחב מזרן',hl:'אורך מזרן',W:[800,2000,100],H:[1900,2000],f(W,Lm){
+  const y=300,ns=Math.floor(Lm/350),big=W>=1400;
+  bz('מסגרת – אורך','40×40×2',0,y,0,Lm);bz('מסגרת – אורך','40×40×2',W-40,y,0,Lm);bx('מסגרת – רוחב','40×40×2',40,y,0,W-80);bx('מסגרת – רוחב','40×40×2',40,y,Lm-40,W-80);
+  for(let i=1;i<=ns;i++)bx('פס תמיכה','40×20×2',40,y+20,i*Lm/(ns+1)-20,W-80,'m',1);
+  if(big)bz('קורת אמצע','40×40×2',W/2-20,y,40,Lm-80);
+  const lz=big?[0,Lm/2-20,Lm-40]:[0,Lm-40];for(const x of[0,W-40])for(const z of lz)by('רגל','40×40×2',x,0,z,y,'post');
+  return{hw:['רגליות / פקקי פלסטיק','בסיס דיקט 12 מ״מ – אופציונלי'],notes:[`${ns} פסי תמיכה`,`גובה מסגרת ${y+40} מ״מ`]}}}
 };
-const range=a=>a.length===3&&a[2]<a[0]?(()=>{const r=[];for(let v=a[0];v<=a[1];v+=a[2])r.push(v);return r})():a;
+
+// ===== catalog + UI =====
+const range=a=>a.length===3&&typeof a[0]==='number'&&a[2]<a[0]?(()=>{const r=[];for(let v=a[0];v<=a[1];v+=a[2])r.push(v);return r})():a;
 const PLANS=[];
-for(const [k,g] of Object.entries(GEN))for(const W of range(g.W))for(const H of range(g.H))if(!g.ok||g.ok(W,H))PLANS.push({id:`${k}-${W}-${H}`,k,W,H});
-</script>
-<script>
+for(const[k,g]of Object.entries(GEN))for(const W of range(g.W))for(const H of range(g.H))if(!g.ok||g.ok(W,H))for(const s of(g.S||['']))PLANS.push({id:[k,W,H,s].filter(x=>x!=='').join('-'),k,W,H,s});
 function kgm(p){const v=p.split('×').map(Number);const a=v.length===3?2*(v[0]+v[1])*v[2]-4*v[2]*v[2]:v[0]*v[1];return a*7.85/1000}
 function pack(parts){
  const by={},joins=new Set();
- for(const [n,p,len,q] of parts)for(let i=0;i<q;i++){
-  if(len>STOCK){const k=Math.ceil(len/(STOCK-KERF));joins.add(n);for(let j=0;j<k;j++)(by[p]??=[]).push(len/k)}
-  else (by[p]??=[]).push(len)}
+ for(const[n,p,len,q]of parts)for(let i=0;i<q;i++){if(len>STOCK){const k=Math.ceil(len/(STOCK-KERF));joins.add(n);for(let j=0;j<k;j++)(by[p]??=[]).push(len/k)}else(by[p]??=[]).push(len)}
  const rows=Object.entries(by).map(([p,arr])=>{arr.sort((a,b)=>b-a);const bins=[];
   for(const l of arr){const i=bins.findIndex(r=>r>=l+KERF);if(i>=0)bins[i]-=l+KERF;else bins.push(STOCK-l-KERF)}
   const used=arr.reduce((a,b)=>a+b,0);return{p,bars:bins.length,m:used/1000,waste:1-used/(bins.length*STOCK),kg:used/1000*kgm(p)}});
  return{rows,joins:[...joins]};
 }
-const sz=x=>{const g=GEN[x.k];return `${g.wl} ${fmt(x.W)} · ${g.hl||'גובה'} ${fmt(x.H)}`};
-const plan=id=>{const x=PLANS.find(p=>p.id===id);if(!x)return null;const g=GEN[x.k];return{...x,name:g.name,...g.f(x.W,x.H)}};
-const st={k:'SG',w:'',h:'',shown:24,sel:null};
+const sz=x=>{const g=GEN[x.k];return`${g.wl} ${fmt(x.W)} · ${g.hl} ${fmt(x.H)}${x.s?' · '+SN[x.s]:''}`};
+function build(x){const g=GEN[x.k];M=[];HW=[];const r=g.f(x.W,x.H,x.s);return{...x,name:r.name||g.name,notes:r.notes.filter(Boolean),hw:[...r.hw,...hwList()],parts:parts(),model:M}}
+const plan=id=>{const x=PLANS.find(p=>p.id===id);return x?build(x):null};
+const st={k:'SG',w:'',h:'',s:'',shown:24,sel:null};
 const $=id=>document.getElementById(id);
-$('total').textContent=`${PLANS.length} תוכניות ב-${Object.keys(GEN).length} סוגי עבודה. בחרו סוג ומידה – כל תוכנית כוללת שרטוט, רשימת חיתוך, כמות פרופילים ופרזול.`;
+function thumb(x){const p=build(x);M=p.model;return view('iso',{thumb:1})}
+$('total').textContent=`${PLANS.length.toLocaleString('en-US')} תוכניות ב-${Object.keys(GEN).length} סוגי עבודה. לכל תוכנית: 4 מבטי שרטוט (חזית, צד, על, איזומטרי), רשימת חיתוך ממוספרת, כמות פרופילים ופרזול.`;
 $('types').innerHTML=Object.entries(GEN).map(([k,g])=>`<button data-k="${k}">${g.name} <span class="muted">(${PLANS.filter(p=>p.k===k).length})</span></button>`).join('');
-$('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.dataset.k;st.w=st.h='';st.shown=24;fillSel();render()};
+$('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.dataset.k;st.w=st.h=st.s='';st.shown=24;fillSel();render()};
 function fillSel(){
  const ps=PLANS.filter(p=>p.k===st.k),g=GEN[st.k];
- const opt=(arr,v)=>`<option value="">הכול</option>`+[...new Set(arr)].map(x=>`<option value="${x}" ${x==v?'selected':''}>${fmt(x)} מ״מ</option>`).join('');
- $('fw').previousElementSibling.textContent=g.wl;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w);$('fh').previousElementSibling.textContent=g.hl||'גובה';$('fh').innerHTML=opt(ps.map(p=>p.H),st.h);
+ const opt=(arr,v,f)=>`<option value="">הכול</option>`+[...new Set(arr)].map(x=>`<option value="${x}" ${x==v?'selected':''}>${f(x)}</option>`).join('');
+ $('lw').textContent=g.wl;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w,x=>g.W.length&&g.wl.includes('מספר')?x:fmt(x)+' מ״מ');
+ $('lh').textContent=g.hl;$('fh').innerHTML=opt(ps.map(p=>p.H),st.h,x=>fmt(x)+' מ״מ');
+ $('sw').style.display=g.S?'':'none';if(g.S)$('fs').innerHTML=opt(g.S,st.s,x=>SN[x]);
  [...$('types').children].forEach(b=>b.classList.toggle('on',b.dataset.k===st.k));
 }
 $('fw').onchange=e=>{st.w=e.target.value;st.shown=24;render()};
 $('fh').onchange=e=>{st.h=e.target.value;st.shown=24;render()};
+$('fs').onchange=e=>{st.s=e.target.value;st.shown=24;render()};
 $('more').onclick=()=>{st.shown+=24;render()};
 function render(){
- const ps=PLANS.filter(p=>p.k===st.k&&(!st.w||p.W==st.w)&&(!st.h||p.H==st.h));
- $('count').textContent=`${ps.length} תוכניות`;
- $('list').innerHTML=ps.slice(0,st.shown).map(x=>{const p=plan(x.id);
-  return`<button class="item ${st.sel===x.id?'sel':''}" data-id="${x.id}">${draw(p.L,p.H,p.shapes,[],1)}<b>${p.name}</b><span style="display:block">${sz(x)}</span><span class="code" dir="ltr">${x.id}</span></button>`}).join('');
+ const ps=PLANS.filter(p=>p.k===st.k&&(!st.w||p.W==st.w)&&(!st.h||p.H==st.h)&&(!st.s||p.s===st.s));
+ $('count').textContent=`${ps.length.toLocaleString('en-US')} תוכניות`;
+ $('list').innerHTML=ps.slice(0,st.shown).map(x=>`<button class="item ${st.sel===x.id?'sel':''}" data-id="${x.id}">${thumb(x)}<b>${GEN[x.k].name}</b><span style="display:block">${sz(x)}</span><span class="code" dir="ltr">${x.id}</span></button>`).join('');
  $('more').style.display=ps.length>st.shown?'block':'none';
 }
 $('list').onclick=e=>{const b=e.target.closest('.item');if(b)location.hash=b.dataset.id};
 function show(id){
  const p=plan(id);if(!p){$('detail').innerHTML='';document.body.style.overflow='';return}
- if(p.k!==st.k){st.k=p.k;st.w=st.h='';fillSel()}st.sel=id;render();
+ if(p.k!==st.k){st.k=p.k;st.w=st.h=st.s='';fillSel()}st.sel=id;render();
+ M=p.model;const keys=p.parts.map(([n,pr,l])=>n+'|'+pr+'|'+l);
  const {rows,joins}=pack(p.parts),bars=rows.reduce((a,r)=>a+r.bars,0),kg=rows.reduce((a,r)=>a+r.kg,0);
+ const V=k=>`<figure class="vw"><figcaption>${VIEWS[k].t}</figcaption>${view(k,k==='front'?{balloons:keys}:{})}</figure>`;
+ const today=new Date().toLocaleDateString('he-IL');
  $('detail').innerHTML=`<div class="card" style="margin-top:8px"><button class="close no-print" id="x" aria-label="סגירה">✕</button>
- <h2>${p.name}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(PLANS.find(z=>z.id===id))} (מ״מ)</p>
- <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>מידות כוללות: ${ltr(fmt(p.L)+' × '+fmt(p.H))}</span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span></div>
- ${draw(p.L,p.H,p.shapes,p.dims)}
- <h2>רשימת חיתוך</h2><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th></tr>
- ${p.parts.map(([n,pr,l,q],i)=>`<tr><td>${i+1}</td><td>${n}</td><td>${ltr(pr)}</td><td>${fmt(l)}</td><td>${q}</td></tr>`).join('')}</table></div>
+ <h2>${p.name}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
+ <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span><span>חלקים: <b>${p.parts.reduce((a,r)=>a+r[3],0)}</b></span></div>
+ <div class="views">${V('front')}${V('side')}${V('top')}${V('iso')}</div>
+ <table class="tb"><tr><td>שם: <b>${p.name}</b></td><td>קוד: <b dir="ltr">${id}</b></td><td>יחידות: מ״מ</td></tr><tr><td>קנ״מ: ללא (NTS)</td><td>תאריך הפקה: ${today}</td><td>גיליון 1/1 · גרסה 2.0</td></tr></table>
+ <h2>רשימת חיתוך</h2><p class="muted" style="font-size:14px">המספרים תואמים לסימון בשרטוט החזית.</p><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th></tr>
+ ${p.parts.map(([n,pr,l,q],i)=>`<tr><td><b class="bn">${i+1}</b></td><td>${n}</td><td>${ltr(pr)}</td><td>${fmt(l)}</td><td>${q}</td></tr>`).join('')}</table></div>
  <h2>קנייה – פרופילים של 6 מ׳</h2><div class="tbl"><table><tr><th>פרופיל</th><th>יחידות 6 מ׳</th><th>מטר נטו</th><th>פחת</th></tr>
  ${rows.map(r=>`<tr><td>${ltr(r.p)}</td><td><b>${r.bars}</b></td><td>${r.m.toFixed(1)}</td><td>${Math.round(r.waste*100)}%</td></tr>`).join('')}</table></div>
- <p class="muted" style="font-size:14px;margin-top:6px">חישוב לפי חיתוך אופטימלי עם ${KERF} מ״מ עובי מסור לכל חיתוך.</p>
- ${joins.length?`<div class="warn">⚠️ ארוך מ-6 מ׳ – נדרש חיבור/ריתוך המשך: ${joins.join(', ')}</div>`:''}
- <h2>פרזול ואביזרים</h2><ul style="padding-inline-start:20px">${p.hw.map(h=>`<li>${h}</li>`).join('')}</ul>
+ <p class="muted" style="font-size:14px;margin-top:6px">חיתוך אופטימלי עם ${KERF} מ״מ עובי מסור לכל חיתוך.</p>
+ ${joins.length?`<div class="warn">⚠️ ארוך מ-6 מ׳ – נדרש חיבור / ריתוך המשך: ${joins.join(', ')}</div>`:''}
+ <h2>פרזול, חיפוי ואביזרים</h2><ul style="padding-inline-start:20px">${p.hw.map(h=>`<li>${h}</li>`).join('')}</ul>
  <h2>הערות</h2><ul style="padding-inline-start:20px">${p.notes.map(h=>`<li>${h}</li>`).join('')}</ul>
  <div class="warn">תבנית עבודה בלבד. פרופילים, עיגון ועומסים – באחריות המבצע ולפי התקן ותנאי האתר.</div>
  <p class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" onclick="print()">הדפסה / שמירה כ-PDF</button><button class="btn ghost" id="cp">העתקת קישור</button></p></div>`;
  $('cp').onclick=()=>{navigator.clipboard?.writeText(location.href).then(()=>$('cp').textContent='הקישור הועתק ✓',()=>{})};
  $('x').onclick=closeD;$('detail').scrollTop=0;document.body.style.overflow='hidden';
 }
-function closeD(){history.pushState(null,"",location.pathname+location.search);show("")}
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD()});
-$("detail").addEventListener("click",e=>{if(e.target.id==="detail")closeD()});
+function closeD(){history.pushState(null,'',location.pathname+location.search);show('')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeD()});
+$('detail').addEventListener('click',e=>{if(e.target.id==='detail')closeD()});
 window.onhashchange=()=>show(decodeURIComponent(location.hash.slice(1)));
 const q=new URLSearchParams(location.search).get('type');if(q&&GEN[q])st.k=q;
 fillSel();render();if(location.hash)show(decodeURIComponent(location.hash.slice(1)));
+
 </script>
 </body>
 </html>
