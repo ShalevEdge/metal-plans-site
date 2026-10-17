@@ -214,6 +214,12 @@ const css=`
 .ws-print-top{margin-inline-start:8px}
 @media print{
  *{color:#000!important;text-shadow:none!important;box-shadow:none!important}
+ html,body{overflow:visible!important;height:auto!important;background:#fff!important}
+ body:has(#detail .card) main>*:not(#detail),body:has(#detail .card) #nav,body:has(#detail .card) .more,body.ws-printing main>*:not(#detail),body.ws-printing #nav,body.ws-printing header,body.ws-printing footer,body.ws-printing .more,body.ws-printing #more,body.ws-printing .type-picker-btn{display:none!important}
+ #detail,#detail:not(:empty){position:static!important;inset:auto!important;overflow:visible!important;padding:0!important;margin:0!important;background:#fff!important;max-height:none!important;height:auto!important;transform:none!important}
+ #detail .card{max-width:none!important;width:auto!important;margin:0!important;padding:0!important;transform:none!important;border:0!important;border-radius:0!important;filter:none!important}
+ #detail .card>*{max-width:100%!important}
+ .vw{border:0!important;border-radius:0!important;padding:0!important}
  body,#detail,#detail .card,.vw,details,table,th,td,.ws,.ws-s,.ws-leg>div,.ws-tip,.ws-mat,.warn,.meta>span{background:#fff!important;background-image:none!important}
  .vw,.ws,.ws-s,.ws-leg>div,table,td,th,.tb td{border-color:#888!important}
  #detail .card{border:0!important;padding:0!important;margin:0!important}
