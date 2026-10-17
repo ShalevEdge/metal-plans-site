@@ -1,0 +1,227 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>מדריך התחלה | SHALVERO FORGE</title>
+<meta name="description" content="מדריך מלא מאפס לעבודה עם SHALVERO FORGE: הגדרות ראשונות, ספריית התוכניות, הצעות מחיר, חיתוך, ייצור, רכש, גבייה, גיבוי ועבודה בטלפון.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css">
+<style>
+.g-hero{padding:28px 0 8px}.g-hero h1{font-size:clamp(32px,6vw,52px);line-height:1.1;margin:6px 0 10px}
+.g-lead{font-size:19px;max-width:760px;color:var(--steel)}
+.g-wrap{display:grid;grid-template-columns:240px 1fr;gap:24px;align-items:start}
+.g-toc{position:sticky;top:84px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:15px;max-height:calc(100vh - 104px);overflow:auto}
+.g-toc b{display:block;margin:10px 0 4px;color:var(--ort);font-size:13px;letter-spacing:.3px}.g-toc a{display:block;color:var(--steel);text-decoration:none;padding:3px 0}.g-toc a:hover{color:var(--tx)}
+.g-sec{scroll-margin-top:90px;margin:0 0 30px}.g-sec>h2{font-size:28px;margin:8px 0 12px;padding-top:12px;border-top:3px solid var(--or)}
+.g-sec p,.g-sec li{color:var(--tx)}.g-sec a{color:var(--ort)}
+.g-scr{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;scroll-margin-top:90px}
+.g-scr h3{font-size:21px;margin:0 0 4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.g-scr h3 .m{font-size:12px;font-weight:700;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--steel)}
+.g-scr h3 a{font-size:14px;margin-inline-start:auto;color:var(--ort);font-weight:700;text-decoration:none}
+.g-why{color:var(--steel)!important;margin:0 0 8px}
+.g-scr ol,.g-scr ul,.g-sec>ol,.g-sec>ul{padding-inline-start:22px;margin:6px 0}.g-scr li,.g-sec li{margin:5px 0}
+.tip{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.22);border-right:4px solid var(--or);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:15px}
+.warn2{background:rgba(245,159,0,.08);border:1px solid rgba(245,159,0,.25);border-right:4px solid #F59F00;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:15px}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0 4px}.flow span{background:var(--card2);border:1.5px solid var(--line);color:var(--tx);border-radius:8px;padding:6px 10px;font-weight:700;font-size:14px}
+.flow i{color:var(--or);font-style:normal;font-weight:900}.flow span.k{border-color:var(--or);background:rgba(249,115,22,.14)}
+.chk{list-style:none;padding:0!important}.chk li{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.chk input{width:22px!important;height:22px;accent-color:var(--or);flex:none;margin-top:2px;padding:0!important}.chk li.done{opacity:.55}.chk li.done b{text-decoration:line-through}
+.prog{height:10px;background:var(--card2);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:6px 0}.prog i{display:block;height:100%;background:var(--or);width:0;transition:width .3s}
+.stg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:8px 0}.stg div{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:14px;color:var(--tx)}.stg div b{color:var(--ort)}
+kbd{background:var(--card2);color:var(--tx);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font-family:inherit;font-size:.92em;font-weight:700}
+.faq details{border-radius:12px;padding:12px 14px;margin:8px 0}.faq summary{font-weight:700;cursor:pointer}
+@media(max-width:860px){.g-wrap{grid-template-columns:1fr}.g-toc{position:static;max-height:none;columns:2;column-gap:16px}.g-toc b{break-after:avoid}}
+@media(max-width:480px){.g-toc{columns:1}}
+@media print{#nav,.g-toc,.chk input{display:none}.g-wrap{display:block}.g-scr{break-inside:avoid}}
+.g-sec{padding:0!important;border-bottom:0!important;min-height:0!important}.chk label{display:block!important;flex-direction:initial!important;gap:0!important;font-weight:400!important;line-height:1.65;color:var(--tx);cursor:pointer;margin:0!important}.chk label kbd,.chk label a,.chk label b{display:inline!important}
+</style></head><body><div id="nav"></div><main class="wrap">
+<div class="g-hero"><p class="tag">GETTING STARTED</p><h1>מדריך התחלה – איך עובדים עם המערכת מאפס</h1>
+<p class="g-lead">כל מה שצריך לדעת כדי להתחיל לעבוד עם SHALVERO FORGE: מה יש בכל מסך, באיזה סדר עובדים, איפה הנתונים נשמרים ומה עושים כשמשהו לא עובד. אפשר לקרוא מההתחלה עד הסוף, או לקפוץ ישר למסך שצריך מהתפריט.</p></div>
+<div class="g-wrap">
+<nav class="g-toc" aria-label="תוכן המדריך">
+<b>התחלה</b><a href="#what">מה זו המערכת</a><a href="#map">מפת העבודה</a><a href="#first">הצעדים הראשונים (צ׳קליסט)</a><a href="#menu">התפריט העליון</a>
+<b>המסכים</b><a href="#s-hub">מרכז</a><a href="#s-new">עבודה חדשה</a><a href="#s-plans">ספריית התוכניות</a><a href="#s-sheet">גיליון תוכנית</a><a href="#s-opt">אופטימייזר חיתוך</a><a href="#s-inv">מלאי ושאריות</a><a href="#s-prj">פרויקטים ולקוחות</a><a href="#s-quote">הצעת מחיר</a><a href="#s-buy">רכש</a><a href="#s-prod">לוח ייצור</a><a href="#s-weld">מרכז הריתוך</a><a href="#s-fin">רווחיות וגבייה</a><a href="#s-shop">המסגריה שלי</a><a href="#s-smart">עוזר חכם</a><a href="#s-acc">חשבון וגיבוי</a><a href="#s-order">עמוד הזמנה ללקוח</a><a href="#s-guides">מדריכים לפי סוג</a><a href="#s-pricing">מסלולים</a>
+<b>בפועל</b><a href="#story">עבודה מלאה מא׳ ועד ת׳</a><a href="#data">נתונים וגיבוי</a><a href="#mobile">טלפון ואופליין</a><a href="#faq">שאלות ותקלות</a><a href="#limits">חשוב לדעת</a>
+</nav>
+<div>
+
+<section class="g-sec" id="what"><h2>מה זו המערכת</h2>
+<p>SHALVERO FORGE היא מערכת עבודה למסגריות. היא מלווה עבודה מהפנייה של הלקוח ועד הגבייה: תוכנית עם שרטוט, רשימת חיתוך, כמות חומר, הצעת מחיר, הזמנה מהספק, ניהול ייצור ומעקב תשלום.</p>
+<ul><li><b>אין מה להתקין ואין הרשמה.</b> פותחים את האתר בדפדפן, בטלפון או במחשב, ומתחילים.</li>
+<li><b>כל הנתונים נשמרים במכשיר שלך</b>, בדפדפן. לכן חשוב לעשות גיבוי (פירוט ב<a href="#data">נתונים וגיבוי</a>).</li>
+<li><b>אפשר להתקין כאפליקציה</b> במסך הבית ולעבוד גם בלי קליטה (פירוט ב<a href="#mobile">טלפון ואופליין</a>).</li></ul></section>
+
+<section class="g-sec" id="map"><h2>מפת העבודה – הסדר הנכון</h2>
+<p>כל עבודה עוברת את אותם שלבים. המערכת בנויה בדיוק לפי הסדר הזה:</p>
+<div class="flow"><span class="k">ליד</span><i>←</i><span>מדידה</span><i>←</i><span class="k">הצעת מחיר</span><i>←</i><span>אושר</span><i>←</i><span>חומרים הוזמנו</span><i>←</i><span>חיתוך</span><i>←</i><span>ריתוך</span><i>←</i><span>צבע/גלוון</span><i>←</i><span>מוכן להתקנה</span><i>←</i><span>הותקן</span><i>←</i><span class="k">שולם</span></div>
+<p class="muted">אלה בדיוק 11 הסטטוסים של כל פרויקט במערכת. כשמזיזים פרויקט שלב, הוא מופיע במקום הנכון בלוח הייצור וברווחיות.</p>
+<p><b>במילים פשוטות:</b> לקוח פונה ← פותחים <a href="#s-new">עבודה חדשה</a> ← המערכת מייצרת <a href="#s-sheet">תוכנית</a> עם חיתוך וחומר ← מפיקים <a href="#s-quote">הצעת מחיר</a> ← אחרי אישור מזמינים חומר ב<a href="#s-buy">רכש</a> ← חותכים לפי <a href="#s-opt">האופטימייזר</a> ← מתקדמים ב<a href="#s-prod">לוח הייצור</a> ← גובים ב<a href="#s-fin">רווחיות וגבייה</a>.</p></section>
+
+<section class="g-sec" id="first"><h2>הצעדים הראשונים – 15 דקות</h2>
+<p>סמנו כל שלב שסיימתם. ההתקדמות נשמרת במכשיר הזה.</p>
+<div class="prog" aria-hidden="true"><i id="pg"></i></div><p class="muted" id="pgt" style="font-size:14px"></p>
+<ul class="chk" id="chk">
+<li><input type="checkbox" id="c1"><label for="c1"><b>התקנה כאפליקציה.</b> באייפון: פותחים ב-Safari, לוחצים <kbd>שיתוף</kbd> ואז <kbd>הוסף למסך הבית</kbd>. באנדרואיד: ב-Chrome פותחים <kbd>⋮</kbd> ואז <kbd>התקן אפליקציה</kbd> או <kbd>הוסף למסך הבית</kbd>.</label></li>
+<li><input type="checkbox" id="c2"><label for="c2"><b>ממלאים את <a href="workshop.html">המסגריה שלי</a>:</b> שם העסק, טלפון, תעריף לשעה, רווח יעד, מע״מ, ומחיר לק״ג לכל חומר. בלי השלב הזה הצעות המחיר יחושבו לפי מחירי ברירת מחדל ולא לפי המחירים שלך.</label></li>
+<li><input type="checkbox" id="c3"><label for="c3"><b>מוסיפים ספקים</b> (שם וטלפון) באותו מסך. כך אפשר לשלוח רשימת קנייה לספק בלחיצה.</label></li>
+<li><input type="checkbox" id="c4"><label for="c4"><b>ממלאים פרופיל ב<a href="account.html">חשבון וגיבוי</a></b> ומורידים <b>גיבוי ראשון</b> (<kbd>הורד גיבוי מלא</kbd>).</label></li>
+<li><input type="checkbox" id="c5"><label for="c5"><b>פותחים עבודת ניסיון</b> ב<a href="new-job.html">עבודה חדשה</a>, למשל שער נגרר 4,000×1,600, ולוחצים <kbd>פתח תוכנית וחישוב</kbd>. מסתכלים על השרטוט, רשימת החיתוך והצעת המחיר.</label></li>
+<li><input type="checkbox" id="c6"><label for="c6"><b>שומרים את העבודה כפרויקט</b> ובודקים שהיא מופיעה ב<a href="projects.html">פרויקטים</a>.</label></li>
+<li><input type="checkbox" id="c7"><label for="c7"><b>מעבירים את רשימת החיתוך ל<a href="optimizer.html">אופטימייזר</a></b> ורואים איך לחתוך כל מוט.</label></li>
+<li><input type="checkbox" id="c8"><label for="c8"><b>שולחים ללקוחות את <a href="order.html">עמוד ההזמנה</a></b>, כדי שיבחרו בעצמם מה הם צריכים וישלחו לך בוואטסאפ.</label></li>
+</ul></section>
+
+<section class="g-sec" id="menu"><h2>התפריט העליון</h2>
+<p>בכל מסך יש תפריט קבוע בראש העמוד. הכפתור הכתום <b>עבודה חדשה</b> הוא נקודת ההתחלה של כל עבודה. לחיצה על הלוגו SHALVERO FORGE מחזירה לדף הבית.</p>
+<div class="stg"><div><b>מרכז</b> – כל הכלים</div><div><b>עבודה חדשה</b> – מתחילים כאן</div><div><b>תוכניות</b> – הספרייה</div><div><b>חיתוך</b> – אופטימייזר</div><div><b>ייצור</b> – לוח שלבים</div><div><b>ריתוך</b> – הגדרות ותקלות</div><div><b>רכש</b> – הזמנות מספק</div><div><b>רווחיות</b> – רווח וגבייה</div><div><b>פרויקטים</b> – לקוחות ועבודות</div><div><b>מלאי</b> – מוטות ושאריות</div><div><b>המסגריה</b> – הגדרות ומחירים</div><div><b>עוזר חכם</b> – כותבים במילים</div><div><b>חשבון</b> – גיבוי וסנכרון</div></div>
+<p class="muted">ליד התפריט מופיע תג <b>אונליין / אופליין</b> שמראה אם יש חיבור לאינטרנט. התג לא אומר שהנתונים מגובים בענן.</p></section>
+
+<section class="g-sec" id="screens"><h2>המסכים – אחד אחד</h2>
+
+<div class="g-scr" id="s-hub"><h3>מרכז המסגריה <span class="m">תפריט: מרכז</span><a href="hub.html">פתיחה ←</a></h3>
+<p class="g-why">לוח בקרה עם כל הכלים במקום אחד, מסודרים לפי שלבי העבודה.</p>
+<ul><li><b>מתוכנית לחומר:</b> עבודה חדשה, ספריית תוכניות, אופטימייזר, לוח ייצור, ריתוך, מלאי.</li><li><b>מהליד ועד הגבייה:</b> פרויקטים, רכש, רווחיות.</li><li><b>חשבון, גיבוי ולקוחות:</b> המסגריה שלי, עוזר חכם, חשבון, עמוד הזמנה ללקוח, מסלולים.</li></ul>
+<div class="tip">לא בטוחים לאן ללכת? מתחילים מהמרכז.</div></div>
+
+<div class="g-scr" id="s-new"><h3>עבודה חדשה <span class="m">תפריט: עבודה חדשה</span><a href="new-job.html">פתיחה ←</a></h3>
+<p class="g-why">המקום שבו פותחים כל עבודה חדשה מלקוח. טופס אחד שמוביל לתוכנית, לחישוב ולפרויקט.</p>
+<ol><li>בוחרים <b>סוג עבודה</b> (שער, מעקה, פרגולה ועוד).</li><li>מקלידים <b>רוחב/אורך</b> ו<b>גובה/עומק</b> במילימטרים, בוחרים <b>סגנון</b> ו<b>חומר</b> (ברזל שחור, מגולוון, אלומיניום, נירוסטה 304).</li><li>ממלאים <b>שם לקוח, טלפון, תאריך יעד והערות</b>.</li><li><kbd>פתח תוכנית וחישוב</kbd> פותח את גיליון התוכנית המלא. <kbd>שמור כטיוטת פרויקט</kbd> שומר את העבודה בפרויקטים בסטטוס הראשון.</li></ol>
+<div class="tip">הטופס נשמר אוטומטית כטיוטה. אם יצאתם באמצע, הנתונים יחכו כשתחזרו. <kbd>נקה טיוטה</kbd> מתחיל מחדש.</div>
+<div class="warn2">המידות הן <b>מ״מ</b>: 4 מטר = 4000, לא 4 ולא 400.</div></div>
+
+<div class="g-scr" id="s-plans"><h3>ספריית התוכניות <span class="m">תפריט: תוכניות</span><a href="plans.html">פתיחה ←</a></h3>
+<p class="g-why">אלפי תוכניות מוכנות ב-35 סוגי עבודה, מסודרות ב-7 קטגוריות: שערים ודלתות; מעקות, גדרות וסורגים; מדרגות וסולמות; הצללה ומבנים; ריהוט; סדנה ותעשייה; חוץ, גינה ובית.</p>
+<ol><li>לוחצים על <b>סוג עבודה</b>. המספר בסוגריים הוא כמות התוכניות בסוג הזה.</li><li>מסננים לפי <b>רוחב</b>, <b>גובה</b> ו<b>סגנון</b> (מוטות אנכיים, פרופילים אופקיים, פח מלא, רשת, משבצות, תריסים).</li><li>לוחצים על כרטיס ונפתח <a href="#s-sheet">גיליון התוכנית</a>. <kbd>הצג עוד</kbd> מציג תוכניות נוספות.</li></ol>
+<div class="tip">לכל תוכנית יש <b>קוד</b> (למשל <span dir="ltr">SG-4000-1600-v</span>) וקישור קבוע. אפשר לשלוח את הקישור ללקוח או לעובד, והוא ייפתח ישר על אותה תוכנית.</div></div>
+
+<div class="g-scr" id="s-sheet"><h3>גיליון התוכנית – מה יש בו <span class="m">נפתח מתוך התוכניות</span></h3>
+<p class="g-why">הדף שעובדים לפיו בפועל. מלמעלה למטה:</p>
+<ol>
+<li><b>שרטוט ב-4 מבטים:</b> חזית, צד, מבט על ואיזומטרי (תלת-ממד), עם קווי מידה. בחזית מופיעים <b>עיגולים ממוספרים</b> שתואמים למספרים ברשימת החיתוך.</li>
+<li><b>צבע:</b> שורת צבעים מעל השרטוט צובעת את המודל, כדי שיהיה אפשר להראות ללקוח איך זה ייראה.</li>
+<li><b>בלוק כותרת</b> כמו בשרטוט מקצועי: שם, קוד, יחידות, תאריך וגרסה.</li>
+<li><b>רשימת חיתוך:</b> מספר חלק, שם, פרופיל, אורך, כמות וזווית חיתוך. כשמופיעה זווית, החלק משופע וחותכים אותו בזווית הזו.</li>
+<li><b>קנייה – פרופילים של 6 מ׳:</b> כמה מוטות לקנות מכל פרופיל, כמה מטר נטו וכמה פחת.</li>
+<li><b>סימון חיתוכים על המוט:</b> כל פס הוא מוט אחד. רואים אילו חלקים חותכים ממנו ובאיזה סדר, ומה נשאר. <b>×N</b> אומר כמה מוטות חותכים בדיוק באותה צורה.</li>
+<li><b>פרזול, חיפוי ואביזרים</b> ו<b>הערות ביצוע</b>.</li>
+<li><b>חומר:</b> החלפה בין ברזל, מגולוון, אלומיניום ונירוסטה משנה את המשקל ואת המחיר.</li>
+<li><b>מידה מותאמת אישית:</b> מקלידים כל מידה שרוצים ולוחצים <kbd>צור תוכנית</kbd>. נוצרת תוכנית חדשה מלאה. מידה לא הגיונית נחסמת עם הסבר.</li>
+<li><b>רשימת קנייה לספק:</b> <kbd>שליחה בוואטסאפ</kbd> פותח הודעה מוכנה עם כל הפרופילים והפרזול. <kbd>העתקת הרשימה</kbd> מעתיק אותה.</li>
+<li><b>הצעת מחיר ללקוח:</b> מחשבון שכולל חומר, מתכלים, צבע או גלוון, שעות עבודה, רווח ומע״מ. מוסיפים לוגו ושם לקוח ומפיקים PDF.</li>
+<li><b>מחשבוני צבע וריתוך:</b> הערכה לשטח לצביעה, ליטרים, אורך ריתוך וחומרי ריתוך.</li>
+<li><b>כפתורים בתחתית:</b> <kbd>הדפסה / שמירה כ-PDF</kbd>, <kbd>העתקת קישור</kbd>, <kbd>הורדת DXF</kbd> (קובץ שרטוט לאוטוקאד ולמכונות פלזמה או לייזר), ושמירה כפרויקט.</li></ol>
+<div class="tip">להדפסה לסדנה: <kbd>הדפסה / שמירה כ-PDF</kbd> מדפיס רק את מה שצריך, בלי כפתורים ובלי תפריטים.</div></div>
+
+<div class="g-scr" id="s-opt"><h3>אופטימייזר חיתוך <span class="m">תפריט: חיתוך</span><a href="optimizer.html">פתיחה ←</a></h3>
+<p class="g-why">מחשב איך לחתוך את כל החלקים מכמה שפחות מוטות. אפשר להשתמש בו גם לעבודה שלא מהספרייה.</p>
+<ol><li>מוסיפים שורות ב-<kbd>+ שורה</kbd>: פרופיל, אורך וכמות. אפשר גם להגיע לכאן ישירות מתוכנית, ואז הרשימה כבר ממולאת.</li><li>מגדירים <b>אורך מוט חדש</b> (בדרך כלל 6000), <b>רוחב להב (קרף)</b> (בדרך כלל 3) ו<b>מינימום שארית לשמירה</b>, כלומר מאיזה אורך שווה לשמור שארית.</li><li><kbd>חשב סידור חיתוך</kbd> מציג תוכנית חיתוך לכל מוט. <kbd>דוגמה</kbd> ממלא נתוני ניסיון.</li></ol>
+<div class="tip">שאריות שנשמרות ב<a href="#s-inv">מלאי</a> נלקחות בחשבון, כדי לנצל אותן לפני שקונים מוט חדש.</div></div>
+
+<div class="g-scr" id="s-inv"><h3>מלאי ושאריות <span class="m">תפריט: מלאי</span><a href="inventory.html">פתיחה ←</a></h3>
+<p class="g-why">רשימה של מה שיש לך במסגריה: מוטות מלאים ושאריות.</p>
+<ol><li>מקלידים <b>פרופיל</b> (חתך במ״מ, למשל 40×40×2), <b>אורך</b>, <b>סוג</b> (שארית או מוט מלא) ו<b>מקור או הערה</b>, ולוחצים <kbd>הוסף למלאי</kbd>.</li><li>מסננים לפי פרופיל ו<b>מינימום אורך</b> כדי למצוא מהר שארית שמתאימה.</li></ol>
+<div class="tip">הרגל טוב: אחרי כל עבודה מכניסים למלאי שאריות מעל חצי מטר.</div></div>
+
+<div class="g-scr" id="s-prj"><h3>פרויקטים ולקוחות <span class="m">תפריט: פרויקטים</span><a href="projects.html">פתיחה ←</a></h3>
+<p class="g-why">כל העבודות וכל הלקוחות במקום אחד, וכל פרויקט מסומן בסטטוס שלו.</p>
+<div class="stg"><div><b>1</b> ליד</div><div><b>2</b> מדידה</div><div><b>3</b> הצעת מחיר</div><div><b>4</b> אושר</div><div><b>5</b> חומרים הוזמנו</div><div><b>6</b> חיתוך</div><div><b>7</b> ריתוך</div><div><b>8</b> צבע/גלוון</div><div><b>9</b> מוכן להתקנה</div><div><b>10</b> הותקן</div><div><b>11</b> שולם</div></div>
+<ol><li>מחפשים לפי <b>לקוח, טלפון או עבודה</b>, ומסננים לפי <b>סטטוס</b> ו<b>תזמון</b>: באיחור, 7 הימים הקרובים, ללא יעד.</li><li>מעדכנים סטטוס בכל פעם שעבודה מתקדמת.</li><li>מכל פרויקט אפשר לעבור להצעת מחיר, ללוח הייצור ולרווחיות, ולשלוח ללקוח וואטסאפ.</li><li><kbd>הורדת גיבוי פרויקטים</kbd> מוריד קובץ גיבוי, ו<b>ייבוא</b> מחזיר אותו.</li></ol></div>
+
+<div class="g-scr" id="s-quote"><h3>הצעת מחיר מקצועית <span class="m">נפתחת מתוך פרויקט</span><a href="quotes.html">פתיחה ←</a></h3>
+<p class="g-why">מסמך הצעת מחיר רשמי ללקוח על בסיס פרויקט.</p>
+<ol><li>בוחרים <b>פרויקט</b>, ממלאים <b>מספר הצעה</b> ו<b>תאריך תוקף</b>.</li><li>בוחרים <b>מע״מ</b>: המחיר כולל מע״מ, או שהמע״מ יתווסף.</li><li>כותבים <b>תיאור עבודה</b> ו<b>תנאי תשלום ואחריות</b>.</li><li><kbd>שמור פרטי הצעה</kbd>, ואז <kbd>הדפס / שמור כ-PDF</kbd> ושולחים ללקוח.</li></ol>
+<div class="tip">פרטי העסק והמחירים נלקחים מ<a href="#s-shop">המסגריה שלי</a>. כדאי לעדכן שם קודם.</div></div>
+
+<div class="g-scr" id="s-buy"><h3>רכש מספקים <span class="m">תפריט: רכש</span><a href="purchasing.html">פתיחה ←</a></h3>
+<p class="g-why">הזמנות חומר מסודרות מול ספקים, מקושרות לפרויקט.</p>
+<ol><li>בוחרים <b>ספק</b>, ממלאים <b>מספר הזמנה או אסמכתא</b> ו<b>שיוך לפרויקט</b>.</li><li>מוסיפים פרופילים ב-<kbd>+ שורת חומר</kbd>.</li><li><kbd>שמור טיוטה</kbd>, וכשההזמנה נשלחה לספק לוחצים <kbd>סמן כהוזמן</kbd>. כשהחומר מגיע מסמנים אותו כהתקבל.</li></ol></div>
+
+<div class="g-scr" id="s-prod"><h3>לוח ייצור <span class="m">תפריט: ייצור</span><a href="production.html">פתיחה ←</a></h3>
+<p class="g-why">תמונה של כל העבודות שנמצאות בייצור, לפי שלבים: אושר ← חומרים הוזמנו ← חיתוך ← ריתוך ← צבע/גלוון ← מוכן להתקנה ← הותקן.</p>
+<ol><li>מסננים לפי <b>שלב</b> ו<b>תזמון</b> (באיחור, השבוע) ומחפשים עבודה.</li><li>לפני שמתחילים לייצר עוברים על רשימת בדיקה: <b>אישור מידות ושרטוט, סגירת חומר וגימור, אישור מחיר ומקדמה, קביעת תאריך יעד</b>.</li><li>מזיזים עבודה לשלב הבא כשהשלב הקודם הסתיים. אפשר גם לעדכן את הלקוח בוואטסאפ.</li></ol>
+<div class="tip">בתחילת כל בוקר: פותחים את הלוח ומסננים <b>באיחור</b>, כדי לראות מה דחוף.</div></div>
+
+<div class="g-scr" id="s-weld"><h3>מרכז הריתוך <span class="m">תפריט: ריתוך</span><a href="welding.html">פתיחה ←</a></h3>
+<p class="g-why">עזרה מקצועית בריתוך אלקטרודה (SMAW).</p>
+<ul><li><b>Weld Setup Assistant:</b> מזינים עובי חומר, סוג אלקטרודה (E6013 או E7018), קוטר, סוג מחבר ותנוחה, ומקבלים הכוונה להגדרות.</li><li><b>קשת, ידית ואלקטרודה:</b> אורך קשת, זוויות, צידוד, קוטביות ומשפחות אלקטרודות.</li><li><b>Defect Diagnostics:</b> מחפשים פגם או תסמין ומקבלים סיבה ותיקון.</li><li><b>קריאת הוראת ריתוך בשרטוט</b> ו<b>בדיקות ריתוך</b>.</li><li><b>Pre-Weld Safety Check:</b> רשימת בטיחות לפני ריתוך. <kbd>איפוס בדיקה</kbd> מתחיל מחדש.</li></ul>
+<div class="warn2">ההכוונה היא כללית. במקרה של סתירה, הוראות היצרן של האלקטרודה והמכונה קובעות.</div></div>
+
+<div class="g-scr" id="s-fin"><h3>רווחיות וגבייה <span class="m">תפריט: רווחיות</span><a href="finance.html">פתיחה ←</a></h3>
+<p class="g-why">כמה הרווחת בכל עבודה וכמה הלקוח עוד חייב.</p>
+<ol><li>בוחרים <b>פרויקט</b> או מחפשים לקוח או עבודה.</li><li>רואים את המחיר ללקוח מול עלויות החומר והעבודה, רושמים מקדמות ותשלומים, ורואים את היתרה לגבייה.</li></ol>
+<div class="tip">כדי שהרווח יהיה אמיתי, ממלאים ב<a href="#s-shop">המסגריה שלי</a> גם <b>עלות שעת עבודה בפועל</b>, לא רק את התעריף ללקוח.</div></div>
+
+<div class="g-scr" id="s-shop"><h3>המסגריה שלי <span class="m">תפריט: המסגריה</span><a href="workshop.html">פתיחה ←</a></h3>
+<p class="g-why">ממלאים פעם אחת, וההגדרות משמשות את כל המערכת: תמחור, הצעות וחישובי חיתוך.</p>
+<ul><li><b>פרטי העסק:</b> שם, טלפון, <b>תעריף עבודה</b> (מה שגובים מהלקוח לשעה), <b>עלות שעת עבודה בפועל</b> (מה שזה עולה לך), רווח יעד, מע״מ, התקנה בסיסית.</li><li><b>חיתוך:</b> אורך מוט סטנדרטי, קרף מסור, פחת יעד.</li><li><b>מחירי חומר לק״ג:</b> ברזל שחור, מגולוון, אלומיניום, נירוסטה 304.</li><li><b>ספקים:</b> <kbd>+ ספק</kbd>, שם, טלפון, הערה.</li></ul>
+<p>בסוף לוחצים <kbd>שמור הגדרות</kbd>.</p>
+<div class="warn2">המחירים שמופיעים כברירת מחדל הם הערכה בלבד. מעדכנים אותם לפי המחירון של הספק שלך.</div></div>
+
+<div class="g-scr" id="s-smart"><h3>עוזר חכם <span class="m">תפריט: עוזר חכם</span><a href="smart.html">פתיחה ←</a></h3>
+<p class="g-why">כותבים במילים פשוטות מה הלקוח רוצה, והעוזר בונה טיוטת עבודה.</p>
+<ol><li>כותבים למשל: <i>"שער נגרר 4 מטר גובה 1.6 מגולוון עם פרופילים אופקיים"</i>.</li><li><kbd>בנה טיוטה</kbd>: העוזר מזהה סוג, מידות וחומר, ומפנה לתוכנית המתאימה. <kbd>הכנס דוגמה</kbd> ממלא טקסט לדוגמה.</li></ol>
+<div class="tip">תמיד בודקים שהמידות שהעוזר זיהה נכונות לפני שממשיכים.</div></div>
+
+<div class="g-scr" id="s-acc"><h3>חשבון וגיבוי <span class="m">תפריט: חשבון</span><a href="account.html">פתיחה ←</a></h3>
+<ul><li><b>פרופיל מקומי:</b> שם ואימייל לתצוגה, ואז <kbd>שמור פרופיל מקומי</kbd>.</li><li><b>גיבוי והעברה:</b> <kbd>הורד גיבוי מלא</kbd> שומר קובץ עם כל הנתונים (פרויקטים, מלאי, הגדרות, רכש). <b>שחזר מגיבוי</b> טוען קובץ כזה, גם במכשיר אחר.</li><li><b>משתמשים וסנכרון ענן:</b> התחברות עם קישור לאימייל וסנכרון בין מכשירים. <b>עדיין לא פעיל</b> (פירוט ב<a href="#limits">חשוב לדעת</a>).</li></ul></div>
+
+<div class="g-scr" id="s-order"><h3>עמוד הזמנה ללקוח <span class="m">ללקוחות שלך</span><a href="order.html">פתיחה ←</a></h3>
+<p class="g-why">דף שאתה שולח ללקוחות. הם בונים לבד את מה שהם צריכים, ושולחים לך בוואטסאפ.</p>
+<ol><li>הלקוח בוחר <b>סוג עבודה</b>, מידות וסגנון.</li><li>בוחר <b>חומר וצבע</b> ורואה הדמיה.</li><li>ממלא שם, טלפון, יישוב, הערות ותמונה (לא חובה).</li><li><kbd>שליחת בקשה בוואטסאפ</kbd> פותח וואטסאפ עם כל הפרטים מוכנים.</li></ol>
+<div class="tip">שימו את הקישור לעמוד הזה בביו באינסטגרם, בסטטוס בוואטסאפ ובכרטיס העסק בגוגל.</div></div>
+
+<div class="g-scr" id="s-guides"><h3>מדריכים לפי סוג עבודה <span class="m">מדף הבית</span><a href="guides/index.html">פתיחה ←</a></h3>
+<p class="g-why">עמוד הסבר לכל סוג עבודה, עם שרטוט לדוגמה, רשימת חיתוך, נקודות לביצוע וקישורים לכל המידות. נועד גם לכך שמסגרים ימצאו את האתר בגוגל.</p></div>
+
+<div class="g-scr" id="s-pricing"><h3>מסלולים <span class="m">מהמרכז</span><a href="pricing.html">פתיחה ←</a></h3>
+<p class="g-why">תיאור של מסלולי המוצר העתידיים: חינם, מקצועי ומסגריה.</p>
+<div class="warn2">אין כרגע חיוב אמיתי. סימון מסלול הוא הגדרה מקומית בלבד, ולא נוצר שום מנוי.</div></div>
+</section>
+
+<section class="g-sec" id="story"><h2>עבודה מלאה מא׳ ועד ת׳ – דוגמה</h2>
+<p><b>המקרה:</b> לקוח מבקש שער נגרר לחניה, פתח 4 מטר, גובה 1.60, מגולוון עם פרופילים אופקיים.</p>
+<ol>
+<li><b>הפנייה:</b> הלקוח שלח בקשה מ<a href="#s-order">עמוד ההזמנה</a>, או שפתחת בעצמך <a href="#s-new">עבודה חדשה</a> עם שם וטלפון. הפרויקט נשמר בסטטוס <b>ליד</b>.</li>
+<li><b>מדידה:</b> מגיעים למקום, מודדים, ומעבירים את הפרויקט ל<b>מדידה</b>. אם המידה שונה מהרשימה, משתמשים ב<b>מידה מותאמת אישית</b>, למשל 4,137.</li>
+<li><b>תוכנית:</b> פותחים את התוכנית: שרטוט, רשימת חיתוך וכמות מוטות. בוחרים חומר <b>מגולוון</b> וצבע להדמיה.</li>
+<li><b>מחיר:</b> בודקים במחשבון בגיליון, ומפיקים <a href="#s-quote">הצעת מחיר</a> PDF. הסטטוס עובר ל<b>הצעת מחיר</b>.</li>
+<li><b>אישור:</b> הלקוח אישר ושילם מקדמה. מעבירים ל<b>אושר</b> ורושמים את המקדמה ב<a href="#s-fin">רווחיות</a>.</li>
+<li><b>חומר:</b> בודקים <a href="#s-inv">מלאי</a>, ואת מה שחסר מזמינים ב<a href="#s-buy">רכש</a> או בוואטסאפ לספק. הסטטוס עובר ל<b>חומרים הוזמנו</b>.</li>
+<li><b>חיתוך:</b> מדפיסים את <b>סימון החיתוכים על המוט</b> או משתמשים ב<a href="#s-opt">אופטימייזר</a>. שאריות טובות מכניסים למלאי.</li>
+<li><b>ייצור:</b> ריתוך ← צבע או גלוון ← מוכן להתקנה, וכל שלב מעודכן ב<a href="#s-prod">לוח הייצור</a>.</li>
+<li><b>התקנה וגבייה:</b> מסמנים <b>הותקן</b>, גובים את היתרה, ומסמנים <b>שולם</b>. ב<a href="#s-fin">רווחיות</a> רואים כמה הרווחת בפועל.</li></ol></section>
+
+<section class="g-sec" id="data"><h2>נתונים, גיבוי ופרטיות – חשוב מאוד</h2>
+<ul><li><b>הנתונים שמורים בדפדפן של המכשיר הזה בלבד.</b> אם מוחקים היסטוריית גלישה ונתוני אתרים, מחליפים מכשיר או משתמשים בחלון גלישה בסתר, הנתונים לא יהיו שם.</li>
+<li><b>גיבוי פעם בשבוע לפחות:</b> <a href="account.html">חשבון</a> ← <kbd>הורד גיבוי מלא</kbd>. שומרים את הקובץ בדרייב או שולחים לעצמך במייל.</li>
+<li><b>מעבר למכשיר חדש:</b> מורידים גיבוי בישן, ובחדש פותחים חשבון ← <b>שחזר מגיבוי</b>.</li>
+<li><b>טלפון ומחשב לא מסונכרנים אוטומטית</b> כל עוד סנכרון הענן לא פעיל. בוחרים מכשיר אחד ראשי.</li>
+<li><b>בקובץ הגיבוי יש פרטי לקוחות.</b> לא משתפים אותו, ולא משאירים את המערכת פתוחה במחשב משותף.</li></ul></section>
+
+<section class="g-sec" id="mobile"><h2>עבודה בטלפון ואופליין</h2>
+<ul><li>אחרי התקנה למסך הבית, המערכת נפתחת כמו אפליקציה, על מסך מלא ובלי שורת כתובת.</li><li><b>בלי קליטה:</b> עמודים שכבר נפתחו לפחות פעם אחת ממשיכים לעבוד, וגם הנתונים זמינים. וואטסאפ וגופנים צריכים אינטרנט.</li><li>באתר עבודה: פותחים את התוכנית מראש כשיש קליטה, והיא תהיה זמינה גם במרתף או בחניון.</li></ul></section>
+
+<section class="g-sec faq" id="faq"><h2>שאלות ותקלות נפוצות</h2>
+<details><summary>הפרויקטים שלי נעלמו</summary><p>בדרך כלל זה קורה כי נוקו נתוני הדפדפן, נפתח דפדפן או מכשיר אחר, או שעבדת בגלישה בסתר. משחזרים מהגיבוי האחרון ב<a href="account.html">חשבון</a> ← שחזר מגיבוי. לכן חשוב לגבות.</p></details>
+<details><summary>הצעת המחיר יוצאת זולה או יקרה מדי</summary><p>מעדכנים ב<a href="workshop.html">המסגריה שלי</a> את המחיר לק״ג, את התעריף ואת הרווח. בתוך הגיליון אפשר גם לשנות שעות עבודה לעבודה מסוימת.</p></details>
+<details><summary>לוחצים על וואטסאפ ולא קורה כלום</summary><p>צריך שוואטסאפ יהיה מותקן (או WhatsApp Web במחשב), ושהדפדפן יאפשר חלונות קופצים מהאתר.</p></details>
+<details><summary>ה-PDF לא נפתח</summary><p>מאשרים חלונות קופצים לאתר. בחלון ההדפסה בוחרים יעד <b>שמור כ-PDF</b>.</p></details>
+<details><summary>איך פותחים קובץ DXF?</summary><p>באוטוקאד, DraftSight, LibreCAD (חינם), או ישירות בתוכנה של מכונת החיתוך. היחידות במ״מ, וכל מבט נמצא בשכבה (layer) נפרדת.</p></details>
+<details><summary>המידה שהקלדתי נחסמה</summary><p>לכל סוג עבודה יש טווח הגיוני. ההודעה מציגה את הטווח. עבודה חריגה דורשת תכנון פרטני.</p></details>
+<details><summary>המספרים בשרטוט לא תואמים לרשימה</summary><p>העיגולים בחזית ממוספרים כמו עמודת # ברשימת החיתוך. חלקים שלא נראים בחזית מופיעים במבט צד או מבט על.</p></details>
+<details><summary>שיניתי משהו והוא לא מתעדכן</summary><p>מרעננים את הדף. אם זה עדיין לא מתעדכן, סוגרים את האפליקציה ופותחים מחדש, כדי לטעון את הגרסה החדשה.</p></details>
+</section>
+
+<section class="g-sec" id="limits"><h2>חשוב לדעת</h2>
+<ul><li><b>התוכניות הן תבניות עבודה</b> ולא תכנון הנדסי. פרופילים, עיגון ועומסים הם באחריות המבצע, לפי התקן (למשל ת״י 1142 למעקות, ת״י 900-21.03 לשערים חשמליים) ולפי תנאי האתר. מבנים מקורים, מתקנים סולאריים ומדפים כבדים דורשים בדיקת מהנדס, ולפעמים גם היתר.</li>
+<li><b>מחירים, משקלים ומחשבוני צבע וריתוך הם הערכות.</b> המחיר הסופי הוא לפי הספק והניסיון שלך.</li>
+<li><b>סנכרון ענן וצוות עדיין לא פעילים.</b> כל העבודה כרגע מקומית במכשיר.</li>
+<li><b>אין חיוב או מנוי אמיתי.</b> עמוד המסלולים הוא תכנון לעתיד.</li></ul>
+<p style="margin-top:16px"><a class="btn" href="new-job.html">מתחילים: עבודה חדשה ←</a> <a class="btn ghost" href="hub.html">למרכז המסגריה</a></p></section>
+
+</div></div></main>
+<script src="app.js"></script>
+<script>
+try{nav.innerHTML=MP.nav('start.html')}catch(e){}
+(function(){const K='forge_onboarding_v1',ids=['c1','c2','c3','c4','c5','c6','c7','c8'];let s={};try{s=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
+ const upd=()=>{const n=ids.filter(i=>document.getElementById(i).checked).length;document.getElementById('pg').style.width=(n/ids.length*100)+'%';document.getElementById('pgt').textContent=n===ids.length?'כל הכבוד – סיימתם את ההתחלה ✓':`${n} מתוך ${ids.length} שלבים`;ids.forEach(i=>document.getElementById(i).closest('li').classList.toggle('done',document.getElementById(i).checked))};
+ ids.forEach(i=>{const c=document.getElementById(i);c.checked=!!s[i];c.onchange=()=>{s[i]=c.checked;try{localStorage.setItem(K,JSON.stringify(s))}catch(e){}upd()}});upd()})();
+</script></body></html>
