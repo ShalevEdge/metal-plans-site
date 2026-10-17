@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#1C1F22;--bg2:#24282C;--line:#33393E;--or:#FF6B1A;--steel:#8A939B;--tx:#F2F2F0}
+:root{--bg:#F3F4F6;--bg2:#FFFFFF;--line:#D6DAE0;--or:#E8590C;--ort:#B93E07;--steel:#5B6670;--tx:#15181C}
 *{box-sizing:border-box;margin:0;padding:0}
 button,input,select{font-family:inherit}
 html,body{overflow-x:hidden}
@@ -18,34 +18,34 @@ header{padding:20px 0;border-bottom:1px solid var(--line)}
 header a{color:var(--tx);text-decoration:none;font-weight:900}
 h1{font-size:clamp(30px,6vw,52px);font-weight:900;line-height:1.1;margin:28px 0 8px}
 h2{font-size:clamp(22px,4vw,32px);font-weight:900;margin:24px 0 12px}
-.hl{background:var(--or);color:var(--bg);padding:0 .15em}
+.hl{background:var(--or);color:#fff;padding:0 .15em}
 .muted{color:var(--steel)}
-.card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .filters{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));margin:20px 0}
 .filters label{display:block;font-weight:700;margin-bottom:4px;font-size:15px}
 select{width:100%;padding:12px;font-size:17px;background:var(--bg);color:var(--tx);border:1px solid var(--steel);border-radius:8px}
 .types{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .types button{background:var(--bg2);color:var(--tx);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:15px;cursor:pointer;font-weight:700}
-.types button.on{background:var(--or);color:var(--bg);border-color:var(--or)}
-.types button.on .muted{color:var(--bg)}
-#detail:not(:empty){position:fixed;inset:0;z-index:20;background:rgba(10,12,14,.82);overflow-y:auto;padding:12px}
+.types button.on{background:var(--or);color:#fff;border-color:var(--or)}
+.types button.on .muted{color:#fff}
+#detail:not(:empty){position:fixed;inset:0;z-index:20;background:rgba(20,24,28,.55);overflow-y:auto;padding:12px}
 #detail .card{max-width:920px;margin:0 auto 40px}
 .close{position:sticky;top:0;float:left;background:var(--bg);color:var(--tx);border:1px solid var(--steel);border-radius:999px;width:44px;height:44px;font-size:22px;cursor:pointer;z-index:2}
 @media(max-width:520px){main .list{grid-template-columns:1fr 1fr}.item{padding:8px;font-size:13px}.item b{font-size:14px}.item svg{height:64px}}
 .list{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr))}
-.item{display:block;text-align:right;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx);cursor:pointer;font-size:15px}
+.item{display:block;text-align:right;background:var(--bg2);box-shadow:0 1px 2px rgba(0,0,0,.05);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--tx);cursor:pointer;font-size:15px}
 .item:hover,.item.sel{border-color:var(--or)}
 .item b{display:block;font-size:16px}
 .item svg{width:100%;height:90px;display:block;margin-bottom:6px}
-.code{font-family:ui-monospace,Consolas,monospace;color:var(--or);font-size:13px}
-#detail svg{width:100%;height:auto;max-height:520px;display:block;background:#2a2f34;border-radius:10px;padding:8px}
+.code{font-family:ui-monospace,Consolas,monospace;color:var(--ort);font-size:13px}
+#detail svg{width:100%;height:auto;max-height:520px;display:block;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
 table{width:100%;border-collapse:collapse;background:var(--bg2);margin-top:8px}
 th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;font-size:15px}
-th{background:#2b3035;color:var(--or)}
+th{background:#EEF1F4;color:var(--ort)}
 .tbl{overflow-x:auto}
-.btn{display:inline-block;background:var(--or);color:var(--bg);font-weight:900;font-size:17px;padding:12px 22px;border-radius:8px;border:0;cursor:pointer;text-decoration:none}
+.btn{display:inline-block;background:var(--or);color:#fff;font-weight:900;font-size:17px;padding:12px 22px;border-radius:8px;border:0;cursor:pointer;text-decoration:none}
 .btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--steel)}
-.warn{border-right:4px solid var(--or);padding:12px 14px;background:#2b2a26;border-radius:8px;margin:16px 0;font-size:14px}
+.warn{border-right:4px solid var(--or);padding:12px 14px;background:#FFF4EC;border-radius:8px;margin:16px 0;font-size:14px}
 .meta{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 14px}
 .meta>span{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:14px}
 .count{font-size:15px;margin:10px 0}
@@ -79,7 +79,7 @@ footer{padding:40px 0;color:var(--steel);font-size:13px;border-top:1px solid var
 </main>
 <footer><div class="wrap">התוכניות הן תבניות עבודה לעבודות מסגרות נפוצות ואינן מחליפות תכנון הנדסי. יש לוודא התאמה לתקנים הרלוונטיים (למשל ת״י 1142 למעקות, ת״י 900-21.03 לשערים חשמליים) ולתנאי האתר.</div></footer>
 <script>
-const OR='#FF6B1A',WH='#F2F2F0',ST='#8A939B',FILL='#3a4046',STOCK=6000,KERF=3;
+const OR='#E8590C',OT='#B93E07',WH='#1F2328',ST='#6B7680',FILL='#DCE1E6',STOCK=6000,KERF=3;
 const fmt=n=>Math.round(n).toLocaleString('en-US');
 const ltr=t=>`<span dir="ltr">${t}</span>`;
 const R=(x,y,w,h,c=WH,f=FILL)=>({t:'r',x,y,w,h,c,f});
@@ -98,9 +98,9 @@ function draw(W,H,shapes,dims,thumb){
  if(!thumb)for(const d of dims){
   const t=fs*.35,ln=(a,b,c,e)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${e}" stroke="${ST}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
   if(d.y1===d.y2){s+=ln(d.x1,d.y1,d.x2,d.y2)+ln(d.x1,d.y1-t,d.x1,d.y1+t)+ln(d.x2,d.y2-t,d.x2,d.y2+t)+
-   `<text x="${(d.x1+d.x2)/2}" y="${d.y1-fs*.35}" fill="${OR}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle">${d.t}</text>`}
+   `<text x="${(d.x1+d.x2)/2}" y="${d.y1-fs*.35}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle">${d.t}</text>`}
   else{const cy=(d.y1+d.y2)/2,cx=d.x1-fs*.35;s+=ln(d.x1,d.y1,d.x2,d.y2)+ln(d.x1-t,d.y1,d.x1+t,d.y1)+ln(d.x2-t,d.y2,d.x2+t,d.y2)+
-   `<text x="${cx}" y="${cy}" fill="${OR}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle" transform="rotate(-90 ${cx} ${cy})">${d.t}</text>`}
+   `<text x="${cx}" y="${cy}" fill="${OT}" font-size="${fs}" font-family="Heebo" font-weight="700" text-anchor="middle" transform="rotate(-90 ${cx} ${cy})">${d.t}</text>`}
  }
  const x0=Math.min(0,...shapes.map(r=>r.t==='r'?r.x:r.t==='l'?Math.min(r.x1,r.x2):r.x-r.r));
  const x1=Math.max(W,...shapes.map(r=>r.t==='r'?r.x+r.w:r.t==='l'?Math.max(r.x1,r.x2):r.x+r.r));
@@ -147,18 +147,66 @@ const GEN={
    notes:[`${np} עמודים במרחק ${fmt(seg+50)} מ״מ`,`מרווח בין מוטות: ${fmt(sp)} מ״מ`,'מרווח מהרצפה לקורה התחתונה: 70 מ״מ','גובה, מרווחים ועומסים – לאמת מול ת״י 1142 לפני ביצוע']}}},
  GR:{name:'סורג חלון',wl:'רוחב',W:[600,2000,100],H:[600,1600,100],f(W,H){
   const f=25,inW=W-2*f,inH=H-2*f,b=vbars(f,inW,f,inH,16),nh=Math.max(1,Math.ceil(inH/600)-1);
-  const hs=[];for(let i=1;i<=nh;i++)hs.push(R(f,f+inH*i/(nh+1)-15,inW,30,WH,'#4a5057'));
+  const hs=[];for(let i=1;i<=nh;i++)hs.push(R(f,f+inH*i/(nh+1)-15,inW,30,WH,'#B9C1CA'));
   return{L:W,H,parts:[['מסגרת אופקית','25×25×2',W,2],['מסגרת אנכית','25×25×2',inH,2],['מוט אנכי','16×16×1.5',inH,b.n],['פס אופקי (פלח)','30×5',inW,nh]],
    shapes:[R(0,0,W,f,OR),R(0,H-f,W,f,OR),R(0,f,f,inH,OR),R(W-f,f,f,inH,OR),...b.a,...hs],
    dims:[D(0,-H*.07,W,-H*.07,fmt(W)),D(-W*.07,0,-W*.07,H,fmt(H))],
    hw:['4–6 אוזני עיגון / ברגי טריז'],notes:[`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'במידה של חלון יציאת חירום – להתקין סורג נפתח']}}},
  FN:{name:'גדר (מקטע)',wl:'אורך מקטע',W:[2000,2500,3000],H:[1000,1200,1400,1600,1800,2000],f(L,H){
   const inL=L-60,pickH=H-100,nr=H>1500?3:2,b=vbars(30,inL,0,pickH);
-  const rails=[];for(let i=0;i<nr;i++)rails.push(R(30,150+(pickH-300)*i/(nr-1),inL,20,WH,'#4a5057'));
+  const rails=[];for(let i=0;i<nr;i++)rails.push(R(30,150+(pickH-300)*i/(nr-1),inL,20,WH,'#B9C1CA'));
   return{L,H,parts:[['עמוד (כולל 400 ביסוס)','60×60×2',H+400,2],['קורת חיבור','40×20×1.5',inL,nr],['מוט גדר','20×20×1.5',pickH,b.n]],
    shapes:[R(-30,-40,60,H+440,OR),R(L-30,-40,60,H+440,OR),...b.a,...rails,Lh(-250,H,L+250,H),Lh(-60,H+400,L+60,H+400,ST,1)],
    dims:[D(0,-L*.05,L,-L*.05,fmt(L)+' (מרכז-מרכז)'),D(-L*.06,0,-L*.06,H,fmt(H))],
-   hw:['בטון לביסוס עמודים (בור 300×300×400)'],notes:[`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'מרווח מהקרקע: 100 מ״מ','בגדר רציפה – עמוד משותף בין מקטעים (להפחית עמוד אחד לכל מקטע נוסף)']}}}
+   hw:['בטון לביסוס עמודים (בור 300×300×400)'],notes:[`מרווח בין מוטות: ${fmt(b.sp)} מ״מ`,'מרווח מהקרקע: 100 מ״מ','בגדר רציפה – עמוד משותף בין מקטעים (להפחית עמוד אחד לכל מקטע נוסף)']}}},
+ ST:{name:'מדרגות',wl:'רוחב מדרגות',hl:'גובה קומה',W:[800,1000,1200],H:[1000,3000,250],f(W,H){
+  const n=Math.round(H/175),r=H/n,g=Math.min(300,Math.max(250,630-2*r)),nt=n-1,run=nt*g,sl=Math.round(Math.hypot(run+g,H)),inW=W-100;
+  const sh=[Lh(-300,H,run+300,H),Lh(run,0,run+900,0)];
+  for(let i=1;i<=nt;i++)sh.push(R((i-1)*g,H-i*r,g,30));
+  sh.push(Lh(0,H,run,0,WH),Lh(180,H,run+180,0,WH));
+  return{L:run,H,parts:[['קורת צד (מיתר)','100×50×3',sl,2],['מסגרת שלח – חזית/גב','40×20×2',inW,nt*2],['מסגרת שלח – צד','40×20×2',g-40,nt*2],['זווית תמיכה לשלח','40×40×4',g,nt*2]],
+   shapes:sh,dims:[D(0,H+H*.08,run,H+H*.08,fmt(run)),D(-H*.08,0,-H*.08,H,fmt(H))],
+   hw:['פלטות עיגון לרצפה ולתקרה העליונה','משטחי דריכה (עץ / פח מרוג) – לא כלולים'],
+   notes:[`${n} רומים של ${fmt(r)} מ״מ, שלח ${fmt(g)} מ״מ (2R+G = ${fmt(2*r+g)})`,`רוחב נטו בין המיתרים: ${fmt(inW)} מ״מ`,'נדרש מעקה / מאחז יד – לפי תקנות התכנון והבנייה ות״י 1142']}}},
+ PG:{name:'פרגולה',wl:'אורך',hl:'עומק',W:[3000,6000,500],H:[2500,3000,3500,4000],f(L,Dp){
+  const Hh=2500,np=L>4000?3:2,nr=Math.ceil((L+300)/450)+1,sp=(L+300)/(nr-1);
+  const sh=[R(-150,0,L+300,120),Lh(-400,Hh,L+400,Hh)];
+  for(let i=0;i<np;i++)sh.push(R(i*(L-100)/(np-1),120,100,Hh-120,OR));
+  for(let i=0;i<nr;i++)sh.push(R(-150+i*sp-20,-80,40,80));
+  return{L,H:Hh,parts:[['עמוד','100×100×3',Hh-120,np*2],['קורה ראשית','120×60×3',L+300,2],['קורת רוחב (רפטר)','80×40×2',Dp+300,nr]],
+   shapes:sh,dims:[D(0,-L*.08,L,-L*.08,fmt(L)),D(-L*.09,0,-L*.09,Hh,fmt(Hh))],
+   hw:[`${np*2} פלטות בסיס 200×200×10 + 4 ברגי עיגון לכל עמוד`],
+   notes:[`עומק ${fmt(Dp)} מ״מ, בליטה 150 מ״מ מכל צד`,`${nr} קורות רוחב במרווח ${fmt(sp)} מ״מ`,'פרגולה עם כיסוי (פוליקרבונט / פאנל) – נדרשת בדיקת מהנדס לעומסי רוח']}}},
+ CN:{name:'גגון לקיר',wl:'רוחב',hl:'בליטה מהקיר',W:[1500,4000,500],H:[1000,1200,1500],f(W,P){
+  const na=Math.ceil(W/900)+1,drop=Math.round(P*.1),bl=Math.round(Math.hypot(P*.6,600));
+  const sh=[R(-120,-300,120,1300,ST,'none'),R(0,0,60,40,OR),Lh(0,20,P,20+drop,WH),Lh(0,60,P,60+drop,WH),R(P-60,drop,60,40,OR),Lh(0,700,P*.6,40+P*.06,WH)];
+  return{L:P,H:700,parts:[['קורת קיר','60×40×2',W,1],['קורה קדמית','60×40×2',W,1],['זרוע','60×40×2',P,na],['תומכת אלכסונית','40×40×2',bl,na]],
+   shapes:sh,dims:[D(0,-120,P,-120,fmt(P)),D(-200,60,-200,700,'600')],
+   hw:[`${na*2+2} ברגי עיגון כימי לקיר`,'פוליקרבונט 8–10 מ״מ + אטמים – לא כלול'],
+   notes:[`רוחב ${fmt(W)} מ״מ, ${na} זרועות במרווח ${fmt(W/(na-1))} מ״מ`,`שיפוע 10% (ירידה ${fmt(drop)} מ״מ)`,'עיגון לקיר בטון/בלוק מלא בלבד']}}},
+ TB:{name:'שולחן',wl:'אורך',hl:'גובה',W:[1200,2400,200],H:[750,900],f(L,H){
+  const Dp=L<=1600?800:900,t=30,lf=L-100,df=Dp-100-80,lg=H-t-40,shelf=H>=900;
+  const sh=[R(0,0,L,t,ST,'#EADBC8'),R(50,t,lf,40),R(50,t+40,40,lg),R(L-90,t+40,40,lg),Lh(-200,H,L+200,H)];
+  if(shelf)sh.push(R(90,H-220,lf-80,40));
+  const parts=[['מסגרת עליונה – אורך','40×40×2',lf,2],['מסגרת עליונה – רוחב','40×40×2',df,2],['רגל','40×40×2',lg,4]];
+  if(shelf)parts.push(['מדף תחתון – אורך','40×40×2',lf-80,2],['מדף תחתון – רוחב','40×40×2',df,2]);
+  return{L,H,name:shelf?'שולחן עבודה':'שולחן',parts,shapes:sh,dims:[D(0,-L*.06,L,-L*.06,fmt(L)),D(-L*.07,0,-L*.07,H,fmt(H))],
+   hw:['4 רגליות מתכווננות M10','משטח עליון 30 מ״מ – לא כלול',...(shelf?['משטח מדף תחתון – לא כלול']:[])],
+   notes:[`עומק ${fmt(Dp)} מ״מ, המסגרת נסוגה 50 מ״מ מקצה המשטח`,shelf?'גובה עבודה בעמידה – מדף תחתון בגובה 220 מ״מ':'גובה ישיבה סטנדרטי']}}},
+ SH:{name:'מדפייה',wl:'רוחב',hl:'גובה',W:[800,1000,1200],H:[1500,1800,2000],f(W,H){
+  const dp=400,ns=H>=1800?5:4,lw=W-80,ld=dp-80;
+  const sh=[R(0,0,40,H,OR),R(W-40,0,40,H,OR),Lh(-150,H,W+150,H)];
+  for(let i=0;i<ns;i++)sh.push(R(40,H-140-i*(H-140)/(ns-1),lw,40));
+  return{L:W,H,parts:[['עמוד','40×40×2',H,4],['קורת מדף – אורך','40×20×2',lw,ns*2],['קורת מדף – עומק','40×20×2',ld,ns*2]],
+   shapes:sh,dims:[D(0,-H*.05,W,-H*.05,fmt(W)),D(-H*.07,0,-H*.07,H,fmt(H))],
+   hw:[`${ns} משטחי מדף ${fmt(W)}×${dp} (עץ / פח) – לא כלולים`,'2 זוויות עיגון לקיר נגד התהפכות'],
+   notes:[`עומק ${dp} מ״מ, ${ns} מדפים`,'לעומס כבד – להוסיף אלכסון בגב']}}},
+ BN:{name:'ספסל',wl:'אורך',hl:'גובה',W:[1200,1500,1800,2000],H:[450],f(L,H){
+  const dp=400,t=30,lf=L-100,df=dp-80,lg=H-t-40;
+  return{L,H,parts:[['מסגרת – אורך','40×40×2',lf,2],['מסגרת – רוחב','40×40×2',df,2],['רגל','40×40×2',lg,4],['חיזוק תחתון','40×20×2',lf-80,1]],
+   shapes:[R(0,0,L,t,ST,'#EADBC8'),R(50,t,lf,40),R(50,t+40,40,lg),R(L-90,t+40,40,lg),R(90,H-150,lf-80,20),Lh(-150,H,L+150,H)],
+   dims:[D(0,-L*.06,L,-L*.06,fmt(L)),D(-L*.08,0,-L*.08,H,fmt(H))],
+   hw:['4 רגליות','משטח ישיבה 30 מ״מ – לא כלול'],notes:[`עומק ${dp} מ״מ`]}}}
 };
 const range=a=>a.length===3&&a[2]<a[0]?(()=>{const r=[];for(let v=a[0];v<=a[1];v+=a[2])r.push(v);return r})():a;
 const PLANS=[];
@@ -176,6 +224,7 @@ function pack(parts){
   const used=arr.reduce((a,b)=>a+b,0);return{p,bars:bins.length,m:used/1000,waste:1-used/(bins.length*STOCK),kg:used/1000*kgm(p)}});
  return{rows,joins:[...joins]};
 }
+const sz=x=>{const g=GEN[x.k];return `${g.wl} ${fmt(x.W)} · ${g.hl||'גובה'} ${fmt(x.H)}`};
 const plan=id=>{const x=PLANS.find(p=>p.id===id);if(!x)return null;const g=GEN[x.k];return{...x,name:g.name,...g.f(x.W,x.H)}};
 const st={k:'SG',w:'',h:'',shown:24,sel:null};
 const $=id=>document.getElementById(id);
@@ -185,7 +234,7 @@ $('types').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.k=b.da
 function fillSel(){
  const ps=PLANS.filter(p=>p.k===st.k),g=GEN[st.k];
  const opt=(arr,v)=>`<option value="">הכול</option>`+[...new Set(arr)].map(x=>`<option value="${x}" ${x==v?'selected':''}>${fmt(x)} מ״מ</option>`).join('');
- $('fw').previousElementSibling.textContent=g.wl;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w);$('fh').innerHTML=opt(ps.map(p=>p.H),st.h);
+ $('fw').previousElementSibling.textContent=g.wl;$('fw').innerHTML=opt(ps.map(p=>p.W),st.w);$('fh').previousElementSibling.textContent=g.hl||'גובה';$('fh').innerHTML=opt(ps.map(p=>p.H),st.h);
  [...$('types').children].forEach(b=>b.classList.toggle('on',b.dataset.k===st.k));
 }
 $('fw').onchange=e=>{st.w=e.target.value;st.shown=24;render()};
@@ -195,7 +244,7 @@ function render(){
  const ps=PLANS.filter(p=>p.k===st.k&&(!st.w||p.W==st.w)&&(!st.h||p.H==st.h));
  $('count').textContent=`${ps.length} תוכניות`;
  $('list').innerHTML=ps.slice(0,st.shown).map(x=>{const p=plan(x.id);
-  return`<button class="item ${st.sel===x.id?'sel':''}" data-id="${x.id}">${draw(p.L,p.H,p.shapes,[],1)}<b>${p.name} ${ltr(fmt(x.W)+'×'+fmt(x.H))}</b><span class="code" dir="ltr">${x.id}</span></button>`}).join('');
+  return`<button class="item ${st.sel===x.id?'sel':''}" data-id="${x.id}">${draw(p.L,p.H,p.shapes,[],1)}<b>${p.name}</b><span style="display:block">${sz(x)}</span><span class="code" dir="ltr">${x.id}</span></button>`}).join('');
  $('more').style.display=ps.length>st.shown?'block':'none';
 }
 $('list').onclick=e=>{const b=e.target.closest('.item');if(b)location.hash=b.dataset.id};
@@ -204,7 +253,7 @@ function show(id){
  if(p.k!==st.k){st.k=p.k;st.w=st.h='';fillSel()}st.sel=id;render();
  const {rows,joins}=pack(p.parts),bars=rows.reduce((a,r)=>a+r.bars,0),kg=rows.reduce((a,r)=>a+r.kg,0);
  $('detail').innerHTML=`<div class="card" style="margin-top:8px"><button class="close no-print" id="x" aria-label="סגירה">✕</button>
- <h2>${p.name} ${ltr(fmt(p.W)+' × '+fmt(p.H))} מ״מ</h2>
+ <h2>${p.name}</h2><p style="font-size:18px;font-weight:700;margin-bottom:6px">${sz(p)} (מ״מ)</p>
  <div class="meta"><span>קוד: <b class="code" dir="ltr">${id}</b></span><span>מידות כוללות: ${ltr(fmt(p.L)+' × '+fmt(p.H))}</span><span>פרופילים לקנייה: <b>${bars}</b></span><span>משקל פלדה משוער: <b>${fmt(kg)} ק״ג</b></span></div>
  ${draw(p.L,p.H,p.shapes,p.dims)}
  <h2>רשימת חיתוך</h2><div class="tbl"><table><tr><th>#</th><th>חלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th></tr>
