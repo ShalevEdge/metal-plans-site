@@ -16,11 +16,11 @@ h1{font-size:clamp(28px,6vw,44px);margin:24px 0 6px}.m{color:var(--steel)}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;display:grid;gap:8px;grid-template-columns:1fr}
 .card .top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.card a{color:var(--ort);font-weight:700}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:8px}
-label{display:flex;flex-direction:column;font-size:13px;font-weight:700;gap:2px}input,select{padding:8px;font-size:15px;border:1px solid var(--steel);border-radius:8px;font-family:inherit;background:#fff}
-.del{background:none;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;font-family:inherit}
-.st{font-size:13px;border-radius:999px;padding:2px 10px;color:#fff;font-weight:700}
-.empty{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center}
-.btn{display:inline-block;background:var(--or);color:#fff;font-weight:900;padding:10px 18px;border-radius:8px;text-decoration:none}
+label{display:flex;flex-direction:column;font-size:13px;font-weight:700;gap:2px}input,select{padding:8px;font-size:15px;border:1px solid var(--steel);border-radius:8px;font-family:inherit;background:#fff;color:var(--tx)}
+.del,.tool{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;font-family:inherit;font-weight:700;color:var(--tx)}
+.tool:hover,.del:hover{border-color:var(--or)}.st{font-size:13px;border-radius:999px;padding:2px 10px;color:#fff;font-weight:700}
+.empty{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:30px;text-align:center}.btn{display:inline-block;background:var(--or);color:#fff;font-weight:900;padding:10px 18px;border-radius:8px;text-decoration:none}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}.actions input[type=file]{display:none}.notice{font-size:13px;color:var(--steel);min-height:22px}
 </style>
 </head>
 <body>
@@ -28,28 +28,39 @@ label{display:flex;flex-direction:column;font-size:13px;font-weight:700;gap:2px}
 <main class="w">
  <h1>הפרויקטים שלי</h1>
  <p class="m">שומרים פרויקט מתוך כל תוכנית (כפתור "שמירה לרשימת הפרויקטים"). הרשימה נשמרת בדפדפן הזה בלבד.</p>
+ <div class="actions">
+  <button class="tool" id="exp" type="button">הורדת גיבוי</button>
+  <label class="tool" for="imp" style="display:inline-block">ייבוא גיבוי</label><input id="imp" type="file" accept="application/json,.json">
+  <span class="notice" id="backupMsg" role="status"></span>
+ </div>
  <div class="sum" id="sum"></div>
- <div class="row" style="margin-bottom:12px"><label>סינון לפי סטטוס<select id="flt"></select></label><label>חיפוש לקוח<input id="q"></label></div>
+ <div class="row" style="margin-bottom:12px"><label>סינון לפי סטטוס<select id="flt"></select></label><label>חיפוש לקוח<input id="q" autocomplete="off"></label></div>
  <div id="list"></div>
 </main>
 <script>
 const ST=['הצעת מחיר','אושר','בייצור','מוכן להתקנה','הותקן','שולם'],SC=['#868E96','#1C7ED6','#E8590C','#F59F00','#2F9E44','#2B8A3E'];
-const K='mp_projects';let L=[];try{L=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(L))}catch(e){}};
+const K='mp_projects',FIELDS=['id','name','size','cust','status','date','price','dep','due'];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=p=>{const o={};for(const k of FIELDS)o[k]=typeof p?.[k]==='string'||typeof p?.[k]==='number'?String(p[k]):'';if(!ST.includes(o.status))o.status='הצעת מחיר';return o};
+let L=[];try{const x=JSON.parse(localStorage.getItem(K)||'[]');L=Array.isArray(x)?x.map(norm):[]}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(L));return true}catch(e){return false}};
 const $=id=>document.getElementById(id),num=v=>(+v||0).toLocaleString('en-US');
-$('flt').innerHTML='<option value="">הכול</option>'+ST.map(s=>`<option>${s}</option>`).join('');
+$('flt').innerHTML='<option value="">הכול</option>'+ST.map(s=>`<option>${esc(s)}</option>`).join('');
 function render(){
  const f=$('flt').value,q=$('q').value.trim(),vis=L.map((p,i)=>[p,i]).filter(([p])=>(!f||p.status===f)&&(!q||(p.cust||'').includes(q)));
  const open=L.filter(p=>!['הותקן','שולם'].includes(p.status)),tot=L.reduce((a,p)=>a+(+p.price||0),0),dep=L.reduce((a,p)=>a+(+p.dep||0),0);
  $('sum').innerHTML=`<div>פרויקטים<b>${L.length}</b></div><div>פתוחים<b>${open.length}</b></div><div>סה״כ הצעות (₪)<b>${num(tot)}</b></div><div>מקדמות שהתקבלו (₪)<b>${num(dep)}</b></div><div>יתרה לגבייה (₪)<b>${num(tot-dep)}</b></div>`;
- $('list').innerHTML=vis.length?vis.map(([p,i])=>`<div class="card"><div class="top"><div><b>${p.cust||'לקוח ללא שם'}</b> · ${p.name}<div class="m" style="font-size:14px">${p.size} · ${p.date} · <a href="plans.html#${encodeURIComponent(p.id)}">לתוכנית</a></div></div><span class="st" style="background:${SC[Math.max(0,ST.indexOf(p.status))]}">${p.status}</span></div>
- <div class="row"><label>לקוח<input data-i="${i}" data-k="cust" value="${(p.cust||'').replace(/"/g,'&quot;')}"></label><label>סטטוס<select data-i="${i}" data-k="status">${ST.map(s=>`<option ${s===p.status?'selected':''}>${s}</option>`).join('')}</select></label>
- <label>מחיר (₪)<input type="number" data-i="${i}" data-k="price" value="${p.price||''}"></label><label>מקדמה (₪)<input type="number" data-i="${i}" data-k="dep" value="${p.dep||''}"></label><label>תאריך יעד<input type="date" data-i="${i}" data-k="due" value="${p.due||''}"></label></div>
- <div><button class="del" data-del="${i}">מחיקה</button></div></div>`).join(''):`<div class="empty">אין עדיין פרויקטים.<br><br><a class="btn" href="plans.html">לבחירת תוכנית</a></div>`;
+ $('list').innerHTML=vis.length?vis.map(([p,i])=>{const si=Math.max(0,ST.indexOf(p.status));return`<div class="card"><div class="top"><div><b>${esc(p.cust||'לקוח ללא שם')}</b> · ${esc(p.name)}<div class="m" style="font-size:14px">${esc(p.size)} · ${esc(p.date)} · <a href="plans.html#${encodeURIComponent(p.id)}">לתוכנית</a></div></div><span class="st" style="background:${SC[si]}">${esc(p.status)}</span></div>
+ <div class="row"><label>לקוח<input data-i="${i}" data-k="cust" value="${esc(p.cust)}"></label><label>סטטוס<select data-i="${i}" data-k="status">${ST.map(s=>`<option ${s===p.status?'selected':''}>${esc(s)}</option>`).join('')}</select></label>
+ <label>מחיר (₪)<input type="number" data-i="${i}" data-k="price" value="${esc(p.price)}"></label><label>מקדמה (₪)<input type="number" data-i="${i}" data-k="dep" value="${esc(p.dep)}"></label><label>תאריך יעד<input type="date" data-i="${i}" data-k="due" value="${esc(p.due)}"></label></div>
+ <div><button class="del" data-del="${i}" type="button">מחיקה</button></div></div>`}).join(''):`<div class="empty">אין עדיין פרויקטים.<br><br><a class="btn" href="plans.html">לבחירת תוכנית</a></div>`;
 }
-$('list').addEventListener('change',e=>{const t=e.target;if(t.dataset.k){L[+t.dataset.i][t.dataset.k]=t.value;save();render()}});
+$('list').addEventListener('change',e=>{const t=e.target;if(t.dataset.k&&L[+t.dataset.i]){L[+t.dataset.i][t.dataset.k]=t.value;save();render()}});
 $('list').addEventListener('click',e=>{const i=e.target.dataset.del;if(i!==undefined&&confirm('למחוק את הפרויקט?')){L.splice(+i,1);save();render()}});
-$('flt').onchange=render;$('q').oninput=render;render();
+$('flt').onchange=render;$('q').oninput=render;
+$('exp').onclick=()=>{const data=JSON.stringify({version:1,exportedAt:new Date().toISOString(),projects:L},null,2),blob=new Blob([data],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`metal-plans-projects-${new Date().toISOString().slice(0,10)}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);$('backupMsg').textContent='הגיבוי הורד ✓'};
+$('imp').onchange=async e=>{const f=e.target.files[0];if(!f)return;const msg=$('backupMsg');try{const raw=JSON.parse(await f.text()),arr=Array.isArray(raw)?raw:raw.projects;if(!Array.isArray(arr))throw new Error('bad');const incoming=arr.map(norm),seen=new Set(L.map(p=>[p.id,p.cust,p.date,p.name].join('|'))),add=incoming.filter(p=>{const k=[p.id,p.cust,p.date,p.name].join('|');if(seen.has(k))return false;seen.add(k);return true});L=[...add,...L];if(!save())throw new Error('save');msg.textContent=`יובאו ${add.length} פרויקטים חדשים ✓`;render()}catch(err){msg.textContent='קובץ הגיבוי לא תקין או שלא ניתן לשמור אותו'}finally{e.target.value=''}};
+render();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>

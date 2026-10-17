@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>הזמנת עבודת מסגרות – הצעת מחיר מיידית | שערים, מעקות, פרגולות</title>
 <meta name="description" content="בחרו שער, מעקה, פרגולה או עבודת מסגרות אחרת, הזינו מידות וקבלו הדמיה והערכת מחיר מיידית. שליחה בוואטסאפ.">
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F3F4F6;--line:#D6DAE0;--or:#E8590C;--ort:#B93E07;--steel:#5B6670;--tx:#15181C}
@@ -489,7 +489,7 @@ function estimate(p){const m=MAT[st.m];M=p.model;const {rows}=pack(p.parts),kg=k
 function upd(){
  st.W=+$('ow').value;st.H=+$('oh').value;st.s=$('os').value||st.s;const id=`c:${st.k}:${st.W}:${st.H}:${GEN[st.k].S?st.s:''}`,p=customPlan(id);
  if(!p||p.err){$('pv').innerHTML=`<p class="warn">${p?p.err:'בחרו סוג עבודה'}</p>`;$('pr').textContent='';$('go').disabled=true;return}
- $('go').disabled=false;PAINT=st.m==='ga'?'gal':(st.m==='al'||st.m==='ss')?'gal':st.c;M=p.model;
+ $('go').disabled=!WA_NUMBER;PAINT=st.m==='ga'?'gal':(st.m==='al'||st.m==='ss')?'gal':st.c;M=p.model;
  $('pv').innerHTML=`<div class="pv2"><figure>${view('iso',{thumb:1})}<figcaption>הדמיה</figcaption></figure><figure>${view('front')}<figcaption>חזית עם מידות</figcaption></figure></div>`;
  const e=estimate(p);st.p=p;st.e=e;$('pr').innerHTML=`הערכת מחיר: <b>₪${e.lo.toLocaleString('en-US')} – ₪${e.hi.toLocaleString('en-US')}</b> <span class="m">כולל מע״מ, ייצור והתקנה בסיסית</span>`;
  [...$('oc').children].forEach(b=>b.classList.toggle('on',b.dataset.c===st.c));$('ocw').style.display=(st.m==='fe')?'':'none'}
@@ -502,6 +502,7 @@ $('of').onsubmit=e=>{e.preventDefault();const msg=$('omsg'),name=$('on').value.t
  if(!WA_NUMBER){msg.textContent='שליחת הבקשות תיפתח בקרוב';return}
  window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(txt)}`,'_blank');msg.textContent='נפתח וואטסאפ – לחצו "שלח" כדי להעביר את הבקשה ✓'};
 setType('SG');
+if(!WA_NUMBER){$('go').textContent='שליחת בקשות תיפתח בקרוב';$('omsg').textContent='ההדמיה והערכת המחיר פעילות; שליחת הבקשה בוואטסאפ עדיין לא פעילה.';}
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 </script>

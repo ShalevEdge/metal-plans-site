@@ -448,13 +448,13 @@ function moreHTML(p){const c=calcs(p),ang=p.parts.filter(r=>r[4]);
  <h2>ריתוך</h2><table><tr><td>אורך ריתוך משוער</td><td><b>${c.wm.toFixed(1)} מ׳</b></td></tr><tr><td>אלקטרודות 2.5 מ״מ</td><td>~${c.elec} יח׳</td></tr><tr><td>או חוט MIG 0.8 מ״מ</td><td>~${c.wire.toFixed(2)} ק״ג · גז ~${fmt(c.gasL)} ליטר</td></tr><tr><td>זמן קשת נטו</td><td>~${c.hrs.toFixed(1)} שעות</td></tr></table>
  <h2>בדיקת קורה (מנחה)</h2><div class="trow"><label>חלק<select id="lb">${p.parts.map((r,i)=>`<option value="${i}">#${i+1} ${r[0]} (${r[1]})</option>`).join('')}</select></label>
  <label>מפתח בין תמיכות (מ״מ)<input id="ls" type="number"></label><label>עומס (ק״ג למטר)<input id="lw" type="number" value="50"></label></div><div id="lr" style="margin-top:8px"></div>
- <p class="muted" style="font-size:13px">קורה פשוטה בעומס אחיד, פלדה S235. מאמץ מותר 140 MPa, שקיעה עד מפתח/200. בדיקה מנחה בלבד – לא מחליפה חישוב מהנדס.</p>
+ <p class="muted" style="font-size:13px"><b>בדיקת המחשה בלבד:</b> קורה פשוטה בעומס אחיד, פלדה S235, ללא בדיקת חיבורים, עיגונים, פיתול, עומסי רוח/מכה/רטט או מצבי קצה אחרים. הערכים 140 MPa ומפתח/200 הם ספי המחשה במחשבון ואינם אישור הנדסי. עבודה קונסטרוקטיבית או בטיחותית מחייבת תכנון ואישור מהנדס לפי המקרה והתקנים.</p>
  <h2>פרויקטים</h2><div class="trow"><label>שם לקוח<input id="pc"></label><button class="btn" id="psv">שמירה לרשימת הפרויקטים</button><a class="btn ghost" href="projects.html">לרשימת הפרויקטים</a></div><p id="pmsg" class="muted"></p></div>`}
 function secProps(pr){const[h0,b0,t0]=pr.split('×').map(Number);const h=Math.max(h0,b0),b=Math.min(h0,b0);if(!t0)return{I:b*h**3/12,W:b*h**2/6};const t=t0,I=(b*h**3-(b-2*t)*(h-2*t)**3)/12;return{I,W:I/(h/2)}}
 function bindMore(p){const $=id=>document.getElementById(id);
  const lc=()=>{const r=p.parts[+$('lb').value],L=+$('ls').value||r[2],q=(+$('lw').value||0)*9.81/1000,{I,W}=secProps(r[1]);
   const Mx=q*L*L/8,sg=Mx/W,d=5*q*L**4/(384*210000*I),ok=sg<=140&&d<=L/200;
-  $('lr').innerHTML=`<div class="${ok?'okb':'warn'}">מאמץ: <b>${sg.toFixed(0)} MPa</b> (מותר 140) · שקיעה: <b>${d.toFixed(1)} מ״מ</b> (מותר ${(L/200).toFixed(1)}) — ${ok?'✓ עובר':'✗ לא עובר – להגדיל פרופיל / להוסיף תמיכה'}</div>`};
+  $('lr').innerHTML=`<div class="${ok?'okb':'warn'}">מאמץ: <b>${sg.toFixed(0)} MPa</b> (מותר 140) · שקיעה: <b>${d.toFixed(1)} מ״מ</b> (מותר ${(L/200).toFixed(1)}) — ${ok?'✓ עומד בספי ההמחשה':'✗ לא עומד בספי ההמחשה – להגדיל פרופיל / להוסיף תמיכה'}</div>`};
  $('lb').onchange=()=>{$('ls').value=p.parts[+$('lb').value][2];lc()};$('ls').oninput=lc;$('lw').oninput=lc;$('ls').value=p.parts[0][2];lc();
  $('psv').onclick=()=>{let L=[];try{L=JSON.parse(localStorage.getItem('mp_projects')||'[]')}catch(e){}
   L.unshift({id:p.id,name:p.name,size:sz(p),cust:$('pc').value,status:'הצעת מחיר',date:new Date().toISOString().slice(0,10),price:p.q?Math.round(p.q.tot):'',dep:''});

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>תוכניות עבודה למסגרים | שרטוטים, מידות ורשימות חיתוך</title>
 <meta name="description" content="ספריית תוכניות עבודה למסגרים: שערים, מעקות, סורגים, פרגולות ומדרגות. מידות במ״מ, רשימת חיתוך וכמות פרופילים – חותכים נכון מהפעם הראשונה.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#E8590C"><link rel="apple-touch-icon" href="icon-192.png"><link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -25,6 +26,7 @@ h2{font-size:clamp(28px,5vw,44px);font-weight:900;margin-bottom:24px;line-height
 .btn{display:inline-block;background:var(--or);color:#fff;font-weight:900;font-size:20px;
  padding:16px 32px;border-radius:8px;text-decoration:none;border:0;cursor:pointer}
 .btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.55;cursor:not-allowed;filter:none}
 .btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--steel)}
 a.sk{color:var(--tx);text-decoration:none;display:block}a.sk:hover{border-color:var(--or)}
 .soon{font-size:12px;background:var(--line);color:var(--steel);border-radius:6px;padding:2px 8px;margin-inline-start:6px;font-weight:500}
@@ -155,7 +157,7 @@ footer a{color:var(--steel)}
   <label for="ln">שם</label><input id="ln" required autocomplete="name">
   <label for="lp">טלפון</label><input id="lp" type="tel" required autocomplete="tel" inputmode="tel">
   <p style="margin-top:18px;text-align:center"><button class="btn" type="submit">עדכנו אותי</button></p>
-  <p class="muted" style="font-size:13px;text-align:center;margin-top:10px">השליחה פותחת וואטסאפ עם ההודעה מוכנה. נשתמש בפרטים רק לעדכונים; אפשר לבקש הסרה בכל עת.</p>
+  <p class="muted" id="leadHint" style="font-size:13px;text-align:center;margin-top:10px">השליחה פותחת וואטסאפ עם ההודעה מוכנה. נשתמש בפרטים רק לעדכונים; אפשר לבקש הסרה בכל עת.</p>
   <p class="muted" id="leadMsg" style="text-align:center;margin-top:10px" role="status"></p>
  </form>
 </div></section>
@@ -216,6 +218,8 @@ function calc(){
 
 // לידים: נשלחים לוואטסאפ של בעל האתר. WA_NUMBER בפורמט בינלאומי בלי + (למשל 972501234567)
 const WA_NUMBER='';
+const leadBtn=document.querySelector('#lead button[type="submit"]');
+if(!WA_NUMBER){leadBtn.disabled=true;document.getElementById('leadHint').textContent='ההרשמה לעדכונים תיפתח בקרוב.';document.getElementById('leadMsg').textContent='שירות העדכונים עדיין לא פעיל';}
 document.getElementById('lead').addEventListener('submit',e=>{
  e.preventDefault();const msg=document.getElementById('leadMsg');
  const name=document.getElementById('ln').value.trim(),phone=document.getElementById('lp').value.trim();
