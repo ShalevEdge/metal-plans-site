@@ -405,7 +405,7 @@ function bindMore(p){const $=id=>document.getElementById(id);
   L.unshift({id:p.id,name:p.name,size:sz(p),cust:$('pc').value,status:'הצעת מחיר',date:new Date().toISOString().slice(0,10),price:p.q?Math.round(p.q.tot):'',dep:''});
   try{localStorage.setItem('mp_projects',JSON.stringify(L));$('pmsg').textContent='נשמר ✓'}catch(e){$('pmsg').textContent='הדפדפן חוסם שמירה'}};
 }
-function colorBar(){return`<div class="no-print cbar">צבע לתצוגה: ${Object.entries(PN).map(([k,n])=>`<button data-c="${k}" title="${n}" style="background:${PAINTS[k][0]}" class="${PAINT===k?'on':''}"></button>`).join('')}<button data-c="" class="${PAINT?'':'on'}" title="ללא">✕</button> <button class="btn ghost" id="dxf" style="padding:6px 12px;font-size:14px">הורדת DXF (אוטוקאד / פלזמה)</button></div>`}
+function colorBar(){return`<div class="no-print cbar">צבע לתצוגה: ${Object.entries(PN).map(([k,n])=>`<button data-c="${k}" title="${n}" aria-label="צבע ${n}" style="background:${PAINTS[k][0]}" class="${PAINT===k?'on':''}"></button>`).join('')}<button data-c="" class="${PAINT?'':'on'}" title="ללא">✕</button> <button class="btn ghost" id="dxf" style="padding:6px 12px;font-size:14px">הורדת DXF (אוטוקאד / פלזמה)</button></div>`}
 
 // ===== plan tools: material, custom size, supplier list, quote =====
 const MAT={fe:{n:'ברזל שחור (לצביעה)',rho:7.85,ppk:9,fin:4,fn:'צביעה'},ga:{n:'ברזל מגולוון',rho:7.85,ppk:9,fin:6,fn:'גלוון חם'},al:{n:'אלומיניום',rho:2.7,ppk:38,fin:0,fn:'ללא'},ss:{n:'נירוסטה 304',rho:7.93,ppk:42,fin:0,fn:'ליטוש'}};
@@ -481,7 +481,7 @@ const $=id=>document.getElementById(id);
 const st={k:'SG',W:4000,H:1600,s:'v',m:'fe',c:'ant'};
 $('ot').innerHTML=CATS.map(([c,ks])=>{const k2=ks.filter(k=>POP.includes(k));return k2.length?`<optgroup label="${c}">${k2.map(k=>`<option value="${k}">${GEN[k].name}</option>`).join('')}</optgroup>`:''}).join('');
 $('om').innerHTML=Object.entries(MAT).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join('');
-$('oc').innerHTML=Object.entries(PN).map(([k,n])=>`<button type="button" data-c="${k}" title="${n}" style="background:${PAINTS[k][0]}"></button>`).join('');
+$('oc').innerHTML=Object.entries(PN).map(([k,n])=>`<button type="button" data-c="${k}" title="${n}" aria-label="צבע ${n}" style="background:${PAINTS[k][0]}"></button>`).join('');
 function setType(k){const g=GEN[k],ws=nums(g.W),hs=nums(g.H);st.k=k;st.W=ws[Math.floor(ws.length/2)];st.H=hs[Math.floor(hs.length/2)];st.s=g.S?g.S[0]:'';
  $('lw').textContent=g.wl;$('lwu').textContent=unitOf(g.W);$('lh').textContent=g.hl;$('lhu').textContent=unitOf(g.H);$('ow').value=st.W;$('oh').value=st.H;
  $('osw').style.display=g.S?'':'none';if(g.S)$('os').innerHTML=g.S.map(s=>`<option value="${s}">${SN[s]}</option>`).join('');upd()}

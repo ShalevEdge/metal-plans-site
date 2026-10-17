@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>לוח ייצור | SHALVERO FORGE</title><meta name="robots" content="noindex"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png"><link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css"></head>
+<body><div id="nav"></div><main class="wrap"><p class="tag">PRODUCTION BOARD</p><h1>לוח ייצור</h1><p class="muted">מהאישור ועד ההתקנה: משימות, זמן עבודה, בדיקות ופעולה הבאה לכל פרויקט.</p>
+<div class="grid" id="prodStats"></div><div id="timerAlert"></div>
+<div class="project-toolbar production-toolbar"><label>שלב<select id="stageF"></select></label><label>תזמון<select id="dueF"><option value="">הכול</option><option value="late">באיחור</option><option value="week">7 הימים הקרובים</option><option value="nodue">ללא יעד</option></select></label><label>חיפוש<input id="searchF" autocomplete="off" placeholder="לקוח, עבודה או טלפון"></label></div>
+<div id="productionList"></div>
+<div class="notice"><b>FORGE Production</b> הוא כלי ניהול ובקרת ביצוע. checklist אינו מחליף WPS, שרטוט מאושר, בדיקת מהנדס או נוהל בטיחות מחייב.</div>
+</main><script src="app.js"></script><script>
+nav.innerHTML=MP.nav('production.html');
+const ST=['ליד','מדידה','הצעת מחיר','אושר','חומרים הוזמנו','חיתוך','ריתוך','צבע/גלוון','מוכן להתקנה','הותקן','שולם'];
+const PROD=['אושר','חומרים הוזמנו','חיתוך','ריתוך','צבע/גלוון','מוכן להתקנה','הותקן'];
+const CHECKS={
+ 'אושר':['אישור מידות ושרטוט','סגירת חומר וגימור','אישור מחיר/מקדמה','קביעת תאריך יעד'],
+ 'חומרים הוזמנו':['פרופילים וחומר לפי הרשימה','כמויות ואורכים נבדקו','פרזול/אביזרים הוזמנו','אספקה התקבלה ונבדקה'],
+ 'חיתוך':['אימות מידות לפני חיתוך','קרף ואורך מוט הוגדרו','החלקים סומנו לפי התוכנית','שאריות שימושיות הוחזרו למלאי'],
+ 'ריתוך':['הכנת מחבר וניקוי בוצעו','תקים וריבוע נבדקו','פרמטרים/WPS נבדקו לפני ריתוך','ניקוי סיגים בין זחלים','בדיקה חזותית לאחר ריתוך'],
+ 'צבע/גלוון':['ניקוי ושומנים הוסרו','השחזה והכנת שטח הושלמו','גוון/סוג גימור אומתו','אזורים רגישים ופתחים מוגנים'],
+ 'מוכן להתקנה':['הלקוח אישר מועד התקנה','מידות אתר נבדקו שוב','פרזול/עוגנים/כלים הועמסו','העבודה מוגנת להובלה'],
+ 'הותקן':['פילוס ויישור נבדקו','עיגונים והידוקים נבדקו','פתיחה/סגירה/נעילה תקינות','האתר נוקה והלקוח עבר על העבודה','יתרה לתשלום טופלה']
+};
+const TK='mp_active_timer_v1',today=()=>new Date().toISOString().slice(0,10),uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();
+let P=MP.projects().map(norm);MP.saveProjects(P);
+function norm(p){return Object.assign({uid:uid(),checks:{},workMinutes:0,stageMinutes:{},productionNote:'',updatedAt:new Date().toISOString()},p||{}, {uid:p?.uid||uid(),checks:p?.checks||{},stageMinutes:p?.stageMinutes||{}})}
+function save(){MP.saveProjects(P)}
+function daysUntil(d){if(!d)return null;return Math.ceil((new Date(d+'T12:00:00')-new Date(today()+'T12:00:00'))/86400000)}
+function fmtDue(d){if(!d)return'ללא יעד';const n=daysUntil(d);if(n<0)return`באיחור ${Math.abs(n)} ימים`;if(n===0)return'היום';if(n===1)return'מחר';if(n<=7)return`בעוד ${n} ימים`;return new Date(d+'T12:00:00').toLocaleDateString('he-IL')}
+function fmtMin(m){m=Math.max(0,Math.round(+m||0));const h=Math.floor(m/60),mm=m%60;return h?`${h}:${String(mm).padStart(2,'0')} ש׳`:`${mm} דק׳`}
+function timer(){try{return JSON.parse(localStorage.getItem(TK)||'null')}catch{return null}}
+function liveMinutes(p){const a=timer();return (+p.workMinutes||0)+(a?.uid===p.uid?Math.max(0,Math.floor((Date.now()-a.startedAt)/60000)):0)}
+function stageChecks(p){const a=CHECKS[p.status]||[];const s=p.checks?.[p.status]||{};return{items:a,done:a.filter((_,i)=>!!s[i]).length}}
+function stopTimer(uidv){const a=timer();if(!a||a.uid!==uidv)return;const p=P.find(x=>x.uid===uidv);localStorage.removeItem(TK);if(!p)return;const mins=Math.max(1,Math.round((Date.now()-a.startedAt)/60000));p.workMinutes=(+p.workMinutes||0)+mins;p.stageMinutes=p.stageMinutes||{};p.stageMinutes[a.stage]=(+p.stageMinutes[a.stage]||0)+mins;p.updatedAt=new Date().toISOString();save()}
+function startTimer(uidv){const a=timer();if(a?.uid===uidv)return;if(a?.uid)stopTimer(a.uid);const p=P.find(x=>x.uid===uidv);if(!p)return;localStorage.setItem(TK,JSON.stringify({uid:uidv,stage:p.status,startedAt:Date.now()}));render()}
+function advance(uidv){const p=P.find(x=>x.uid===uidv);if(!p)return;const i=ST.indexOf(p.status);if(i<0||i>=ST.length-1)return;const c=stageChecks(p);if(c.items.length&&c.done<c.items.length&&!confirm(`נשארו ${c.items.length-c.done} בדיקות לא מסומנות בשלב ${p.status}. להמשיך בכל זאת?`))return;if(timer()?.uid===uidv)stopTimer(uidv);p.status=ST[i+1];p.updatedAt=new Date().toISOString();save();render()}
+function render(){const f=stageF.value,df=dueF.value,q=searchF.value.trim().toLowerCase(),a=timer();const active=P.filter(p=>PROD.includes(p.status));const late=active.filter(p=>p.due&&p.due<today()),week=active.filter(p=>{const n=daysUntil(p.due);return n!==null&&n>=0&&n<=7}),mins=active.reduce((s,p)=>s+liveMinutes(p),0);
+ prodStats.innerHTML=[['בייצור',active.length],['באיחור',late.length],['יעד השבוע',week.length],['שעות עבודה בפועל',fmtMin(mins)]].map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="stat">${x[1]}</div></div>`).join('');
+ timerAlert.innerHTML=a?(()=>{const p=P.find(x=>x.uid===a.uid);return p?`<div class="notice ok timer-banner"><b>טיימר פעיל:</b> ${MP.esc(p.cust||p.name)} · ${MP.esc(a.stage)} · <span data-live-global>${fmtMin((Date.now()-a.startedAt)/60000)}</span> <button class="btn ghost small" type="button" data-stop="${p.uid}">עצור ושמור זמן</button></div>`:''})():'';
+ const vis=active.filter(p=>{if(f&&p.status!==f)return false;const n=daysUntil(p.due);if(df==='late'&&!(n!==null&&n<0))return false;if(df==='week'&&!(n!==null&&n>=0&&n<=7))return false;if(df==='nodue'&&p.due)return false;return !q||`${p.cust} ${p.phone} ${p.name} ${p.size}`.toLowerCase().includes(q)}).sort((x,y)=>{const xn=daysUntil(x.due),yn=daysUntil(y.due);return (xn!==null&&xn<0?0:1)-(yn!==null&&yn<0?0:1)||String(x.due||'9999').localeCompare(String(y.due||'9999'))});
+ productionList.innerHTML=vis.length?vis.map(card).join(''):'<div class="empty">אין עבודות ייצור שמתאימות לסינון.<br><br><a class="btn" href="projects.html">פתח פרויקטים</a></div>';
+}
+function card(p){const i=ST.indexOf(p.status),c=stageChecks(p),pct=c.items.length?Math.round(c.done/c.items.length*100):100,n=daysUntil(p.due),late=n!==null&&n<0,soon=n!==null&&n>=0&&n<=7,a=timer(),running=a?.uid===p.uid,plan=p.id?`plans.html?project=${encodeURIComponent(p.uid)}#${encodeURIComponent(p.id)}`:'',ph=String(p.phone||'').replace(/[^0-9]/g,'');
+ return `<article class="production-card${late?' is-late':soon?' is-soon':''}" data-uid="${p.uid}"><div class="production-head"><div><span class="pill">${MP.esc(p.status)}</span><h2>${MP.esc(p.cust||'לקוח')} · ${MP.esc(p.name||'עבודה')}</h2><p class="muted">${MP.esc(p.size||'')} ${p.due?'· יעד '+MP.esc(fmtDue(p.due)):''}</p></div><div class="time-box"><span>זמן בפועל</span><b data-live-project="${p.uid}">${fmtMin(liveMinutes(p))}</b></div></div>
+ <div class="production-progress"><div><span>בדיקות שלב</span><b>${c.done}/${c.items.length||0}</b></div><div class="bar"><i style="width:${pct}%"></i></div></div>
+ ${c.items.length?`<div class="production-checks">${c.items.map((x,j)=>`<label class="prod-check"><input type="checkbox" data-check="${j}" data-u="${p.uid}" ${p.checks?.[p.status]?.[j]?'checked':''}><span>${MP.esc(x)}</span></label>`).join('')}</div>`:'<div class="notice ok">אין checklist נוסף לשלב הזה.</div>'}
+ <label class="production-note">הערת ייצור<input data-note="${p.uid}" value="${MP.esc(p.productionNote||'')}" placeholder="לדוגמה: חסר ציר, ממתין לגלוון, לתאם מנוף"></label>
+ <div class="production-actions"><button class="btn ${running?'ghost':''}" type="button" data-${running?'stop':'start'}="${p.uid}">${running?'■ עצור זמן':'▶ התחל עבודה'}</button>${i<ST.length-1?`<button class="btn ghost" type="button" data-advance="${p.uid}">המשך: ${MP.esc(ST[i+1])} →</button>`:''}${plan?`<a class="btn ghost" href="${plan}">פתח תוכנית</a>`:''}${p.status==='ריתוך'?'<a class="btn ghost" href="welding.html">מרכז ריתוך</a>':''}${ph?`<a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${ph.startsWith('0')?'972'+ph.slice(1):ph}">WhatsApp</a>`:''}</div>
+ <details class="stage-time"><summary>זמן לפי שלבים</summary>${Object.entries(p.stageMinutes||{}).length?Object.entries(p.stageMinutes).map(([s,m])=>`<div><span>${MP.esc(s)}</span><b>${fmtMin(m)}</b></div>`).join(''):'<p class="muted">עדיין לא נשמר זמן עבודה.</p>'}</details></article>`}
+stageF.innerHTML='<option value="">כל שלבי הייצור</option>'+PROD.map(s=>`<option>${s}</option>`).join('');
+productionList.addEventListener('change',e=>{const t=e.target,p=P.find(x=>x.uid===t.dataset.u);if(!p)return;if(t.dataset.check!==undefined){p.checks=p.checks||{};p.checks[p.status]=p.checks[p.status]||{};p.checks[p.status][t.dataset.check]=t.checked;p.updatedAt=new Date().toISOString();save();render()}});
+productionList.addEventListener('input',e=>{const t=e.target;if(!t.dataset.note)return;const p=P.find(x=>x.uid===t.dataset.note);if(!p)return;p.productionNote=t.value;p.updatedAt=new Date().toISOString();save()});
+document.addEventListener('click',e=>{const s=e.target.closest('[data-start]'),x=e.target.closest('[data-stop]'),a=e.target.closest('[data-advance]');if(s)startTimer(s.dataset.start);if(x){stopTimer(x.dataset.stop);render()}if(a)advance(a.dataset.advance)});
+stageF.onchange=render;dueF.onchange=render;searchF.oninput=render;render();
+setInterval(()=>{const a=timer();if(!a)return;const p=P.find(x=>x.uid===a.uid);const g=document.querySelector('[data-live-global]');if(g)g.textContent=fmtMin((Date.now()-a.startedAt)/60000);const el=document.querySelector(`[data-live-project="${a.uid}"]`);if(el&&p)el.textContent=fmtMin(liveMinutes(p))},15000);
+</script></body></html>

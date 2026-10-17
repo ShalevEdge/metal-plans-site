@@ -72,6 +72,18 @@
       ]
     },
     {
+      "name": "לוח ייצור",
+      "short_name": "ייצור",
+      "url": "./production.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "פרויקטים",
       "short_name": "פרויקטים",
       "url": "./projects.html",

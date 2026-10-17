@@ -2,7 +2,7 @@
   const J=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??f}catch{return f}};
   const S=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
   const navItems=[
-    ['hub.html','מרכז'],['new-job.html','עבודה חדשה'],['plans.html','תוכניות'],['optimizer.html','חיתוך'],
+    ['hub.html','מרכז'],['new-job.html','עבודה חדשה'],['plans.html','תוכניות'],['optimizer.html','חיתוך'],['production.html','ייצור'],
     ['welding.html','ריתוך'],['projects.html','פרויקטים'],['inventory.html','מלאי'],['workshop.html','המסגריה'],
     ['smart.html','עוזר חכם'],['account.html','חשבון']
   ];
