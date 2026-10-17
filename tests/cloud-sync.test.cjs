@@ -46,6 +46,19 @@ async function run(){
  store.set('mp_settings_v1',JSON.stringify({biz:'Forge'}));
  assert.deepEqual(JSON.parse(JSON.stringify(await C.uploadFirst())),{uploaded:2});
  assert.equal(docs.get(key('workshop-alice','mp_projects')).revision,1);
+ // Retrying a successful first upload is safe (no duplicate/new revision).
+ assert.equal((await C.uploadFirst()).uploaded,2);
+ assert.equal(docs.get(key('workshop-alice','mp_projects')).revision,1);
+ // Reformatting equivalent JSON does not produce a false conflict.
+ store.set('mp_projects',JSON.stringify([{uid:'1',name:'Gate'}],null,2));
+ let unchanged=await C.sync();
+ assert.equal(unchanged.conflicts.length,0);
+ assert.equal(docs.get(key('workshop-alice','mp_projects')).revision,1);
+ // Interrupted first upload may be resumed without replacing existing matching data.
+ docs.delete(key('workshop-alice','mp_settings_v1'));
+ assert.equal((await C.uploadFirst()).uploaded,2);
+ assert.equal(docs.get(key('workshop-alice','mp_settings_v1')).revision,1);
+
  // Upload newer local change with optimistic revision.
  store.set('mp_projects',JSON.stringify([{uid:'1',name:'Gate edited locally'}]));
  let s=await C.sync();
@@ -69,6 +82,6 @@ async function run(){
  actor={id:'bob',email:'bob@example.com',is_anonymous:false};
  await assert.rejects(C.ensureWorkshop(),/חשבון אחר/);
  assert.equal(docs.get(key('workshop-alice','mp_projects')).revision,4);
- console.log('FORGE_CLOUD_TESTS PASS: 11 checks: revisions, download, simultaneous edit, conflict, cross-account.');
+ console.log('FORGE_CLOUD_TESTS PASS: safe retry, canonical JSON, partial upload, revisions, conflict and cross-account.');
 }
 run().catch(e=>{console.error(e);process.exit(1)});

@@ -19,7 +19,7 @@
   function setMeta(m){localStorage.setItem(S,JSON.stringify(m))}
   function valid(k,v){return k==='mp_settings_v1'?v!==null&&typeof v==='object'&&!Array.isArray(v):Array.isArray(v)}
   function local(k){const raw=localStorage.getItem(k);if(raw===null)return{raw:null,payload:null,hash:null};
-    try{const payload=JSON.parse(raw);if(!valid(k,payload))throw Error('type');return{raw,payload,hash:hash(raw)}}
+    try{const payload=JSON.parse(raw);if(!valid(k,payload))throw Error('type');return{raw,payload,hash:hash(norm(payload))}}
     catch{throw Error('נתון מקומי פגום: '+k+'. הורד גיבוי ובדוק את הקובץ לפני סנכרון.');}}
   async function getCloud(){
     ensure();const {data,error}=await client.from('forge_documents').select('doc_key,payload,revision,updated_at').eq('workshop_id',workshop);
@@ -63,8 +63,19 @@
   async function signOut(){if(client){const {error}=await client.auth.signOut();if(error)throw err(error)} user=null;workshop=null;stopBackground();}
   async function uploadFirst(){
     await ensureWorkshop();if(!hasLocal())throw Error('לא נמצאו נתונים מקומיים להעלאה');
-    const remote=await getCloud();if(remote.size)throw Error('בענן כבר יש נתונים. לא ניתן לבצע העלאה ראשונית שתדרוס אותם.');
-    const m=meta();for(const k of DOCS){const v=local(k);if(v.raw===null)continue;const rev=await saveOne(k,v.payload,0);stamp(m,k,rev)}
+    const remote=await getCloud(),m=meta();
+    // Safe retry after a partial upload. Never overwrite a differing cloud version.
+    for(const k of DOCS){
+      const l=local(k),r=remote.get(k);
+      if(r&&l.raw===null)throw Error('בענן קיימים נתונים שאינם במכשיר: '+k);
+      if(r&&hash(norm(r.payload))!==l.hash)throw Error('נמצאה גרסת ענן שונה עבור '+k+'. יש לפתור התנגשות לפני העלאה.');
+    }
+    for(const k of DOCS){
+      const l=local(k),r=remote.get(k);
+      if(r){stamp(m,k,r.revision);continue}
+      if(l.raw===null)continue;
+      const rev=await saveOne(k,l.payload,0);stamp(m,k,rev)
+    }
     bind();return{uploaded:Object.keys(m.docs).length};
   }
   async function downloadFirst(){
