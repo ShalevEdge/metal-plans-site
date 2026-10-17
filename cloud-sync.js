@@ -10,7 +10,7 @@
   const cfg=()=>window.FORGE_CLOUD_CONFIG||{};
   const err=e=>new Error(e?.message||String(e||'שגיאה לא ידועה'));
   const ensure=()=>{if(!client)throw Error('חיבור הענן לא הוגדר');if(!user||!workshop)throw Error('צריך להתחבר לחשבון תחילה');guard()};
-  const norm=v=>JSON.stringify(v);
+  const norm=v=>JSON.stringify(v,(key,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.keys(x).sort().map(k=>[k,x[k]])):x);
   const hash=x=>{if(x==null)return null;let n=2166136261;for(let i=0;i<x.length;i++){n^=x.charCodeAt(i);n=Math.imul(n,16777619)}return(n>>>0).toString(16)};
   function binding(){try{return JSON.parse(localStorage.getItem(B)||'null')}catch{return null}}
   function guard(){const b=binding();if(b&&(b.user!==user.id||b.workshop!==workshop))throw Error('במכשיר יש נתונים מקומיים המשויכים לחשבון אחר. כדי למנוע ערבוב מידע, יש להשתמש בפרופיל דפדפן נפרד או לגבות ולהפריד נתונים לפני מעבר חשבון.');}

@@ -1,6 +1,6 @@
-// Public browser config only. A Supabase publishable key is not a secret; never place service_role/secret keys here.
-// Activation requires deploying supabase/migrations/20261018_forge_cloud.sql with verified RLS.
+// Browser-safe Supabase connection: publishable key ONLY. No elevated keys here.
+// Table access is controlled by database RLS; enable auth redirect allowlist in dashboard.
 window.FORGE_CLOUD_CONFIG = Object.freeze({
-  url: '',
-  publishableKey: ''
+  url: "https://szlrmlhiqmyxgbitycez.supabase.co",
+  publishableKey: "sb_publishable_C4WqbGZOiEyZ7yINxlJDXA_0GbawApr"
 });
