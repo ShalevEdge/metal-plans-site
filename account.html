@@ -51,10 +51,22 @@
 <p class="muted">נתוני הפרויקטים נשארים במכשיר עד לאישור מפורש להעלאה לענן.</p>
 <div id="cloudLogin" hidden>
 <p>כניסה מאובטחת באמצעות קישור חד־פעמי לאימייל. אין סיסמה לשמירה באתר.</p>
-<div class="formgrid"><label>כתובת אימייל להתחברות<input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com"></label></div>
-<div class="actions"><button class="btn" id="emailLink" type="button">שלח קישור התחברות</button></div>
+<div class="formgrid">
+<label>כתובת אימייל להתחברות<input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com"></label>
+<label>סיסמה (אם כבר הגדרת)<input id="loginPassword" type="password" autocomplete="current-password" minlength="12" placeholder="לחשבון שכבר יש לו סיסמה"></label>
+</div>
+<div class="actions"><button class="btn" id="passwordSignIn" type="button">התחבר עם סיסמה</button><button class="btn ghost" id="emailLink" type="button">שלח קישור חד־פעמי לאימייל</button></div>
+<p class="muted" id="emailCooldownNote" role="status" aria-live="polite">שירות המיילים החינמי מוגבל. אם עדיין לא הגדרת סיסמה, קישור במייל הוא דרך הכניסה הראשונית.</p>
 </div>
 <div id="cloudConnected" hidden>
+<div class="cloud-banner">
+<strong>התחברות ללא קישורי אימייל</strong>
+<p class="muted">לאחר שנכנסת לחשבון בצורה מאומתת, ניתן לקבוע סיסמה לכניסות הבאות. הסיסמה נשלחת ישירות לאימות Supabase ואינה נשמרת בנתוני האתר המקומיים.</p>
+<div class="formgrid">
+<label>סיסמה חדשה — לפחות 12 תווים<input id="newCloudPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128"></label>
+<label>אימות סיסמה חדשה<input id="confirmCloudPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128"></label>
+</div><div class="actions"><button class="btn ghost" id="setCloudPassword" type="button">שמור סיסמה לכניסות הבאות</button></div>
+</div>
 <div class="cloud-toolbar">
 <button class="btn ghost" id="uploadFirst" type="button">העלה את הנתונים המקומיים לענן ריק</button>
 <button class="btn ghost" id="downloadFirst" type="button">הורד נתוני ענן למכשיר זה</button>
@@ -84,8 +96,17 @@ $('restoreFile').onchange=async()=>{const f=$('restoreFile').files?.[0];if(!f)re
  MP.backup();localStorage.removeItem('forge_cloud_auto_v1');if(cloud)cloud.stopBackground();try{await MP.restore(f);message('restoreMessage','השחזור הצליח. יש לרענן את העמוד.');setTimeout(()=>location.reload(),1000)}catch(e){message('restoreMessage','הגיבוי לא תקין. לא בוצע שחזור מלא.',true)}};
 const P=MP.projects(),I=MP.inventory();$('accountCounts').innerHTML=[['פרויקטים מקומיים',P.length],['פריטים במלאי',I.length],['מצב נתונים','מקומי עד אימות ענן']].map(([k,v])=>'<div class="card"><div class="muted">'+MP.esc(k)+'</div><div class="stat">'+MP.esc(v)+'</div></div>').join('');
 let cloud=null;
-const busy=async(fn)=>{try{$('cloudMessage').textContent='ממתין לסיום הפעולה…';await fn();}catch(e){message('cloudMessage',e.message||'שגיאה',true)}};
+function emailCooldownUI(){
+ const until=cloud?.emailCooldownUntil?.()||0, mins=Math.ceil(Math.max(0,until-Date.now())/60000),blocked=mins>0;
+ $('emailLink').disabled=blocked;
+ $('emailLink').textContent=blocked?'אפשר לשלוח שוב בעוד כ־'+mins+' דק׳':'שלח קישור חד־פעמי לאימייל';
+ $('emailCooldownNote').textContent=blocked
+   ?'שליחת המיילים מושהית במכשיר הזה. Supabase עשוי להמשיך להגביל גם אחרי סיום ההשהיה. אפשר להתחבר עם סיסמה אם כבר נקבעה.'
+   :'שירות שליחת המיילים החינמי של Supabase מוגבל. אם כבר הוגדרה סיסמה, עדיף להתחבר איתה בלי לשלוח מייל.';
+}
+const busy=async(fn)=>{try{$('cloudMessage').textContent='ממתין לסיום הפעולה…';await fn();}catch(e){message('cloudMessage',e.message||'שגיאה',true)}finally{emailCooldownUI()}};
 const setStatus=s=>{$('cloudStatus').textContent=s};
+setInterval(emailCooldownUI,30000);
 function authErrorFromUrl(){
   const q=new URLSearchParams(location.search),frag=new URLSearchParams(location.hash.replace(/^#/,''));
   const code=q.get('error_code')||frag.get('error_code')||q.get('error')||frag.get('error');
@@ -120,6 +141,7 @@ async function refresh(){
  cloud=await MP.loadCloud();
  if(!cloud){setStatus('הענן עדיין לא הופעל: חסרים פרטי פרויקט Supabase מאומתים או אין חיבור זמין. גיבוי ושימוש מקומי ממשיכים כרגיל.');return}
  const client=await cloud.init();if(!client){setStatus('תצורת הענן אינה תקינה');return}
+ emailCooldownUI();
  const session=await client.auth.getSession();
  if(session.error)throw session.error;
  // getSession waits for the auth callback to finish. getUser validates the JWT.
@@ -131,7 +153,21 @@ async function refresh(){
  $('autoSync').checked=localStorage.getItem('forge_cloud_auto_v1')==='1';
  setStatus('מחובר כאימייל: '+(user.email||'חשבון מאומת')+' · מסגריה '+String(ws).slice(0,8)+' · הנתונים המקומיים לא נשלחו אוטומטית.');
 }
-$('emailLink').onclick=()=>busy(async()=>{if(!cloud)throw Error('הענן לא הוגדר');await cloud.sendLink($('loginEmail').value.trim());message('cloudMessage','נשלח קישור. בדוק את תיבת המייל ופתח אותו באותו דפדפן.')});
+$('emailLink').onclick=()=>busy(async()=>{if(!cloud)throw Error('הענן לא הוגדר');await cloud.sendLink($('loginEmail').value.trim());message('cloudMessage','נשלח קישור. בדוק את תיבת המייל ופתח אותו באותו דפדפן. אם שלחת כבר קישור, אל תשלח שוב מיד.')});
+$('passwordSignIn').onclick=()=>busy(async()=>{
+ if(!cloud)throw Error('הענן לא הוגדר');
+ await cloud.signInPassword($('loginEmail').value.trim(),$('loginPassword').value);
+ $('loginPassword').value='';
+ await refresh();
+ message('cloudMessage','התחברת בהצלחה עם סיסמה. הנתונים המקומיים לא הועלו לענן.');
+});
+$('setCloudPassword').onclick=()=>busy(async()=>{
+ const password=$('newCloudPassword').value;
+ if(password!==$('confirmCloudPassword').value)throw Error('אימות הסיסמה אינו תואם');
+ await cloud.setPassword(password);
+ $('newCloudPassword').value='';$('confirmCloudPassword').value='';
+ message('cloudMessage','הסיסמה נשמרה. בכניסות הבאות אפשר להתחבר עם אימייל וסיסמה ללא קישור במייל.');
+});
 $('uploadFirst').onclick=()=>busy(async()=>{if(!confirm('העלה את הנתונים המקומיים לענן ריק? מומלץ לשמור קודם גיבוי.'))return;MP.backup();const r=await cloud.uploadFirst();message('cloudMessage','הועלו '+r.uploaded+' סוגי נתונים לענן.');});
 $('downloadFirst').onclick=()=>busy(async()=>{if(!confirm('פעולה זו מחליפה את הפרויקטים, המלאי, הרכש וההגדרות המקומיים בנתוני הענן. הורד גיבוי לפני ההחלפה. להמשיך?'))return;MP.backup();const r=await cloud.downloadFirst();message('cloudMessage','הורדו '+r.downloaded+' סוגי נתונים. רענן את האתר כדי להציגם.');});
 $('syncNow').onclick=()=>busy(async()=>{const r=await cloud.sync();showConflicts(r.conflicts);message('cloudMessage',r.conflicts.length?'סנכרון חלקי. '+r.conflicts.length+' התנגשויות דורשות החלטה.':'הסנכרון הסתיים. עודכנו '+r.changed.length+' סוגי נתונים.',!!r.conflicts.length)});

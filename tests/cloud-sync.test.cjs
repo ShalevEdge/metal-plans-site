@@ -1,12 +1,14 @@
 // Cloud adapter deterministic unit tests — no network or real credentials.
 const fs=require('fs'), vm=require('vm'), assert=require('node:assert/strict'), path=require('path');
 const root=path.resolve(__dirname,'..'), docs=new Map(), store=new Map();
-let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[], loginRequest=null;
+let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[], loginRequest=null,simulateMailLimit=false,passwordLogin=null,passwordUpdate=null;
 const key=(w,k)=>w+':'+k;
 const client={
  auth:{
   async getUser(){return{data:{user:actor},error:null}},
-  async signInWithOtp(input){loginRequest=input;return{error:null}},
+  async signInWithOtp(input){loginRequest=input;return{error:simulateMailLimit?{status:429,code:'over_email_send_rate_limit',message:'email rate limit exceeded'}:null}},
+  async signInWithPassword(input){passwordLogin=input;return{data:{user:actor},error:null}},
+  async updateUser(input){passwordUpdate=input;return{data:{user:actor},error:null}},
   async signOut(){actor=null;return{error:null}}
  },
  async rpc(fn,p){
@@ -44,7 +46,20 @@ async function run(){
  assert.equal(C.user().id,'alice');
  await C.sendLink('alice@example.com');
  assert.equal(loginRequest.options.emailRedirectTo,'https://shalevedge.github.io/metal-plans-site/account.html');
+ assert.ok(C.emailCooldownUntil()>Date.now());
+ await assert.rejects(C.sendLink('alice@example.com'),/מושהית/);
  await assert.rejects(C.sendLink('not-an-email'),/כתובת אימייל לא תקינה/);
+ store.delete('forge_email_retry_after_v1');
+ simulateMailLimit=true;
+ await assert.rejects(C.sendLink('alice@example.com'),/מכסת הודעות האימייל/);
+ assert.ok(C.emailCooldownUntil()>Date.now()+55*60*1000);
+ simulateMailLimit=false;
+ // Password sign-in does not use the mail transport or email cooldown.
+ assert.equal(await C.signInPassword('alice@example.com','a-test-password'),true);
+ assert.equal(passwordLogin.email,'alice@example.com');
+ await assert.rejects(C.setPassword('short'),/12/);
+ assert.equal(await C.setPassword('long-test-password-2026'),true);
+ assert.equal(passwordUpdate.password,'long-test-password-2026');
  store.set('mp_projects',JSON.stringify([{uid:'1',name:'Gate'}]));
  store.set('mp_settings_v1',JSON.stringify({biz:'Forge'}));
  assert.deepEqual(JSON.parse(JSON.stringify(await C.uploadFirst())),{uploaded:2});

@@ -5,7 +5,7 @@
 (()=>{
   'use strict';
   const DOCS=['mp_projects','mp_inventory_v1','mp_settings_v1','mp_purchase_orders_v1'];
-  const S='forge_cloud_sync_v1', B='forge_cloud_binding_v1', A='forge_cloud_auto_v1';
+  const S='forge_cloud_sync_v1', B='forge_cloud_binding_v1', A='forge_cloud_auto_v1', E='forge_email_retry_after_v1';
   let client=null, user=null, workshop=null, running=null, timer=null, initialized=false;
   const cfg=()=>window.FORGE_CLOUD_CONFIG||{};
   const err=e=>new Error(e?.message||String(e||'שגיאה לא ידועה'));
@@ -55,13 +55,47 @@
     const {data,error}=await client.rpc('forge_bootstrap',{p_name:MP.settings()?.biz||'המסגריה שלי'});
     if(error)throw err(error);workshop=data;guard();return workshop;
   }
+  const emailCooldownUntil=()=>{const n=Number(localStorage.getItem(E));return Number.isFinite(n)&&n>Date.now()?n:0};
   async function sendLink(email){
     if(!client)throw Error('שירות הענן אינו מחובר');if(!email||!/^\S+@\S+\.\S+$/.test(email))throw Error('כתובת אימייל לא תקינה');
-    // Always point magic links to the production origin, never localhost/preview.
-    // Supabase must additionally allow this redirect in Authentication > URL Configuration.
+    const until=emailCooldownUntil();
+    if(until)throw Error('שליחת קישורים מושהית במכשיר הזה. אפשר לנסות מחדש בעוד כ־'+Math.ceil((until-Date.now())/60000)+' דקות. אל תלחץ שוב ושוב.');
+    // Supabase must allow this production URL in Authentication > URL Configuration.
     const redirect='https://shalevedge.github.io/metal-plans-site/account.html';
     const {error}=await client.auth.signInWithOtp({email,options:{emailRedirectTo:redirect}});
-    if(error)throw err(error);return true;
+    if(error){
+      if(error.status===429||error.code==='over_email_send_rate_limit'||/email rate limit exceeded/i.test(error.message||'')){
+        // Conservative local backoff, not a claim about the provider's exact reset time.
+        localStorage.setItem(E,String(Date.now()+60*60*1000));
+        throw Error('מכסת הודעות האימייל החינמית של Supabase נוצלה זמנית (429). המתן כשעה לפני ניסיון נוסף. המידע המקומי שלך לא נפגע.');
+      }
+      if(error.code==='over_request_rate_limit'||/only request this after|rate limit/i.test(error.message||'')){
+        localStorage.setItem(E,String(Date.now()+60*1000));
+        throw Error('נשלחו יותר מדי בקשות בזמן קצר. המתן לפחות דקה לפני שליחת קישור נוסף.');
+      }
+      throw err(error);
+    }
+    localStorage.setItem(E,String(Date.now()+60*1000));
+    return true;
+  }
+  async function signInPassword(email,password){
+    if(!client)throw Error('שירות הענן אינו מחובר');
+    if(!email||!/^\S+@\S+\.\S+$/.test(email)||!password)throw Error('יש למלא אימייל וסיסמה');
+    const {data,error}=await client.auth.signInWithPassword({email,password});
+    if(error){
+      if(error.status===429)throw Error('יש יותר מדי ניסיונות כניסה. המתן ונסה מאוחר יותר.');
+      if(error.code==='invalid_credentials'||/invalid login credentials/i.test(error.message||''))throw Error('האימייל או הסיסמה שגויים, או שעדיין לא נקבעה סיסמה לחשבון.');
+      throw err(error);
+    }
+    user=data?.user||null;
+    return !!user;
+  }
+  async function setPassword(password){
+    await ensureWorkshop();
+    if(typeof password!=='string'||password.length<12||password.length>128)throw Error('יש לבחור סיסמה חדשה באורך 12–128 תווים');
+    const {error}=await client.auth.updateUser({password});
+    if(error)throw err(error);
+    return true;
   }
   async function signOut(){if(client){const {error}=await client.auth.signOut();if(error)throw err(error)} user=null;workshop=null;stopBackground();}
   async function uploadFirst(){
@@ -151,6 +185,6 @@
     window.addEventListener('online',schedule);document.addEventListener('visibilitychange',visibility);
     schedule();
   }
-  window.ForgeCloud={init,ensureWorkshop,sendLink,signOut,uploadFirst,downloadFirst,sync,resolve,startBackground,stopBackground,
+  window.ForgeCloud={init,ensureWorkshop,sendLink,signInPassword,setPassword,emailCooldownUntil,signOut,uploadFirst,downloadFirst,sync,resolve,startBackground,stopBackground,
     user:()=>user,workshop:()=>workshop,docs:DOCS,hasLocal,meta:()=>user&&workshop?meta():null,isConfigured:()=>!!cfg().url&&!!cfg().publishableKey};
 })();
