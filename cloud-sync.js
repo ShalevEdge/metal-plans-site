@@ -78,6 +78,37 @@
     localStorage.setItem(E,String(Date.now()+60*1000));
     return true;
   }
+  async function googleAvailability(){
+    const c=cfg();
+    if(!c.url||!c.publishableKey)return {enabled:false,reason:'שירות הענן אינו מוגדר'};
+    try{
+      // Public GoTrue settings are available with the browser publishable key.
+      // Don't show a working Google button until the provider is actually enabled.
+      const response=await fetch(c.url.replace(/\/$/,'')+'/auth/v1/settings',{
+        headers:{apikey:c.publishableKey},
+        cache:'no-store'
+      });
+      if(!response.ok)return {enabled:false,reason:'לא ניתן לבדוק כרגע את הגדרות Google בשרת'};
+      const data=await response.json();
+      return {
+        enabled:data?.external?.google===true,
+        reason:data?.external?.google===true?'Google מוכן להתחברות':'יש להפעיל את Google Provider ב־Supabase אחרי הגדרת Google Cloud'
+      };
+    }catch{
+      return {enabled:false,reason:'לא ניתן לבדוק כרגע את הגדרות Google. נסה שוב כשיש חיבור לרשת'};
+    }
+  }
+  async function signInGoogle(){
+    if(!client)throw Error('שירות הענן אינו מחובר');
+    const available=await googleAvailability();
+    if(!available.enabled)throw Error(available.reason);
+    const {data,error}=await client.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:'https://shalevedge.github.io/metal-plans-site/account.html'}
+    });
+    if(error)throw err(error);
+    return data;
+  }
   async function signInPassword(email,password){
     if(!client)throw Error('שירות הענן אינו מחובר');
     if(!email||!/^\S+@\S+\.\S+$/.test(email)||!password)throw Error('יש למלא אימייל וסיסמה');
@@ -185,6 +216,6 @@
     window.addEventListener('online',schedule);document.addEventListener('visibilitychange',visibility);
     schedule();
   }
-  window.ForgeCloud={init,ensureWorkshop,sendLink,signInPassword,setPassword,emailCooldownUntil,signOut,uploadFirst,downloadFirst,sync,resolve,startBackground,stopBackground,
+  window.ForgeCloud={init,ensureWorkshop,sendLink,signInGoogle,googleAvailability,signInPassword,setPassword,emailCooldownUntil,signOut,uploadFirst,downloadFirst,sync,resolve,startBackground,stopBackground,
     user:()=>user,workshop:()=>workshop,docs:DOCS,hasLocal,meta:()=>user&&workshop?meta():null,isConfigured:()=>!!cfg().url&&!!cfg().publishableKey};
 })();

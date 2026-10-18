@@ -1,13 +1,14 @@
 // Cloud adapter deterministic unit tests — no network or real credentials.
 const fs=require('fs'), vm=require('vm'), assert=require('node:assert/strict'), path=require('path');
 const root=path.resolve(__dirname,'..'), docs=new Map(), store=new Map();
-let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[], loginRequest=null,simulateMailLimit=false,passwordLogin=null,passwordUpdate=null;
+let actor={id:'alice',email:'alice@example.com',is_anonymous:false}, revCounter=0, dispatches=[], loginRequest=null,simulateMailLimit=false,passwordLogin=null,passwordUpdate=null,googleEnabled=false,googleOAuthPayload=null;
 const key=(w,k)=>w+':'+k;
 const client={
  auth:{
   async getUser(){return{data:{user:actor},error:null}},
   async signInWithOtp(input){loginRequest=input;return{error:simulateMailLimit?{status:429,code:'over_email_send_rate_limit',message:'email rate limit exceeded'}:null}},
   async signInWithPassword(input){passwordLogin=input;return{data:{user:actor},error:null}},
+  async signInWithOAuth(input){googleOAuthPayload=input;return{data:{url:'https://accounts.google.com/o/oauth2/v2/auth'},error:null}},
   async updateUser(input){passwordUpdate=input;return{data:{user:actor},error:null}},
   async signOut(){actor=null;return{error:null}}
  },
@@ -36,6 +37,11 @@ const context={
  document:{dispatchEvent:e=>dispatches.push(e.type),hidden:false,body:{prepend(){}}},
  CustomEvent:class{constructor(type){this.type=type}},
  navigator:{onLine:true},
+ fetch:async(url,opts)=>{
+  assert.equal(url,'https://example.supabase.co/auth/v1/settings');
+  assert.equal(opts.headers.apikey,'sb_publishable_test');
+  return {ok:true,async json(){return{external:{google:googleEnabled}}}};
+ },
  addEventListener(){},
  Date,JSON,Math,Number,String,Error,Map,Promise,RegExp,setTimeout,clearTimeout,URL
 };
@@ -44,6 +50,17 @@ const C=context.window.ForgeCloud;
 async function run(){
  assert.equal(await C.init(),client);
  assert.equal(C.user().id,'alice');
+ assert.equal((await C.googleAvailability()).enabled,false);
+ await assert.rejects(C.signInGoogle(),/להפעיל את Google Provider/);
+ assert.equal(googleOAuthPayload,null);
+ googleEnabled=true;
+ assert.equal((await C.googleAvailability()).enabled,true);
+ await C.signInGoogle();
+ assert.equal(googleOAuthPayload.provider,'google');
+ assert.equal(googleOAuthPayload.options.redirectTo,'https://shalevedge.github.io/metal-plans-site/account.html');
+ // OAuth does not send a Supabase magic link email and does not upload local docs.
+ assert.equal(loginRequest,null);
+ assert.equal(docs.size,0);
  await C.sendLink('alice@example.com');
  assert.equal(loginRequest.options.emailRedirectTo,'https://shalevedge.github.io/metal-plans-site/account.html');
  assert.ok(C.emailCooldownUntil()>Date.now());

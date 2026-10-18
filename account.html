@@ -50,7 +50,15 @@
 <div id="authCallbackError" class="notice bad" hidden role="alert"></div>
 <p class="muted">נתוני הפרויקטים נשארים במכשיר עד לאישור מפורש להעלאה לענן.</p>
 <div id="cloudLogin" hidden>
-<p>כניסה מאובטחת באמצעות קישור חד־פעמי לאימייל. אין סיסמה לשמירה באתר.</p>
+<div class="cloud-banner">
+<strong>התחברות באמצעות Google</strong>
+<p class="muted">כניסה עם חשבון Google, ללא מייל התחברות של Supabase. זוהי הרשאת זהות בסיסית בלבד — ללא גישה ל־Gmail או לקבצים שלך.</p>
+<div class="actions">
+<button class="btn" id="googleSignIn" type="button" disabled>המשך עם Google</button>
+</div>
+<p id="googleProviderStatus" class="muted" role="status" aria-live="polite">בודק אם ההתחברות עם Google הופעלה…</p>
+</div>
+<p>אפשר גם להתחבר באמצעות אימייל וסיסמה או קישור חד־פעמי.</p>
 <div class="formgrid">
 <label>כתובת אימייל להתחברות<input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com"></label>
 <label>סיסמה (אם כבר הגדרת)<input id="loginPassword" type="password" autocomplete="current-password" minlength="12" placeholder="לחשבון שכבר יש לו סיסמה"></label>
@@ -106,6 +114,14 @@ function emailCooldownUI(){
 }
 const busy=async(fn)=>{try{$('cloudMessage').textContent='ממתין לסיום הפעולה…';await fn();}catch(e){message('cloudMessage',e.message||'שגיאה',true)}finally{emailCooldownUI()}};
 const setStatus=s=>{$('cloudStatus').textContent=s};
+async function googleStatusUI(){
+  if(!cloud){$('googleSignIn').disabled=true;return}
+  const status=await cloud.googleAvailability();
+  $('googleSignIn').disabled=!status.enabled;
+  $('googleProviderStatus').textContent=status.enabled
+    ?'Google מוכן. הכניסה תחזור למסך החשבון באתר הרשמי.'
+    :status.reason+'. הגדרות ההפעלה נמצאות ב־Google Cloud וב־Supabase.';
+}
 setInterval(emailCooldownUI,30000);
 function authErrorFromUrl(){
   const q=new URLSearchParams(location.search),frag=new URLSearchParams(location.hash.replace(/^#/,''));
@@ -142,6 +158,7 @@ async function refresh(){
  if(!cloud){setStatus('הענן עדיין לא הופעל: חסרים פרטי פרויקט Supabase מאומתים או אין חיבור זמין. גיבוי ושימוש מקומי ממשיכים כרגיל.');return}
  const client=await cloud.init();if(!client){setStatus('תצורת הענן אינה תקינה');return}
  emailCooldownUI();
+ await googleStatusUI();
  const session=await client.auth.getSession();
  if(session.error)throw session.error;
  // getSession waits for the auth callback to finish. getUser validates the JWT.
@@ -153,6 +170,11 @@ async function refresh(){
  $('autoSync').checked=localStorage.getItem('forge_cloud_auto_v1')==='1';
  setStatus('מחובר כאימייל: '+(user.email||'חשבון מאומת')+' · מסגריה '+String(ws).slice(0,8)+' · הנתונים המקומיים לא נשלחו אוטומטית.');
 }
+$('googleSignIn').onclick=()=>busy(async()=>{
+  if(!cloud)throw Error('שירות הענן אינו זמין');
+  await cloud.signInGoogle();
+  message('cloudMessage','מעביר להתחברות Google. לא יועלו נתונים לענן ללא אישור שלך.');
+});
 $('emailLink').onclick=()=>busy(async()=>{if(!cloud)throw Error('הענן לא הוגדר');await cloud.sendLink($('loginEmail').value.trim());message('cloudMessage','נשלח קישור. בדוק את תיבת המייל ופתח אותו באותו דפדפן. אם שלחת כבר קישור, אל תשלח שוב מיד.')});
 $('passwordSignIn').onclick=()=>busy(async()=>{
  if(!cloud)throw Error('הענן לא הוגדר');
