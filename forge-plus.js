@@ -132,33 +132,55 @@ function signLink(){const q=s=>document.querySelector(s);const rows=[...document
 /* ---------- 7. שליחת שרטוט + הסבר פשוט בוואטסאפ ---------- */
 function liTexts(re,max){const d=[...document.querySelectorAll('#wsGuide details.ws-s')].find(x=>re.test((x.querySelector('summary')||{}).textContent||''));if(!d)return[];
  return[...d.querySelectorAll('li')].map(li=>{const c=li.cloneNode(true);c.querySelectorAll('ul,.ws-box,svg').forEach(u=>u.remove());return c.textContent.replace(/\s+/g,' ').trim()}).filter(Boolean).slice(0,max)}
-function waText(link){const p=CUR,L=[];const sep='────────';
- L.push(`🔧 *${p.name}*`,`📏 מידה: ${sz(p)}`,'',`📐 השרטוט המלא + הסבר צעד-אחרי-צעד (פותחים בטלפון):`,link,'',sep,'*✂️ מה לחתוך* (כל שורה = סוג חלק אחד):');
+function waText(link,nimg){const p=CUR,L=[];const sep='────────';
+ L.push(`🔧 *${p.name}*`,`📏 ${sz(p)}`,nimg?`📷 שלחתי לך ${nimg} תמונות: השרטוט מכל הכיוונים + רשימת חיתוך. כל המידות במ״מ.`:'','',sep,'*✂️ שלב 1 – חיתוך*');
  p.parts.forEach(([n,pr,l,q,a],i)=>L.push(`${i+1}) ${n} – ${q} חתיכות באורך *${F(l)} מ״מ* (${(l/10).toFixed(1).replace(/\.0$/,'')} ס״מ) · פרופיל ${pr}${a?` · קצוות בזווית ${a}°`:''}`));
- L.push('','💡 כותבים על כל חתיכה את המספר שלה בטוש – ככה לא מתבלבלים.','',sep,'*🧩 איך מרכיבים*');
+ L.push('💡 כותבים על כל חתיכה את המספר שלה בטוש.','',sep,'*🧩 שלב 2 – הרכבה*');
  const asm=liTexts(/מרכיבים/,8);(asm.length?asm:['מניחים את חלקי המסגרת על משטח ישר לפי השרטוט','מחברים בנקודות ריתוך קטנות בפינות','מודדים את שני האלכסונים – הם חייבים להיות שווים','מוסיפים את חלקי המילוי במרווחים שווים']).forEach((t,i)=>L.push(`${i+1}. ${t}`));
- L.push('',sep,'*🔥 ריתוך וגימור*');[...liTexts(/ריתוך/,3),...liTexts(/גימור/,3)].forEach(t=>L.push('• '+t));
+ L.push('',sep,'*🔥 שלב 3 – ריתוך וגימור*');[...liTexts(/ריתוך/,3),...liTexts(/גימור/,3)].forEach(t=>L.push('• '+t));
  if(PAINT&&PAINTS[PAINT])L.push('',`🎨 צבע: ${(window.__fpColName||{})[PAINT]||(typeof PN!=='undefined'&&PN[PAINT])||PAINT}`);
- L.push('',sep,'⚠️ לא בטוחים במשהו? עוצרים ושואלים לפני שחותכים. משקפי מגן וכפפות תמיד.');
+ L.push('',sep,'📐 *השרטוט המלא + מצב סדנה צעד-צעד:*',link,'','⚠️ לא בטוח במשהו? עוצרים ושואלים לפני שחותכים.');
  return L.join('\n')}
-function svgPng(svg,w){return new Promise(r=>{try{const c=svg.cloneNode(true);const vb=(svg.getAttribute('viewBox')||'0 0 800 600').split(/[\s,]+/).map(Number);const h=Math.round(w*vb[3]/vb[2]);
+function loadSvg(svg,w){return new Promise(r=>{try{const c=svg.cloneNode(true);const vb=(svg.getAttribute('viewBox')||'0 0 800 600').split(/[\s,]+/).map(Number);const h=Math.round(w*vb[3]/vb[2]);
  c.setAttribute('width',w);c.setAttribute('height',h);c.removeAttribute('style');c.setAttribute('xmlns','http://www.w3.org/2000/svg');
- const img=new Image();img.onload=()=>{const cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);cv.toBlob(b=>r(b),'image/png')};img.onerror=()=>r(null);
- img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(c))}catch(e){r(null)}})}
+ const img=new Image();img.onload=()=>r({img,w,h});img.onerror=()=>r(null);img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(c))}catch(e){r(null)}})}
+const blobOf=cv=>new Promise(r=>cv.toBlob(b=>r(b),'image/png'));
+function head(x,W,title,sub,n){x.fillStyle='#111827';x.fillRect(0,0,W,130);x.fillStyle='#F97316';x.fillRect(0,126,W,6);x.direction='rtl';x.textAlign='right';
+ x.fillStyle='#fff';x.font='900 52px Heebo,Arial,sans-serif';x.fillText(title,W-40,62);x.font='500 30px Heebo,Arial,sans-serif';x.fillStyle='#CBD5E1';x.fillText(sub,W-40,108);
+ x.textAlign='left';x.fillStyle='#FB923C';x.font='900 40px Heebo,Arial,sans-serif';x.fillText(n,40,80)}
+async function viewPng(svg,cap,k,N){const vb=(svg.getAttribute('viewBox')||'0 0 800 600').split(/[\s,]+/).map(Number),ar=vb[3]/vb[2];let dw=1920;if(dw*ar>1800)dw=Math.round(1800/ar);const W=Math.max(1400,dw+80),o=await loadSvg(svg,dw);if(!o)return null;const cv=document.createElement('canvas');cv.width=W;cv.height=o.h+130+90+40;const x=cv.getContext('2d');
+ x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);head(x,W,`${CUR.name} – ${cap}`,`${sz(CUR)} · כל המידות במילימטרים (מ״מ)`,`${k}/${N}`);x.drawImage(o.img,(W-o.w)/2,150,o.w,o.h);
+ x.direction='rtl';x.textAlign='right';x.fillStyle='#6B7280';x.font='500 26px Heebo,Arial,sans-serif';x.fillText('עיגול עם מספר = מספר החלק ברשימת החיתוך · קו מקווקו = הרצפה',W-40,cv.height-36);return blobOf(cv)}
+async function cutPng(k,N){const P=CUR.parts,W=2000,RH=84,H=130+40+RH*(P.length+1)+110;const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+ x.fillStyle='#fff';x.fillRect(0,0,W,H);head(x,W,`${CUR.name} – רשימת חיתוך`,`${sz(CUR)} · ${P.reduce((a,r)=>a+r[3],0)} חתיכות · אורכים במ״מ`,`${k}/${N}`);
+ const C=[['#',110],['שם החלק',640],['כמות',170],['אורך (מ״מ)',330],['פרופיל',420],['זווית',250]];let y=170;x.direction='rtl';
+ const row=(cells,bg,font,col)=>{x.fillStyle=bg;x.fillRect(40,y,W-80,RH);let X=W-40;cells.forEach((t,i)=>{const w=C[i][1];x.fillStyle=col[i]||col[0];x.font=font[i]||font[0];x.textAlign='center';x.fillText(String(t),X-w/2,y+RH/2+14);X-=w});x.strokeStyle='#E5E7EB';x.lineWidth=2;x.strokeRect(40,y,W-80,RH);y+=RH};
+ row(C.map(c=>c[0]),'#F3F4F6',['900 32px Heebo,Arial'],['#111827']);
+ P.forEach(([n,pr,l,q,a],i)=>row([i+1,n,'× '+q,F(l),pr,a?a+'°':'ישר 90°'],i%2?'#FFFFFF':'#FFF7ED',['900 40px Heebo,Arial','600 34px Heebo,Arial','900 40px Heebo,Arial','900 46px Heebo,Arial','500 32px Heebo,Arial','500 30px Heebo,Arial'],['#F97316','#111827','#111827','#B45309','#374151','#374151']));
+ x.textAlign='right';x.fillStyle='#6B7280';x.font='500 28px Heebo,Arial';x.fillText('כותבים על כל חתיכה את המספר שלה בטוש. מודדים פעמיים – חותכים פעם אחת.',W-40,H-40);return blobOf(cv)}
+async function buildFiles(){const figs=[...document.querySelectorAll('#detail .views figure.vw')];const N=figs.length+1,fs=[];let k=1;
+ for(const fg of figs){const svg=fg.querySelector('svg');const cap=(fg.querySelector('figcaption')||{}).textContent||'מבט';const b=svg&&await viewPng(svg,cap.trim(),k,N);if(b)fs.push(new File([b],`${String(k).padStart(2,'0')}-${CURID}-${cap.trim().replace(/\s+/g,'-')}.png`,{type:'image/png'}));k++}
+ const c=await cutPng(N,N);if(c)fs.push(new File([c],`${String(N).padStart(2,'0')}-${CURID}-רשימת-חיתוך.png`,{type:'image/png'}));return fs}
 function waForm(){const box=document.getElementById('fpWa');if(!box)return;box.hidden=!box.hidden;if(box.hidden)return;
- box.innerHTML=`<h3>📲 שליחת השרטוט בוואטסאפ לרתך / למסגר</h3><p class="fp-mut">נשלחת הודעה עם רשימת חיתוך במילים פשוטות, הוראות הרכבה וריתוך, וקישור לשרטוט המלא ולמצב סדנה – מתאים גם למי שלא יודע לקרוא שרטוט.</p>
- <div class="fp-row"><label>טלפון הרתך (לא חובה)<input id="fpWaP" inputmode="tel" placeholder="05X-XXXXXXX"></label></div>
- <div class="fp-row"><button class="btn" id="fpWaT">שליחת הסבר + קישור 📲</button><button class="btn ghost" id="fpWaI">שליחה עם תמונות השרטוט 🖼️</button><button class="btn ghost" id="fpWaC">העתקת הטקסט</button></div>
- <details><summary>תצוגה מקדימה של ההודעה</summary><pre id="fpWaPre" style="white-space:pre-wrap;font-family:inherit;font-size:14px"></pre></details>`;
+ box.innerHTML=`<h3>📲 שליחה לרתך בוואטסאפ</h3><p class="fp-mut">שני שלבים: קודם התמונות עם כל המידות, אחר כך הודעת הסבר מסודרת.</p>
+ <div class="fp-row"><label>טלפון הרתך<input id="fpWaP" inputmode="tel" placeholder="05X-XXXXXXX"></label></div>
+ <div class="fp-wa-th" id="fpWaTh"><span class="fp-mut">מכין תמונות…</span></div>
+ <div class="fp-steps2"><button class="fp-s2" id="fpWaI" disabled><b>1</b><span>שליחת השרטוטים<small id="fpWaIc">תמונות עם מידות</small></span></button>
+ <button class="fp-s2" id="fpWaT"><b>2</b><span>שליחת הסבר הבנייה<small>הודעה מסודרת צעד-צעד + קישור</small></span></button></div>
+ <div class="fp-row"><button class="btn ghost" id="fpWaC">העתקת ההסבר</button><button class="btn ghost" id="fpWaD">הורדת התמונות</button></div>
+ <details><summary>איך נראית ההודעה</summary><pre id="fpWaPre" style="white-space:pre-wrap;font-family:inherit;font-size:14px"></pre></details>`;
  const link=()=>planUrl(CURID).replace('plans.html#','plans.html?ws=1#');const ph=v=>{v=String(v||'').replace(/\D/g,'');return v.startsWith('0')?'972'+v.slice(1):v};
- const txt=()=>waText(link());document.getElementById('fpWaPre').textContent=txt();
- document.getElementById('fpWaT').onclick=()=>window.open('https://wa.me/'+ph(document.getElementById('fpWaP').value)+'?text='+encodeURIComponent(txt()),'_blank');
+ let files=[];const txt=()=>waText(link(),files.length);document.getElementById('fpWaPre').textContent=txt();
+ const th=document.getElementById('fpWaTh'),bi=document.getElementById('fpWaI');
+ buildFiles().then(fs=>{files=fs;window.__fpFiles=fs.length;document.getElementById('fpWaPre').textContent=txt();
+  th.innerHTML=fs.map(f=>`<img src="${URL.createObjectURL(f)}" alt="${E(f.name)}" title="${E(f.name)}">`).join('');bi.disabled=!fs.length;document.getElementById('fpWaIc').textContent=`${fs.length} תמונות: ${fs.length-1} מבטים + רשימת חיתוך`;
+  th.querySelectorAll('img').forEach(i=>i.onclick=()=>window.open(i.src,'_blank'))});
+ const dl=()=>files.forEach((f,i)=>setTimeout(()=>{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove()},i*250));
+ bi.onclick=async()=>{if(navigator.canShare&&navigator.canShare({files})){try{await navigator.share({files,title:CUR.name});bi.classList.add('done')}catch(_){}}
+  else{dl();bi.classList.add('done');alert('במחשב: התמונות הורדו לתיקיית ההורדות.\nפותחים את הצ׳אט עם הרתך בוואטסאפ ווב, גוררים את כל התמונות לחלון – ושולחים.\nאחר כך לוחצים על שלב 2.')}};
+ document.getElementById('fpWaT').onclick=e=>{window.open('https://wa.me/'+ph(document.getElementById('fpWaP').value)+'?text='+encodeURIComponent(txt()),'_blank');e.currentTarget.classList.add('done')};
  document.getElementById('fpWaC').onclick=e=>navigator.clipboard?.writeText(txt()).then(()=>e.target.textContent='הועתק ✓',()=>{});
- document.getElementById('fpWaI').onclick=async e=>{const svs=[...document.querySelectorAll('#detail .views svg')].slice(0,4);const fs=[];
-  for(let k=0;k<svs.length;k++){const b=await svgPng(svs[k],1600);if(b)fs.push(new File([b],`${CURID}-view${k+1}.png`,{type:'image/png'}))}
-  window.__fpFiles=fs.length;
-  if(fs.length&&navigator.canShare&&navigator.canShare({files:fs})){try{await navigator.share({files:fs,text:txt(),title:CUR.name})}catch(_){}}
-  else{fs.forEach(f=>{const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;a.click()});e.target.textContent='התמונות הורדו – צרפו אותן בוואטסאפ';window.open('https://wa.me/'+ph(document.getElementById('fpWaP').value)+'?text='+encodeURIComponent(txt()),'_blank')}}}
+ document.getElementById('fpWaD').onclick=dl}
 
 /* ---------- 8. טבלת צבעים: RAL לפי מק״ט + בחירה חופשית לפי העין ---------- */
 const RAL=[["1000","בז' ירקרק","#BEBD7F"],["1001","בז'","#C2B078"],["1002","צהוב חול","#C6A664"],["1003","צהוב אות","#E5BE01"],["1004","צהוב זהב","#CDA434"],["1005","צהוב דבש","#A98307"],["1006","צהוב תירס","#E4A010"],["1007","צהוב נרקיס","#DC9D00"],["1011","בז' חום","#8A6642"],["1013","לבן צדפה","#EAE6CA"],["1014","שנהב","#E1CC4F"],["1015","שנהב בהיר","#E6D690"],["1016","צהוב גופרית","#EDFF21"],["1018","צהוב אבץ","#F8F32B"],["1019","בז' אפור","#9E9764"],["1020","צהוב זית","#999950"],["1021","צהוב קדמיום","#F3DA0B"],["1023","צהוב תנועה","#FAD201"],["1024","צהוב אוקר","#AEA04B"],["1028","צהוב מלון","#F4A900"],["1032","צהוב רתמה","#D6AE01"],["1033","צהוב דליה","#F3A505"],["1034","צהוב פסטל","#EFA94A"],["2000","כתום צהבהב","#ED760E"],["2001","כתום אדמדם","#C93C20"],["2002","כתום אדום","#CB2821"],["2003","כתום פסטל","#FF7514"],["2004","כתום טהור","#F44611"],["2008","כתום בהיר","#F75E25"],["2009","כתום תנועה","#F54021"],["2010","כתום אות","#D84B20"],["2011","כתום עמוק","#EC7C26"],["3000","אדום אש","#AF2B1E"],["3001","אדום אות","#A52019"],["3002","אדום כרמין","#A2231D"],["3003","אדום רובי","#9B111E"],["3004","אדום ארגמן","#75151E"],["3005","אדום יין","#5E2129"],["3007","אדום שחור","#412227"],["3009","אדום תחמוצת","#642424"],["3011","אדום חום","#781F19"],["3012","אדום בז'","#C1876B"],["3013","אדום עגבניה","#A12312"],["3015","ורוד בהיר","#D36E70"],["3016","אדום אלמוג","#B32821"],["3020","אדום תנועה","#CC0605"],["3027","אדום פטל","#C51D34"],["3031","אדום מזרחי","#B32428"],["4001","סגול אדמדם","#6D3F5B"],["4004","סגול בורדו","#6D1F3B"],["4005","סגול כחלחל","#6C4675"],["4006","סגול תנועה","#A03472"],["4008","סגול אות","#924E7D"],["4010","מג'נטה","#CF3476"],["5000","כחול סגול","#354D73"],["5001","כחול ירקרק","#1F3438"],["5002","כחול אולטרמרין","#20214F"],["5003","כחול ספיר","#1D1E33"],["5005","כחול אות","#1E2460"],["5007","כחול מבריק","#3E5F8A"],["5009","כחול תכלת","#025669"],["5010","כחול אנציאן","#0E294B"],["5011","כחול פלדה","#231A24"],["5012","כחול בהיר","#3B83BD"],["5013","כחול קובלט","#1E213D"],["5014","כחול יונה","#606E8C"],["5015","כחול שמיים","#2271B3"],["5017","כחול תנועה","#063971"],["5018","טורקיז","#3F888F"],["5021","כחול מים","#256D7B"],["5023","כחול רחוק","#49678D"],["5024","כחול פסטל","#5D9B9B"],["6000","ירוק פטינה","#316650"],["6001","ירוק אמרלד","#287233"],["6002","ירוק עלה","#2D572C"],["6003","ירוק זית","#424632"],["6005","ירוק אזוב","#2F4538"],["6009","ירוק אשוח","#31372B"],["6011","ירוק רזדה","#587246"],["6018","ירוק צהבהב","#57A639"],["6019","ירוק פסטל","#BDECB6"],["6020","ירוק כרום","#2E3A23"],["6021","ירוק חיוור","#89AC76"],["6024","ירוק תנועה","#308446"],["6029","ירוק מנטה","#20603D"],["6032","ירוק אות","#317F43"],["7000","אפור סנאי","#78858B"],["7001","אפור כסף","#8A9597"],["7004","אפור אות","#969992"],["7005","אפור עכבר","#646B63"],["7011","אפור ברזל","#434B4D"],["7012","אפור בזלת","#4E5754"],["7015","אפור צפחה","#434750"],["7016","אפור אנתרציט","#293133"],["7021","אפור שחור","#23282B"],["7022","אפור אומבר","#332F2C"],["7024","אפור גרפיט","#474A51"],["7030","אפור אבן","#8B8C7A"],["7031","אפור כחלחל","#474B4E"],["7032","אפור חצץ","#B8B799"],["7035","אפור בהיר","#D7D7D7"],["7036","אפור פלטינה","#7F7679"],["7037","אפור אבק","#7D7F7D"],["7038","אפור אגט","#B5B8B1"],["7039","אפור קוורץ","#6C6960"],["7040","אפור חלון","#9DA1AA"],["7042","אפור תנועה A","#8D948D"],["7044","אפור משי","#CAC4B0"],["7045","אפור טלה 1","#909090"],["7046","אפור טלה 2","#82898F"],["7047","אפור טלה 4","#D0D0D0"],["8001","חום אוקר","#955F20"],["8003","חום טיט","#734222"],["8004","חום נחושת","#8E402A"],["8007","חום צבי","#59351F"],["8011","חום אגוז","#5B3A29"],["8014","חום ספיה","#382C1E"],["8015","חום ערמון","#633A34"],["8016","חום מהגוני","#4C2F27"],["8017","חום שוקולד","#45322E"],["8019","חום אפור","#403A3A"],["8022","חום שחור","#212121"],["8023","חום כתום","#A65E2E"],["8024","חום בז'","#79553D"],["8025","חום חיוור","#755C48"],["8028","חום אדמה","#4E3B31"],["9001","לבן קרם","#FDF4E3"],["9002","לבן אפור","#E7EBDA"],["9003","לבן אות","#F4F4F4"],["9004","שחור אות","#282828"],["9005","שחור עמוק","#0A0A0A"],["9006","אלומיניום לבן","#A5A5A5"],["9007","אלומיניום אפור","#8F8F8F"],["9010","לבן טהור","#FFFFFF"],["9011","שחור גרפיט","#1C1C1C"],["9016","לבן תנועה","#F6F6F6"],["9017","שחור תנועה","#1E1E1E"],["9018","לבן פפירוס","#D7D7D7"]];
@@ -184,6 +206,43 @@ function openColors(){const ov=document.createElement('div');ov.className='fp-ov
  ov.querySelector('#fpC0').onclick=()=>{close();PAINT=null;show(CURID)};
  ov.querySelector('#fpCs').oninput=e=>{const q=e.target.value.trim();ov.querySelectorAll('.fp-ral button').forEach(b=>b.hidden=q&&!b.dataset.q.includes(q));ov.querySelectorAll('#fpCl h4').forEach(h=>h.hidden=!!q)}}
 
+
+/* ---------- 9. לשוניות בגיליון + סרגל פעולות מסודר ---------- */
+const TABS=[['draw','📐','שרטוט'],['cut','✂️','חיתוך וקנייה'],['guide','👷','איך בונים'],['price','💰','חומר ומחיר'],['send','📤','הדפסה ושליחה']];
+function tabOf(el){if(el.classList.contains('close'))return'';const sec=el.dataset.sec;
+ if(el.id==='wsGuide')return'guide';if(el.id==='wsPrint'||(el.tagName==='P'&&el.classList.contains('no-print')))return'send';
+ if(el.classList.contains('tools'))return'price';if(sec==='cut'||sec==='buy'||sec==='bars'||sec==='hw')return'cut';
+ if(el.classList.contains('views')||el.classList.contains('tb'))return'draw';return''}
+function setTab(k){const card=document.querySelector('#detail .card');if(!card)return;LS.set('forge_sheet_tab',k);
+ card.querySelectorAll(':scope>*').forEach(el=>{const t=el.dataset.fpTab;if(t)el.classList.toggle('fp-tabh',t!==k)});
+ card.querySelectorAll('.fp-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===k))}
+window.fpTab=setTab;
+let wasOpen=null;const openAll=()=>{const ds=[...document.querySelectorAll('#wsGuide details.ws-s')];if(!ds.length||wasOpen)return;wasOpen=ds.map(d=>d.open);ds.forEach(d=>d.open=true)};
+const restore=()=>{const ds=[...document.querySelectorAll('#wsGuide details.ws-s')];if(wasOpen&&ds.length===wasOpen.length)ds.forEach((d,i)=>d.open=wasOpen[i]);wasOpen=null};
+addEventListener('beforeprint',openAll);addEventListener('afterprint',restore);
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#ppgo'))openAll()},true);
+function tidy(card){const cb=card.querySelector('.cbar'),meta=card.querySelector('.meta');if(!cb)return;
+ // סרגל פעולות ראשי
+ const act=document.createElement('div');act.className='fp-act no-print';
+ act.innerHTML=`<button data-a="ws"><em>🛠️</em><b>מצב סדנה</b><span>צעד אחרי צעד</span></button><button data-a="wa"><em>📲</em><b>לרתך</b><span>שרטוט + הסבר</span></button><button data-a="pr"><em>🖨️</em><b>הדפסה</b><span>כל גודל דף</span></button><button data-a="3d"><em>🧊</em><b>תלת-ממד</b><span>סיבוב והרכבה</span></button>`;
+ (meta||cb).insertAdjacentElement('afterend',act);
+ act.onclick=e=>{const b=e.target.closest('button');if(!b)return;const a=b.dataset.a;
+  if(a==='ws')openWorkshop();else if(a==='3d')open3D();else{setTab('send');if(a==='wa'){const w=document.getElementById('fpWa');if(w&&w.hidden)waForm();(w||document.getElementById('wsPrint')).scrollIntoView({behavior:'smooth',block:'start'})}else document.getElementById('wsPrint').scrollIntoView({behavior:'smooth',block:'start'})}};
+ // שורת צבע קומפקטית: מסתירים כפילויות
+ cb.querySelectorAll('#fp3b,#fpWb,#fpWaTop').forEach(b=>b.remove());
+ [...cb.querySelectorAll('button')].filter(b=>/הדפסה/.test(b.textContent)).forEach(b=>b.remove());
+ const dxf=cb.querySelector('#dxf');const pr=document.getElementById('wsPrint');if(dxf&&pr){dxf.classList.add('ghost');pr.querySelector('.fp-row')?.appendChild(dxf)}
+ cb.classList.add('fp-cbar');const col=cb.querySelector('#fpColB');if(col)col.textContent='🎨 עוד צבעים (RAL)';
+ // לשוניות
+ const tb=document.createElement('div');tb.className='fp-tabs no-print';tb.setAttribute('role','tablist');
+ tb.innerHTML=TABS.map(([k,i,n])=>`<button role="tab" data-t="${k}"><em>${i}</em>${n}</button>`).join('');cb.insertAdjacentElement('afterend',tb);
+ tb.onclick=e=>{const b=e.target.closest('button');if(b){setTab(b.dataset.t);tb.scrollIntoView({block:'start',behavior:'smooth'})}};
+ card.querySelectorAll(':scope>*').forEach(el=>{const t=tabOf(el);if(t)el.dataset.fpTab=t});
+ const pl=document.getElementById('wsPrint')&&document.getElementById('wsPrint').nextElementSibling;
+ // דף העבודה: אקורדיון – פרק אחד פתוח בכל פעם
+ const g=document.getElementById('wsGuide');if(g){const ds=[...g.querySelectorAll('details.ws-s')];ds.forEach(d=>{d.open=false;d.addEventListener('toggle',()=>{if(d.open&&!wasOpen)ds.forEach(x=>{if(x!==d)x.open=false})})})}
+ setTab(LS.get('forge_sheet_tab','draw'))}
+
 /* ---------- חיבור לגיליון ---------- */
 function plus(id){CUR=null;CURID='';if(!id)return;const card=document.querySelector('#detail .card');if(!card)return;const p=plan(id);if(!p||p.err)return;CUR=p;CURID=id;
  const cb=card.querySelector('.cbar');if(cb){cb.insertAdjacentHTML('beforeend',`<button class="btn fp-t" id="fp3b">🧊 תלת-ממד</button><button class="btn fp-t" id="fpWb">🛠️ מצב סדנה</button><button class="btn fp-t" id="fpWaTop">📲 לרתך בוואטסאפ</button><button class="btn fp-t" id="fpColB">🎨 טבלת צבעים RAL</button>`);
@@ -195,6 +254,7 @@ function plus(id){CUR=null;CURID='';if(!id)return;const card=document.querySelec
   const qp=document.getElementById('qpdf');if(qp){qp.insertAdjacentHTML('afterend',` <button class="btn ghost" id="fpSignB">✍️ קישור לחתימת הלקוח</button><div id="fpSign" class="fp-card" hidden></div>`);document.getElementById('fpSignB').onclick=signLink}}
  const pr=document.getElementById('wsPrint');if(pr){pr.insertAdjacentHTML('beforeend',`<div class="fp-row"><button class="btn ghost" id="fpLab">🏷️ הדפסת מדבקות לחלקים</button><button class="btn ghost" id="fpWk">👷 שליחה לעובד</button><button class="btn" id="fpWaB">📲 שרטוט + הסבר בוואטסאפ</button></div><div id="fpWorker" class="fp-card" hidden></div><div id="fpWa" class="fp-card" hidden></div>`);
   document.getElementById('fpLab').onclick=printLabels;document.getElementById('fpWk').onclick=workerForm;document.getElementById('fpWaB').onclick=waForm}
+ try{tidy(card)}catch(e){console.error('tidy',e)}
  if(new URLSearchParams(location.search).get('ws')==='1'&&!window.__fpAuto){window.__fpAuto=1;setTimeout(openWorkshop,300)}}
 
 /* ---------- סגנון ---------- */
@@ -231,6 +291,23 @@ const css=`
 .fp-row select,.fp-row input,.fp-full textarea{padding:10px;font-size:16px;border-radius:8px;min-width:180px;font-family:inherit}.fp-mo p{margin:6px 0}
 .fp-qr{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px}.fp-qr svg,.fp-qrtb svg{width:84px!important;height:84px!important;max-width:84px!important;background:#fff;padding:3px;border-radius:6px}
 .fp-qrtb{display:none}
+.fp-wa-th{display:flex;gap:8px;overflow-x:auto;padding:6px 0;min-height:60px;align-items:center}.fp-wa-th img{height:110px;border-radius:10px;border:1px solid rgba(127,127,127,.4);background:#fff;cursor:zoom-in;flex:none}
+.fp-steps2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}@media(max-width:600px){.fp-steps2{grid-template-columns:1fr}}
+.fp-s2{font:inherit;cursor:pointer;display:flex;gap:12px;align-items:center;text-align:start;padding:16px;border-radius:14px;border:2px solid #22c55e;background:rgba(34,197,94,.1);color:inherit}
+.fp-s2 b{flex:none;width:40px;height:40px;border-radius:50%;background:#22c55e;color:#fff;display:grid;place-items:center;font-size:20px}.fp-s2 span{display:flex;flex-direction:column;font-weight:900;font-size:18px}.fp-s2 small{font-weight:500;font-size:13px;opacity:.75}
+.fp-s2:disabled{opacity:.45;cursor:wait}.fp-s2.done{background:rgba(34,197,94,.28)}.fp-s2.done b:after{content:" ✓"}
+.fp-act{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 8px}
+.fp-act button{font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 6px;border-radius:16px;border:1px solid rgba(249,115,22,.45);background:linear-gradient(180deg,rgba(249,115,22,.16),rgba(249,115,22,.04));color:inherit;transition:transform .15s,box-shadow .2s}
+.fp-act button:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(249,115,22,.25)}.fp-act em{font-style:normal;font-size:28px}.fp-act b{font-size:16px}.fp-act span{font-size:12px;opacity:.7}
+@media(max-width:600px){.fp-act{grid-template-columns:repeat(4,1fr);gap:6px}.fp-act button{padding:10px 2px;border-radius:12px}.fp-act em{font-size:24px}.fp-act b{font-size:13px}.fp-act span{display:none}}
+.fp-cbar{gap:6px!important;font-size:14px;opacity:.95}.fp-cbar #fpColB{padding:5px 12px!important;font-size:13px!important;background:transparent!important;border:1px solid rgba(127,127,127,.5)!important;box-shadow:none!important}
+.fp-tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin:10px -4px 14px;padding:6px 4px;background:rgba(14,19,26,.94);backdrop-filter:blur(8px);border-bottom:1px solid rgba(127,127,127,.25)}
+.fp-tabs::-webkit-scrollbar{display:none}
+.fp-tabs button{flex:1 0 auto;font:inherit;font-weight:700;font-size:15px;white-space:nowrap;cursor:pointer;padding:10px 14px;border-radius:12px;border:1px solid transparent;background:transparent;color:inherit;opacity:.65;display:flex;gap:6px;align-items:center;justify-content:center}
+.fp-tabs button em{font-style:normal}.fp-tabs button.on{opacity:1;background:rgba(249,115,22,.15);border-color:#f97316;color:#fb923c}
+@media screen{.fp-tabh{display:none!important}}
+#detail .card{background-clip:padding-box}
+
 .fp-col{height:auto;max-height:100%}.fp-colb{padding:12px 14px;overflow:auto}.fp-colb h4{margin:14px 0 6px;color:#fb923c}
 .fp-ral{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}.fp-ral button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:#151c24;color:#fff;border:1px solid #2b3540;border-radius:10px;padding:6px;cursor:pointer;font:inherit;text-align:start}
 .fp-ralnote{margin:14px 0 4px;padding:10px 12px;border:1px solid #f97316;border-radius:10px;background:rgba(249,115,22,.1);font-size:14px;line-height:1.6}.fp-ral button[hidden],#fpCl h4[hidden]{display:none!important}.fp-ral button:hover{border-color:#f97316}.fp-ral i{display:block;width:100%;height:38px;border-radius:6px;border:1px solid rgba(255,255,255,.2)}.fp-ral b{font-size:13px}.fp-ral span{font-size:11px;opacity:.75}
