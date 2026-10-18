@@ -135,7 +135,7 @@ function liTexts(re,max){const d=[...document.querySelectorAll('#wsGuide details
 function waText(link,nimg){const p=CUR,L=[];const sep='────────';
  L.push(`🔧 *${p.name}*`,`📏 ${sz(p)}`,nimg?`📷 שלחתי לך ${nimg} תמונות: השרטוט מכל הכיוונים + רשימת חיתוך. כל המידות במ״מ.`:'','',sep,'*✂️ שלב 1 – חיתוך*');
  p.parts.forEach(([n,pr,l,q,a],i)=>L.push(`${i+1}) ${n} – ${q} חתיכות באורך *${F(l)} מ״מ* (${(l/10).toFixed(1).replace(/\.0$/,'')} ס״מ) · פרופיל ${pr}${a?` · קצוות בזווית ${a}°`:''}`));
- L.push('💡 כותבים על כל חתיכה את המספר שלה בטוש.','',sep,'*🧩 שלב 2 – הרכבה*');
+ L.push('💡 כותבים על כל חתיכה את המספר שלה בטוש.');try{const SL=spacingLines();if(SL.length){L.push('',sep,'*📏 מרווחים (חשוב!)*');SL.forEach(x=>L.push('• '+x.txt));L.push(`💡 קוצב באורך ${fmt(SL[0].g.gap)} מ״מ בין חלק לחלק = מרווחים שווים בלי למדוד.`)}}catch(e){}L.push('',sep,'*🧩 שלב 2 – הרכבה*');
  const asm=liTexts(/מרכיבים/,8);(asm.length?asm:['מניחים את חלקי המסגרת על משטח ישר לפי השרטוט','מחברים בנקודות ריתוך קטנות בפינות','מודדים את שני האלכסונים – הם חייבים להיות שווים','מוסיפים את חלקי המילוי במרווחים שווים']).forEach((t,i)=>L.push(`${i+1}. ${t}`));
  L.push('',sep,'*🔥 שלב 3 – ריתוך וגימור*');[...liTexts(/ריתוך/,3),...liTexts(/גימור/,3)].forEach(t=>L.push('• '+t));
  if(PAINT&&PAINTS[PAINT])L.push('',`🎨 צבע: ${(window.__fpColName||{})[PAINT]||(typeof PN!=='undefined'&&PN[PAINT])||PAINT}`);
@@ -151,13 +151,14 @@ function head(x,W,title,sub,n){x.fillStyle='#111827';x.fillRect(0,0,W,130);x.fil
 async function viewPng(svg,cap,k,N){const vb=(svg.getAttribute('viewBox')||'0 0 800 600').split(/[\s,]+/).map(Number),ar=vb[3]/vb[2];let dw=1920;if(dw*ar>1800)dw=Math.round(1800/ar);const W=Math.max(1400,dw+80),o=await loadSvg(svg,dw);if(!o)return null;const cv=document.createElement('canvas');cv.width=W;cv.height=o.h+130+90+40;const x=cv.getContext('2d');
  x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);head(x,W,`${CUR.name} – ${cap}`,`${sz(CUR)} · כל המידות במילימטרים (מ״מ)`,`${k}/${N}`);x.drawImage(o.img,(W-o.w)/2,150,o.w,o.h);
  x.direction='rtl';x.textAlign='right';x.fillStyle='#6B7280';x.font='500 26px Heebo,Arial,sans-serif';x.fillText('עיגול עם מספר = מספר החלק ברשימת החיתוך · קו מקווקו = הרצפה',W-40,cv.height-36);return blobOf(cv)}
-async function cutPng(k,N){const P=CUR.parts,W=2000,RH=84,H=130+40+RH*(P.length+1)+110;const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+async function cutPng(k,N){let SL=[];try{SL=spacingLines()}catch(e){}const P=CUR.parts,W=2000,RH=84,H=130+40+RH*(P.length+1)+110+(SL.length?110+70+SL.length*62:0);const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
  x.fillStyle='#fff';x.fillRect(0,0,W,H);head(x,W,`${CUR.name} – רשימת חיתוך`,`${sz(CUR)} · ${P.reduce((a,r)=>a+r[3],0)} חתיכות · אורכים במ״מ`,`${k}/${N}`);
  const C=[['#',110],['שם החלק',640],['כמות',170],['אורך (מ״מ)',330],['פרופיל',420],['זווית',250]];let y=170;x.direction='rtl';
  const row=(cells,bg,font,col)=>{x.fillStyle=bg;x.fillRect(40,y,W-80,RH);let X=W-40;cells.forEach((t,i)=>{const w=C[i][1];x.fillStyle=col[i]||col[0];x.font=font[i]||font[0];x.textAlign='center';x.fillText(String(t),X-w/2,y+RH/2+14);X-=w});x.strokeStyle='#E5E7EB';x.lineWidth=2;x.strokeRect(40,y,W-80,RH);y+=RH};
  row(C.map(c=>c[0]),'#F3F4F6',['900 32px Heebo,Arial'],['#111827']);
  P.forEach(([n,pr,l,q,a],i)=>row([i+1,n,'× '+q,F(l),pr,a?a+'°':'ישר 90°'],i%2?'#FFFFFF':'#FFF7ED',['900 40px Heebo,Arial','600 34px Heebo,Arial','900 40px Heebo,Arial','900 46px Heebo,Arial','500 32px Heebo,Arial','500 30px Heebo,Arial'],['#F97316','#111827','#111827','#B45309','#374151','#374151']));
- x.textAlign='right';x.fillStyle='#6B7280';x.font='500 28px Heebo,Arial';x.fillText('כותבים על כל חתיכה את המספר שלה בטוש. מודדים פעמיים – חותכים פעם אחת.',W-40,H-40);return blobOf(cv)}
+ x.textAlign='right';x.fillStyle='#6B7280';x.font='500 28px Heebo,Arial';x.fillText('כותבים על כל חתיכה את המספר שלה בטוש. מודדים פעמיים – חותכים פעם אחת.',W-40,y+60);
+ if(SL.length){let yy=y+110;x.fillStyle='#E0F2FE';x.fillRect(40,yy,W-80,70+SL.length*62);x.fillStyle='#0369A1';x.font='900 38px Heebo,Arial';x.fillText('📏 מרווחים',W-70,yy+52);x.font='700 32px Heebo,Arial';x.fillStyle='#0C4A6E';SL.forEach((l,i)=>x.fillText('• '+l.txt,W-70,yy+110+i*62,W-140))}return blobOf(cv)}
 async function buildFiles(){const figs=[...document.querySelectorAll('#detail .views figure.vw')];const N=figs.length+1,fs=[];let k=1;
  for(const fg of figs){const svg=fg.querySelector('svg');const cap=(fg.querySelector('figcaption')||{}).textContent||'מבט';const b=svg&&await viewPng(svg,cap.trim(),k,N);if(b)fs.push(new File([b],`${String(k).padStart(2,'0')}-${CURID}-${cap.trim().replace(/\s+/g,'-')}.png`,{type:'image/png'}));k++}
  const c=await cutPng(N,N);if(c)fs.push(new File([c],`${String(N).padStart(2,'0')}-${CURID}-רשימת-חיתוך.png`,{type:'image/png'}));return fs}
@@ -243,6 +244,61 @@ function tidy(card){const cb=card.querySelector('.cbar'),meta=card.querySelector
  const g=document.getElementById('wsGuide');if(g){const ds=[...g.querySelectorAll('details.ws-s')];ds.forEach(d=>{d.open=false;d.addEventListener('toggle',()=>{if(d.open&&!wasOpen)ds.forEach(x=>{if(x!==d)x.open=false})})})}
  setTab(LS.get('forge_sheet_tab','draw'))}
 
+
+/* ---------- 10. מרווחים: מידה בין מוט למוט בשרטוט, בתמונות ובהסבר ---------- */
+function bb(e,P){let a=[1e9,-1e9,1e9,-1e9];for(const q of[...e.A,...e.B]){const p=P(q);a[0]=Math.min(a[0],p[0]);a[1]=Math.max(a[1],p[0]);a[2]=Math.min(a[2],p[1]);a[3]=Math.max(a[3],p[1])}return a}
+function spacing(vk){vk=vk||'front';const P=VIEWS[vk].P,els=M.filter(e=>e.A&&e.B),G=new Map();
+ for(const e of els){if(!e.n)continue;const k=e.n+'|'+e.p+'|'+Math.round(e.len);(G.get(k)||G.set(k,[]).get(k)).push(e)}const out=[];
+ for(const[k,g]of G){if(g.length<3||/מסגרת/.test(k))continue;const B=g.map(e=>({e,b:bb(e,P)}));
+  const cx=B.map(o=>(o.b[0]+o.b[1])/2),cy=B.map(o=>(o.b[2]+o.b[3])/2),sx=Math.max(...cx)-Math.min(...cx),sy=Math.max(...cy)-Math.min(...cy);
+  const ax=sx>=sy?0:1;if((ax?sy:sx)<1)continue;const lo=ax?2:0,hi=ax?3:1,olo=ax?0:2,ohi=ax?1:3;
+  B.sort((a,b)=>a.b[lo]-b.b[lo]||a.b[olo]-b.b[olo]);const rows=B.filter((o,i)=>i===0||Math.abs(o.b[lo]-B[i-1].b[lo])>.5);if(rows.length<B.length){const t=B.length;B.length=0;B.push(...rows.filter(o=>o.b[olo]===Math.min(...rows.filter(x=>Math.abs(x.b[lo]-o.b[lo])<.5).map(x=>x.b[olo]))))}const gaps=[];for(let i=1;i<B.length;i++)gaps.push(B[i].b[lo]-B[i-1].b[hi]);
+  if(Math.min(...gaps)<=0.5)continue;
+  // לא מבלבלים קבוצות מפוצלות (שתי כנפיים): לוקחים את המרווח השכיח
+  const gs=[...gaps].sort((a,b)=>a-b),gap=gs[Math.floor(gs.length/2)],run=[B[0]];for(let i=1;i<B.length;i++){if(Math.abs(gaps[i-1]-gap)<2)run.push(B[i]);else if(run.length<3){run.length=0;run.push(B[i])}else break}
+  if(run.length<3)continue;const f0=run[0].b,w=f0[hi]-f0[lo],oMin=Math.min(...run.map(o=>o.b[olo])),oMax=Math.max(...run.map(o=>o.b[ohi]));
+  let edge=null,ref=null;for(const o of els){if(g.includes(o))continue;const b=bb(o,P);if(b[ohi]<oMin+1||b[olo]>oMax-1)continue;if(b[hi]<=f0[lo]+.5&&(edge==null||f0[lo]-b[hi]<edge)){edge=f0[lo]-b[hi];ref=o}}
+  const name=k.split('|')[0],prof=k.split('|')[1];
+  out.push({vk,ax,name,prof,n:run.length,total:g.length,gap,pitch:gap+w,w,edge:edge!=null&&edge<gap*3?edge:null,refName:ref&&ref.n||'',run,lo,hi,olo,ohi,oMin,oMax})}
+ return out}
+const view0=view;
+view=function(vk,o){let svg=view0(vk,o||{});o=o||{};if(o.thumb||vk==='iso'||!svg)return svg;let S;try{S=spacing(vk)}catch(e){return svg}if(!S.length)return svg;
+ const m=svg.match(/viewBox="([-\d.]+) ([-\d.]+) ([-\d.]+) ([-\d.]+)"/);if(!m)return svg;let[vx,vy,vw,vh]=m.slice(1).map(Number);const vy0=vy,vb1=vy+vh;
+ const Sz=Math.max(vw,vh)/1.32,fs=Sz/24,C='#0369A1',L=(a,b,c,d,w)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${C}" stroke-width="${w||1}" vector-effect="non-scaling-stroke"/>`;
+ const T=(x,y,t,r,sz,col)=>`<text x="${x}" y="${y}" fill="${col||C}" font-size="${sz||fs*.72}" font-family="Heebo,Arial" font-weight="800" text-anchor="middle"${r?` transform="rotate(-90 ${x} ${y})"`:''}>${t}</text>`;
+ let add='',k0=0,k1=0,bottom=vb1;
+ // תווית מרווח ליד כל קבוצה
+ for(const g of S.slice(0,3)){const r=g.run,last=r[r.length-1].b,first=r[0].b;
+  if(g.ax===0){const y=g.oMin-fs*(.9+1.3*k0++);add+=L(first[0],y,last[1],y,.7)+L(first[0],y-fs*.2,first[0],y+fs*.2)+L(last[1],y-fs*.2,last[1],y+fs*.2)+T((first[0]+last[1])/2,y-fs*.25,`${g.n} × ${g.name} · מרווח נקי ${fmt(g.gap)} מ״מ`,0,fs*.6);vy=Math.min(vy,y-fs*1.1)}
+  else{const x=g.oMax+fs*(.9+1.3*k1++);add+=L(x,first[2],x,last[3],.7)+L(x-fs*.2,first[2],x+fs*.2,first[2])+L(x-fs*.2,last[3],x+fs*.2,last[3])+T(x+fs*.45,(first[2]+last[3])/2,`${g.n} × ${g.name} · מרווח ${fmt(g.gap)}`,1,fs*.6);vw=Math.max(vw,x+fs*1.2-vx)}}
+ // פרט מוגדל לקבוצה הראשית
+ const g=S[0],r=g.run,P=VIEWS[vk].P,ax=g.ax,lo=ax?2:0,hi=ax?3:1;
+ const start=g.edge!=null?r[0].b[lo]-g.edge:r[0].b[lo],refW=g.edge!=null?Math.min(g.edge*.6+40,80):30,R0=start-refW,R1=r[Math.min(2,r.length-1)].b[hi]+g.gap*.35;
+ const span=R1-R0,oth=Math.min(span*.62,(ax?g.oMax-g.oMin:g.oMax-g.oMin)),O0=ax?g.oMax-oth:g.oMin,O1=O0+oth;
+ const rx=ax?O0:R0,ry=ax?R0:O0,rw=ax?oth:span,rh=ax?span:oth;
+ const IW=Math.min(Sz*.62,vw*.9),k=IW/rw,IH=rh*k,ix=vx+(vw-IW)/2,iy=vb1+fs*1.2;
+ const pol=[];for(const e of M)for(const f of faces(e)){if(dot(f.N,VIEWS[vk].V)<=1e-6)continue;const col=(typeof PAINT!=='undefined'&&PAINT&&/^(m|post|wheel)$/.test(e.role)?PAINTS[PAINT]:(COL[e.role]||COL.m))[0];pol.push({d:dot(f.fc,VIEWS[vk].V),pts:f.F.map(P),col})}
+ pol.sort((a,b)=>a.d-b.d);
+ const inner=pol.map(p=>`<polygon points="${p.pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}" fill="${p.col}" stroke="#1F2328" stroke-width="1" vector-effect="non-scaling-stroke"/>`).join('');
+ add+=`<rect x="${ix-fs*.3}" y="${iy-fs*1.5}" width="${IW+fs*.6}" height="${IH+fs*4.2}" rx="${fs*.4}" fill="#F0F9FF" stroke="${C}" stroke-width="1.4" vector-effect="non-scaling-stroke"/>`+T(ix+IW/2,iy-fs*.45,'🔍 פרט מוגדל – מרווחים',0,fs*.75)+(()=>{const id="fpc"+vk+Math.random().toString(36).slice(2,7);return`<clipPath id="${id}"><rect x="${ix}" y="${iy}" width="${IW}" height="${IH}"/></clipPath><g clip-path="url(#${id})"><g transform="translate(${ix} ${iy}) scale(${k}) translate(${-rx} ${-ry})">${inner}</g></g>`})();
+ const map=v=>ax?iy+(v-ry)*k:ix+(v-rx)*k;const pts=[];if(g.edge!=null)pts.push(start);for(let i=0;i<Math.min(2,r.length);i++){pts.push(r[i].b[lo],r[i].b[hi])}if(r.length>2)pts.push(r[2].b[lo]);
+ const dl=ax?ix+IW+fs*.9:iy+IH+fs*1.0;
+ if(ax===0){add+=L(map(pts[0]),dl,map(pts[pts.length-1]),dl,1.2);for(const p of pts)add+=L(map(p),dl-fs*.25,map(p),dl+fs*.25,1.2)+L(map(p),iy+IH,map(p),dl,.5);
+  for(let i=0;i<pts.length-1;i++){const d=pts[i+1]-pts[i];if(d>.5)add+=T((map(pts[i])+map(pts[i+1]))/2,dl+fs*.95,fmt(d),0,fs*.68,i%2===(g.edge!=null?0:1)?C:'#475569')}
+  const cc1=map(r[0].b[lo]+g.w/2),cc2=map(r[1].b[lo]+g.w/2),yc=iy+fs*.9;add+=`<line x1="${cc1}" y1="${yc}" x2="${cc2}" y2="${yc}" stroke="#B45309" stroke-width="1.2" stroke-dasharray="5 3" vector-effect="non-scaling-stroke"/>`+T((cc1+cc2)/2,yc-fs*.25,`מרכז-מרכז ${fmt(g.pitch)}`,0,fs*.6,'#B45309')}
+ else{add+=L(dl,map(pts[0]),dl,map(pts[pts.length-1]),1.2);for(const p of pts)add+=L(dl-fs*.25,map(p),dl+fs*.25,map(p),1.2)+L(ix+IW,map(p),dl,map(p),.5);
+  for(let i=0;i<pts.length-1;i++){const d=pts[i+1]-pts[i];if(d>.5)add+=T(dl+fs*.7,(map(pts[i])+map(pts[i+1]))/2,fmt(d),1,fs*.68)}}
+ add+=T(ix+IW/2,iy+IH+fs*2.3,'כחול = רווח ריק בין החלקים',0,fs*.5,'#334155');
+ bottom=iy+IH+fs*3.1;if(ax)vw=Math.max(vw,dl+fs*1.5-vx);
+ const ny=Math.min(vy0,vy),nh=bottom-ny+fs*.4;
+ return svg.replace(m[0],`viewBox="${vx} ${ny} ${vw} ${nh}"`).replace(/<\/svg>$/,add+'</svg>')};
+function spacingLines(){const seen=new Set(),L=[];for(const vk of['front','top','side'])for(const g of spacing(vk)){const key=g.name+'|'+g.prof;if(seen.has(key))continue;seen.add(key);
+ L.push({g,txt:`${g.name} (${g.prof}): ${g.n} יח׳${g.total>g.n?` בכל שורה (${g.total} סה״כ)`:''} · מרווח נקי ${fmt(g.gap)} מ״מ בין חלק לחלק · מרכז-מרכז ${fmt(g.pitch)} מ״מ`+(g.edge!=null?` · הראשון במרחק ${fmt(g.edge)} מ״מ מ${g.refName||'המסגרת'}`:'')})}return L}
+window.fpSpacing=()=>spacingLines();
+function guideSpacing(){const g=document.getElementById('wsGuide');if(!g||g.querySelector('.fp-spc'))return;const L=spacingLines();if(!L.length)return;
+ const d=[...g.querySelectorAll('details.ws-s')].find(x=>/מרכיבים/.test((x.querySelector('summary')||{}).textContent||''));const host=d?d.querySelector('.ws-b')||d:g;
+ host.insertAdjacentHTML('afterbegin',`<div class="fp-spc"><b>📏 מרווחים – בדיוק לפי המידות:</b><ul>${L.map(x=>`<li>${E(x.txt)}</li>`).join('')}</ul><p>💡 טריק: חותכים <b>קוצב</b> (פיסת עץ/פרופיל) באורך המרווח הנקי – <b>${fmt(L[0].g.gap)} מ״מ</b> – ומניחים אותו בין חלק לחלק. ככה כל המרווחים יוצאים שווים בלי למדוד כל פעם.</p></div>`)}
+
 /* ---------- חיבור לגיליון ---------- */
 function plus(id){CUR=null;CURID='';if(!id)return;const card=document.querySelector('#detail .card');if(!card)return;const p=plan(id);if(!p||p.err)return;CUR=p;CURID=id;
  const cb=card.querySelector('.cbar');if(cb){cb.insertAdjacentHTML('beforeend',`<button class="btn fp-t" id="fp3b">🧊 תלת-ממד</button><button class="btn fp-t" id="fpWb">🛠️ מצב סדנה</button><button class="btn fp-t" id="fpWaTop">📲 לרתך בוואטסאפ</button><button class="btn fp-t" id="fpColB">🎨 טבלת צבעים RAL</button>`);
@@ -254,6 +310,7 @@ function plus(id){CUR=null;CURID='';if(!id)return;const card=document.querySelec
   const qp=document.getElementById('qpdf');if(qp){qp.insertAdjacentHTML('afterend',` <button class="btn ghost" id="fpSignB">✍️ קישור לחתימת הלקוח</button><div id="fpSign" class="fp-card" hidden></div>`);document.getElementById('fpSignB').onclick=signLink}}
  const pr=document.getElementById('wsPrint');if(pr){pr.insertAdjacentHTML('beforeend',`<div class="fp-row"><button class="btn ghost" id="fpLab">🏷️ הדפסת מדבקות לחלקים</button><button class="btn ghost" id="fpWk">👷 שליחה לעובד</button><button class="btn" id="fpWaB">📲 שרטוט + הסבר בוואטסאפ</button></div><div id="fpWorker" class="fp-card" hidden></div><div id="fpWa" class="fp-card" hidden></div>`);
   document.getElementById('fpLab').onclick=printLabels;document.getElementById('fpWk').onclick=workerForm;document.getElementById('fpWaB').onclick=waForm}
+ try{guideSpacing()}catch(e){console.error('spc',e)}
  try{tidy(card)}catch(e){console.error('tidy',e)}
  if(new URLSearchParams(location.search).get('ws')==='1'&&!window.__fpAuto){window.__fpAuto=1;setTimeout(openWorkshop,300)}}
 
@@ -290,7 +347,7 @@ const css=`
 .fp-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin:8px 0}.fp-row label,.fp-full{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:14px}.fp-full{margin:8px 0}
 .fp-row select,.fp-row input,.fp-full textarea{padding:10px;font-size:16px;border-radius:8px;min-width:180px;font-family:inherit}.fp-mo p{margin:6px 0}
 .fp-qr{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px}.fp-qr svg,.fp-qrtb svg{width:84px!important;height:84px!important;max-width:84px!important;background:#fff;padding:3px;border-radius:6px}
-.fp-qrtb{display:none}
+.fp-qrtb{display:none}.fp-spc{border:2px solid #0369A1;background:rgba(3,105,161,.12);border-radius:12px;padding:10px 14px;margin:0 0 12px}.fp-spc ul{margin:6px 0;padding-inline-start:20px}.fp-spc p{margin:6px 0 0}
 .fp-wa-th{display:flex;gap:8px;overflow-x:auto;padding:6px 0;min-height:60px;align-items:center}.fp-wa-th img{height:110px;border-radius:10px;border:1px solid rgba(127,127,127,.4);background:#fff;cursor:zoom-in;flex:none}
 .fp-steps2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}@media(max-width:600px){.fp-steps2{grid-template-columns:1fr}}
 .fp-s2{font:inherit;cursor:pointer;display:flex;gap:12px;align-items:center;text-align:start;padding:16px;border-radius:14px;border:2px solid #22c55e;background:rgba(34,197,94,.1);color:inherit}
