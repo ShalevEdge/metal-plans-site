@@ -25,4 +25,5 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function btn(){if(document.getElementById('fxTheme')||!document.body)return;const b=document.createElement('button');b.id='fxTheme';b.type='button';b.setAttribute('aria-label','מצב יום/לילה');
  b.onclick=()=>{mode=mode==='day'?'night':'day';try{localStorage.setItem(K,mode)}catch(e){}apply()};document.body.appendChild(b);apply()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',btn);else btn();
+try{if(!document.querySelector('script[src$="forge-ui.js"]')){const u=document.createElement('script');u.src='forge-ui.js';(document.head||document.documentElement).appendChild(u)}}catch(e){}
 })();

@@ -271,7 +271,8 @@ view=function(vk,o){let svg=view0(vk,o||{});o=o||{};if(o.thumb||vk==='iso'||!svg
  for(const g of S.slice(0,3)){const r=g.run,last=r[r.length-1].b,first=r[0].b;
   if(g.ax===0){const y=g.oMin-fs*(.9+1.3*k0++);add+=L(first[0],y,last[1],y,.7)+L(first[0],y-fs*.2,first[0],y+fs*.2)+L(last[1],y-fs*.2,last[1],y+fs*.2)+T((first[0]+last[1])/2,y-fs*.25,`${g.n} × ${g.name} · מרווח נקי ${fmt(g.gap)} מ״מ`,0,fs*.6);vy=Math.min(vy,y-fs*1.1)}
   else{const x=g.oMax+fs*(.9+1.3*k1++);add+=L(x,first[2],x,last[3],.7)+L(x-fs*.2,first[2],x+fs*.2,first[2])+L(x-fs*.2,last[3],x+fs*.2,last[3])+T(x+fs*.45,(first[2]+last[3])/2,`${g.n} × ${g.name} · מרווח ${fmt(g.gap)}`,1,fs*.6);vw=Math.max(vw,x+fs*1.2-vx)}}
- // פרט מוגדל לקבוצה הראשית
+ // פרט מוגדל לקבוצה הראשית – רק בחזית (או בתצוגה היחידה עם מרווחים)
+ if(vk!=='front'&&spacing('front').length){const ny=Math.min(vy0,vy);return svg.replace(m[0],`viewBox="${vx} ${ny} ${vw} ${vh+(vy0-ny)}"`).replace(/<\/svg>$/,add+'</svg>')}
  const g=S[0],r=g.run,P=VIEWS[vk].P,ax=g.ax,lo=ax?2:0,hi=ax?3:1;
  const start=g.edge!=null?r[0].b[lo]-g.edge:r[0].b[lo],refW=g.edge!=null?Math.min(g.edge*.6+40,80):30,R0=start-refW,R1=r[Math.min(2,r.length-1)].b[hi]+g.gap*.35;
  const span=R1-R0,oth=Math.min(span*.62,(ax?g.oMax-g.oMin:g.oMax-g.oMin)),O0=ax?g.oMax-oth:g.oMin,O1=O0+oth;
