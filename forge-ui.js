@@ -99,8 +99,8 @@ function embers(){if(RM||document.getElementById('fuEmbers'))return;const c=docu
   x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r*4,0,6.283);x.fill()}requestAnimationFrame(tick)}requestAnimationFrame(tick)}
 
 const PRIMARY=['hub.html','start.html','new-job.html','plans.html','projects.html'];
-const GROUPS=[['🔧 סדנה',['optimizer.html','production.html','welding.html','inventory.html','workshop.html','gallery.html']],['📊 עסק',['dashboard.html','finance.html','purchasing.html','quotes.html','smart.html']],['⚙️ חשבון',['account.html','pricing.html','order.html']]];
-const ICON={'optimizer.html':'📏','production.html':'🏭','welding.html':'⚡','inventory.html':'📦','workshop.html':'🏠','gallery.html':'📸','dashboard.html':'📊','finance.html':'💵','purchasing.html':'🛒','quotes.html':'🧾','smart.html':'🤖','account.html':'👤','pricing.html':'💳','order.html':'🔗'};
+const GROUPS=[['🔧 סדנה',['scan.html','optimizer.html','production.html','welding.html','inventory.html','workshop.html','gallery.html']],['📊 עסק',['dashboard.html','finance.html','purchasing.html','quotes.html','smart.html']],['⚙️ חשבון',['account.html','pricing.html','order.html']]];
+const ICON={'scan.html':'📷','optimizer.html':'📏','production.html':'🏭','welding.html':'⚡','inventory.html':'📦','workshop.html':'🏠','gallery.html':'📸','dashboard.html':'📊','finance.html':'💵','purchasing.html':'🛒','quotes.html':'🧾','smart.html':'🤖','account.html':'👤','pricing.html':'💳','order.html':'🔗'};
 function navGroup(){const nav=document.getElementById('forgeNav');if(!nav||nav.dataset.fu)return;const links=[...nav.querySelectorAll(':scope>a')];if(links.length<9)return;nav.dataset.fu=1;
  const href=a=>a.getAttribute('href');const rest=links.filter(a=>!PRIMARY.includes(href(a)));rest.forEach(a=>a.classList.add('fu-hid'));
  const box=document.createElement('div');box.className='fu-more';const anyOn=rest.some(a=>a.classList.contains('on'));const used=new Set();

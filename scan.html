@@ -1,0 +1,148 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>צילום שרטוט → הוראות עבודה | SHALVERO FORGE</title>
+<meta name="description" content="מצלמים שרטוט קיים ומקבלים רשימת חיתוך, פרופילים, זוויות, מרווחים והוראות הרכבה מדויקות – מוכן להדפסה ולשליחה לרתך.">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080B0F"><link rel="icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"><link rel="stylesheet" href="premium.css">
+<style>
+.sc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.sc-steps div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center}
+.sc-steps b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--or);color:#fff;display:grid;place-items:center}
+@media(max-width:700px){.sc-steps{grid-template-columns:1fr}}
+.sc-drop{display:block;border:2px dashed rgba(249,115,22,.55);border-radius:18px;padding:22px;text-align:center;background:rgba(249,115,22,.05);cursor:pointer;transition:background .2s}
+.sc-drop:hover,.sc-drop.over{background:rgba(249,115,22,.12)}.sc-drop em{font-style:normal;font-size:44px;display:block}
+.sc-prev{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.sc-prev figure{margin:0;position:relative}.sc-prev img{height:140px;border-radius:12px;border:1px solid var(--line);background:#fff}
+.sc-prev button{position:absolute;top:6px;inset-inline-end:6px;border:0;border-radius:99px;width:28px;height:28px;background:rgba(0,0,0,.65);color:#fff;cursor:pointer}
+.sc-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.sc-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.sc-row label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:14px;flex:1;min-width:180px}
+.sc-row input,.sc-row select{padding:10px;border-radius:10px;font:inherit;font-size:16px}
+.sc-key{font-size:13px;color:var(--steel)}.sc-key a{color:var(--ort)}
+.sc-load{display:none;align-items:center;gap:12px;font-weight:800;color:var(--ort)}.sc-load.on{display:flex}
+.sc-load i{width:26px;height:26px;border-radius:50%;border:3px solid rgba(249,115,22,.3);border-top-color:#f97316;animation:scs 1s linear infinite}@keyframes scs{to{transform:rotate(360deg)}}
+.sc-res h2{margin:22px 0 8px;font-size:22px}.sc-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:800}
+.sc-hi{background:rgba(34,197,94,.18);color:#4ade80}.sc-md{background:rgba(234,179,8,.18);color:#facc15}.sc-lo{background:rgba(239,68,68,.18);color:#f87171}
+.sc-warn{border:2px solid #f59e0b;background:rgba(245,158,11,.1);border-radius:14px;padding:12px 16px}.sc-warn li{margin:4px 0}
+.sc-tbl{width:100%;border-collapse:collapse;font-size:15px}.sc-tbl th,.sc-tbl td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:start;vertical-align:top}
+.sc-tbl th{font-size:13px;color:var(--steel)}.sc-tbl td[contenteditable]{background:rgba(255,255,255,.03);border-radius:6px;outline:none;min-width:40px}.sc-tbl td[contenteditable]:focus{background:rgba(249,115,22,.14)}
+.sc-tbl .big{font-weight:900;font-size:18px;color:#fdba74}.sc-tbl .del{background:none;border:0;color:#f87171;cursor:pointer;font-size:16px}
+.sc-wrap{overflow-x:auto}.sc-list{padding-inline-start:22px}.sc-list li{margin:6px 0;line-height:1.6}
+.sc-act{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.sc-hist a{display:flex;justify-content:space-between;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;color:var(--tx);text-decoration:none}
+@media print{.no-print,#nav,.sc-steps,.sc-box.inp,.sc-hist{display:none!important}body{background:#fff!important;color:#000}.sc-res *{color:#000!important}.sc-tbl td[contenteditable]{background:none}}
+</style></head>
+<body><div id="nav"></div><main class="wrap">
+<p class="tag">צילום שרטוט</p><h1>מצלמים שרטוט – מקבלים <span>הוראות עבודה</span></h1>
+<p style="color:var(--steel);max-width:720px">שרטוט מלקוח, מאדריכל או מדף ישן: מצלמים, והמערכת קוראת את המידות והפרופילים ומוציאה רשימת חיתוך, זוויות, מרווחים והוראות הרכבה – ואפשר לתקן כל שורה לפני שליחה לרתך.</p>
+<div class="sc-steps"><div><b>1</b>מצלמים את השרטוט (ישר, מואר, כל המידות בפריים)</div><div><b>2</b>לוחצים "קרא את השרטוט"</div><div><b>3</b>בודקים, מתקנים, ושולחים / מדפיסים</div></div>
+
+<section class="sc-box inp no-print">
+ <label class="sc-drop" id="drop"><em>📷</em><b>צילום או בחירת תמונה של השרטוט</b><br><span style="color:var(--steel)">אפשר עד 4 תמונות (למשל חזית + פרטים)</span>
+  <input type="file" id="file" accept="image/*" multiple hidden></label>
+ <div class="sc-prev" id="prev"></div>
+ <div class="sc-row"><label>מה זה? (לא חובה – עוזר לדיוק)<input id="hint" placeholder="למשל: שער נגרר לחניה, ברזל מגולוון"></label>
+  <label style="max-width:200px">חומר<select id="mat"><option value="">לפי השרטוט</option><option>ברזל שחור</option><option>ברזל מגולוון</option><option>נירוסטה</option><option>אלומיניום</option></select></label></div>
+ <details style="margin-top:12px" id="keyBox"><summary><b>🔑 חיבור קריאה חכמה (AI)</b> <span class="sc-key" id="keyState"></span></summary>
+  <p class="sc-key">הקריאה האוטומטית משתמשת ב-Claude של Anthropic עם <b>מפתח API שלך</b>. המפתח נשמר רק בדפדפן הזה ונשלח רק ל-Anthropic. יוצרים מפתח ב-<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> (תשלום לפי שימוש – בערך כמה אגורות לשרטוט).</p>
+  <div class="sc-row"><label>מפתח API<input id="key" type="password" placeholder="sk-ant-..." autocomplete="off" dir="ltr"></label>
+   <label style="max-width:240px">מודל<select id="model"><option value="claude-sonnet-5-5">Claude Sonnet 5.5 – מהיר</option><option value="claude-opus-5-5">Claude Opus 5.5 – הכי מדויק</option></select></label>
+   <button class="btn ghost" id="keySave" type="button">שמירה</button><button class="btn ghost" id="keyDel" type="button">מחיקה</button></div></details>
+ <div class="sc-act"><button class="btn" id="go" type="button">🔍 קרא את השרטוט</button><button class="btn ghost" id="manual" type="button">✍️ הקלדה ידנית (בלי AI)</button></div>
+ <div class="sc-load" id="load"><i></i><span>קורא את השרטוט… (עד דקה)</span></div>
+ <p id="err" style="color:#f87171;font-weight:700"></p>
+</section>
+
+<section class="sc-res" id="res"></section>
+<section class="sc-box no-print sc-hist" id="hist"></section>
+</main>
+<script src="app.js"></script>
+<script>
+try{nav.innerHTML=MP.nav('scan.html')}catch(e){}
+(function(){
+const $=id=>document.getElementById(id),E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const F=n=>{n=+n;return isFinite(n)&&n?Math.round(n).toLocaleString('en-US'):''};
+const LS={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const KK='forge_ai_key_v1',KM='forge_ai_model_v1',KH='forge_scans_v1';
+let imgs=[],R=null;
+const keyUI=()=>{const k=LS.get(KK,'');$('keyState').textContent=k?'✓ מחובר':'– לא מחובר (אפשר להקליד ידנית)';$('key').value=k?'••••••••'+k.slice(-4):'';$('model').value=LS.get(KM,'claude-sonnet-5-5');if(!k)$('keyBox').open=true};
+$('keySave').onclick=()=>{const v=$('key').value.trim();if(v&&!v.startsWith('••')){if(!/^sk-ant-/.test(v)){alert('מפתח של Anthropic מתחיל ב-sk-ant-');return}LS.set(KK,v)}LS.set(KM,$('model').value);keyUI()};
+$('keyDel').onclick=()=>{try{localStorage.removeItem(KK)}catch(e){}keyUI()};keyUI();
+function shrink(f){return new Promise((ok,no)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const k=Math.min(1,1800/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.88))};i.onerror=()=>no(Error('לא הצלחתי לפתוח את התמונה'));i.src=u})}
+async function add(files){for(const f of files){if(!/^image\//.test(f.type))continue;if(imgs.length>=4){alert('עד 4 תמונות');break}imgs.push(await shrink(f))}draw()}
+function draw(){$('prev').innerHTML=imgs.map((d,i)=>`<figure><img src="${d}" alt="שרטוט ${i+1}"><button data-i="${i}" title="הסרה" type="button">✕</button></figure>`).join('');$('prev').querySelectorAll('button').forEach(b=>b.onclick=()=>{imgs.splice(+b.dataset.i,1);draw()})}
+$('file').onchange=e=>{add([...e.target.files]);e.target.value=''};
+const dz=$('drop');['dragover','dragenter'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.add('over')}));['dragleave','drop'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.remove('over')}));dz.addEventListener('drop',e=>add([...e.dataTransfer.files]));
+const PROMPT=`אתה מהנדס ומסגר ותיק. בתמונה/ות שרטוט של עבודת מסגרות (ברזל/אלומיניום/נירוסטה). קרא אותו בקפידה והפק הוראות עבודה למסגר.
+{HINT}
+כללים:
+- כל האורכים במילימטרים (מ"מ). אם השרטוט בס"מ או מטר – המר. אם אין יחידות – הנח מ"מ וציין זאת ב-unclear.
+- אורך חיתוך = האורך הפיזי של החתיכה. אם מסומנת רק מידה כוללת – חשב את אורך החלק לפי עובי הפרופילים שנוגעים בו (פינה ישרה: חלק אחד עובר לכל האורך והשני בין לבין) וכתוב את החישוב ב-notes.
+- פרופיל כתוב כך: "60×40×2" (רוחב×גובה×דופן) לצינור מלבני, "40×40×2" לריבועי, "L40×40×4" לזווית, "פס 40×5", "צינור Ø48.3×3", "מוט Ø12", "U100", "IPE120", "פח 2 מ"מ". אם לא כתוב – הצע פרופיל מקובל וסמן ב-unclear.
+- זווית חיתוך בכל קצה במעלות (90 = ישר, 45 = גרונג).
+- מרווחים: לכל קבוצה של חלקים חוזרים (מוטות, שלבים, קורות) – מרווח נקי, מרכז-מרכז, מרחק הראשון מהמסגרת.
+- הוראות הרכבה מסודרות וממוספרות, בעברית פשוטה, כולל בדיקת אלכסונים עם האורך שצריך לצאת, ריתוך נקודות לפני ריתוך מלא, וסדר עבודה.
+- אל תמציא: אם מידה לא קריאה – כתוב אותה ב-unclear כשאלה, ותן הערכה מסומנת.
+החזר JSON בלבד (בלי טקסט לפני או אחרי), במבנה:
+{"title":"","summary":"","units_note":"","overall":{"width_mm":0,"height_mm":0,"depth_mm":0},"material":"",
+"parts":[{"no":1,"name":"","profile":"","length_mm":0,"qty":0,"angle_a":90,"angle_b":90,"notes":""}],
+"spacing":[{"what":"","count":0,"gap_mm":0,"pitch_mm":0,"first_mm":0}],
+"hardware":[""],"assembly":[""],"welding":[""],"finishing":[""],"checks":[""],"unclear":[""],"confidence":"high|medium|low"}`;
+async function ai(){const key=LS.get(KK,'');if(!key){$('keyBox').open=true;throw Error('צריך מפתח API כדי שהמערכת תקרא את השרטוט. או לחצו "הקלדה ידנית".')}
+ const hint=[$('hint').value.trim()&&'מה זה לפי המשתמש: '+$('hint').value.trim(),$('mat').value&&'חומר: '+$('mat').value].filter(Boolean).join('\n');
+ const content=imgs.map(d=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:d.split(',')[1]}}));content.push({type:'text',text:PROMPT.replace('{HINT}',hint)});
+ let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+  body:JSON.stringify({model:LS.get(KM,'claude-sonnet-5-5'),max_tokens:6000,messages:[{role:'user',content}]})})}catch(e){throw Error('אין חיבור לאינטרנט – אפשר להקליד ידנית')}
+ const j=await r.json().catch(()=>({}));if(!r.ok){const m=(j.error&&j.error.message)||r.status;throw Error(r.status===401?'המפתח לא תקין':r.status===429?'יותר מדי בקשות – נסו שוב בעוד דקה':'שגיאה מהשרת: '+m)}
+ const t=(j.content||[]).map(c=>c.text||'').join('');const m=t.match(/\{[\s\S]*\}/);if(!m)throw Error('לא התקבלה תשובה מסודרת. נסו תמונה ברורה יותר.');return norm(JSON.parse(m[0]))}
+function norm(o){o=o||{};const A=v=>Array.isArray(v)?v.filter(x=>x!==''&&x!=null):[];o.parts=A(o.parts).map((p,i)=>({no:p.no||i+1,name:p.name||'',profile:p.profile||'',length_mm:+p.length_mm||0,qty:+p.qty||1,angle_a:p.angle_a==null?90:+p.angle_a,angle_b:p.angle_b==null?90:+p.angle_b,notes:p.notes||''}));
+ o.spacing=A(o.spacing);['hardware','assembly','welding','finishing','checks','unclear'].forEach(k=>o[k]=A(o[k]));o.overall=o.overall||{};return o}
+$('go').onclick=async()=>{$('err').textContent='';if(!imgs.length){$('err').textContent='קודם מצלמים או בוחרים תמונה של השרטוט';return}
+ $('load').classList.add('on');$('go').disabled=true;try{R=await ai();R.img=imgs[0];save();show()}catch(e){$('err').textContent='⚠️ '+e.message}finally{$('load').classList.remove('on');$('go').disabled=false}};
+$('manual').onclick=()=>{R=norm({title:$('hint').value.trim()||'עבודה לפי שרטוט',summary:'הוקלד ידנית מתוך השרטוט',material:$('mat').value,parts:[{no:1,name:'',profile:'',length_mm:0,qty:1}],confidence:'manual'});R.img=imgs[0]||'';R.manual=1;show();setTimeout(()=>{const td=document.querySelector('.sc-tbl td[contenteditable]');if(td)td.focus()},60)};
+function bars(parts,stock=6000,kerf=3){const by={};for(const p of parts){if(!p.profile||!p.length_mm||/פח|רשת/.test(p.profile))continue;(by[p.profile]=by[p.profile]||[]);for(let i=0;i<p.qty;i++)by[p.profile].push(+p.length_mm)}
+ return Object.entries(by).map(([pr,L])=>{L.sort((a,b)=>b-a);const B=[];let over=0;for(const l of L){if(l>stock){over++;continue}let b=B.find(b=>b.left>=l+kerf);if(!b){b={left:stock};B.push(b)}b.left-=l+kerf}
+  return{pr,n:B.length,net:L.reduce((a,b)=>a+b,0),over,waste:B.reduce((a,b)=>a+b.left,0)}})}
+function autoSteps(){if(R.assembly.length)return R.assembly;const fr=R.parts.filter(p=>/מסגרת|קורה|עמוד|רגל|משקוף/.test(p.name)),fi=R.parts.filter(p=>!fr.includes(p)&&p.name);const w=R.overall.width_mm,h=R.overall.height_mm;
+ return['חותכים את כל החלקים לפי הטבלה ומסמנים על כל חתיכה את המספר שלה בטוש.',`מניחים את חלקי המסגרת (${fr.map(p=>'#'+(R.parts.indexOf(p)+1)).join(', ')||'החלקים הארוכים'}) על משטח ישר, בדיוק לפי השרטוט.`,'מחברים כל פינה בנקודת ריתוך קטנה (טאק) – עדיין לא ריתוך מלא.',
+  w&&h?`בודקים אלכסונים: שניהם צריכים לצאת ${F(Math.hypot(w,h))} מ״מ. אם יש הבדל – דוחפים את הפינה הארוכה עד שהם שווים.`:'בודקים שהאלכסונים שווים (מפינה לפינה ב-X) – ככה יודעים שהמסגרת ישרה.',
+  fi.length?`מסמנים על המסגרת את מיקומי ${fi.map(p=>p.name).join(', ')} ${R.spacing.length?'לפי המרווחים בטבלה':'לפי השרטוט'} ומחברים בטאקים.`:'',
+  'בודקים שוב פלס ואלכסונים, ורק אז ריתוך מלא – לסירוגין, קצת בכל צד, כדי שהחום לא יעקם.','מנקים, משחיזים ריתוכים, ומכינים לצבע / גלוון.'].filter(Boolean)}
+const CONF={high:['sc-hi','קריאה ברורה'],medium:['sc-md','לבדוק כמה מידות'],low:['sc-lo','השרטוט לא ברור – לבדוק הכול'],manual:['sc-md','הוקלד ידנית']};
+const dims=()=>[R.overall.width_mm,R.overall.height_mm,R.overall.depth_mm].filter(v=>+v).map(F).join(' × ');
+function show(){const c=CONF[R.confidence]||CONF.medium,B=bars(R.parts),steps=autoSteps(),ang=a=>+a===90?'ישר 90°':a+'°';
+ $('res').innerHTML=`<div class="sc-box"><div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">${R.img?`<img src="${R.img}" style="width:min(260px,100%);border-radius:12px;border:1px solid var(--line);background:#fff" alt="השרטוט">`:''}
+ <div style="flex:1;min-width:220px"><h2 style="margin-top:0" contenteditable data-k="title">${E(R.title||'עבודה לפי שרטוט')}</h2><span class="sc-badge ${c[0]}">${c[1]}</span>
+ <p>${E(R.summary||'')}</p>${R.material?`<p><b>חומר:</b> ${E(R.material)}</p>`:''}${dims()?`<p><b>מידות כלליות:</b> ${dims()} מ״מ</p>`:''}${R.units_note?`<p style="color:var(--steel)">${E(R.units_note)}</p>`:''}</div></div></div>
+ ${R.unclear.length?`<div class="sc-warn"><b>⚠️ לבדוק מול השרטוט לפני שחותכים:</b><ul>${R.unclear.map(u=>`<li>${E(u)}</li>`).join('')}</ul></div>`:''}
+ <h2>✂️ רשימת חיתוך <small style="font-size:13px;color:var(--steel)">(לוחצים על תא כדי לתקן)</small></h2>
+ <div class="sc-wrap"><table class="sc-tbl"><thead><tr><th>#</th><th>שם החלק</th><th>פרופיל</th><th>אורך (מ״מ)</th><th>כמות</th><th>קצה א׳</th><th>קצה ב׳</th><th>הערות</th><th class="no-print"></th></tr></thead><tbody>
+ ${R.parts.map((p,i)=>`<tr data-i="${i}"><td>${i+1}</td><td contenteditable data-f="name">${E(p.name)}</td><td contenteditable data-f="profile" dir="ltr">${E(p.profile)}</td><td contenteditable data-f="length_mm" class="big">${F(p.length_mm)}</td><td contenteditable data-f="qty" class="big">${p.qty}</td><td contenteditable data-f="angle_a">${ang(p.angle_a)}</td><td contenteditable data-f="angle_b">${ang(p.angle_b)}</td><td contenteditable data-f="notes">${E(p.notes)}</td><td class="no-print"><button class="del" title="מחיקת שורה" type="button">✕</button></td></tr>`).join('')}
+ </tbody></table></div><button class="btn ghost no-print" id="addRow" type="button" style="margin-top:8px">+ שורה</button>
+ ${B.length?`<h2>🛒 כמה מוטות לקנות (6 מטר)</h2><ul class="sc-list">${B.map(b=>`<li><b dir="ltr">${E(b.pr)}</b>: ${b.n} מוטות · ${(b.net/1000).toFixed(2)} מ׳ נטו · פחת ${(b.waste/1000).toFixed(2)} מ׳${b.over?` · ⚠️ ${b.over} חלקים ארוכים מ-6 מ׳ – צריך מוט ארוך או חיבור`:''}</li>`).join('')}</ul>`:''}
+ ${R.spacing.length?`<h2>📏 מרווחים</h2><ul class="sc-list">${R.spacing.map(s=>`<li><b>${E(s.what)}</b>${s.count?` · ${s.count} יח׳`:''}${s.gap_mm?` · מרווח נקי <b>${F(s.gap_mm)} מ״מ</b>`:''}${s.pitch_mm?` · מרכז-מרכז ${F(s.pitch_mm)}`:''}${s.first_mm?` · הראשון ${F(s.first_mm)} מ״מ מהמסגרת`:''}</li>`).join('')}</ul><p style="color:var(--steel)">💡 חותכים קוצב (פיסת עץ) באורך המרווח הנקי ומניחים בין חלק לחלק.</p>`:''}
+ <h2>🧩 הרכבה – צעד אחרי צעד</h2><ol class="sc-list">${steps.map(s=>`<li>${E(s)}</li>`).join('')}</ol>
+ ${R.welding.length?`<h2>🔥 ריתוך</h2><ul class="sc-list">${R.welding.map(s=>`<li>${E(s)}</li>`).join('')}</ul>`:''}
+ ${R.finishing.length?`<h2>🎨 גימור</h2><ul class="sc-list">${R.finishing.map(s=>`<li>${E(s)}</li>`).join('')}</ul>`:''}
+ ${R.hardware.length?`<h2>🔩 פרזול ואביזרים</h2><ul class="sc-list">${R.hardware.map(s=>`<li>${E(s)}</li>`).join('')}</ul>`:''}
+ <h2>✅ בדיקה לפני מסירה</h2><ul class="sc-list">${(R.checks.length?R.checks:['כל המידות הכלליות תואמות לשרטוט','אלכסונים שווים, הכול בפלס','אין ריתוכים חסרים או סדוקים','אין קצוות חדים']).map(s=>`<li>☐ ${E(s)}</li>`).join('')}</ul>
+ <p style="color:var(--steel);font-size:13px">ההוראות נוצרו מקריאת השרטוט${R.manual?'':' ע״י AI'} – באחריות המבצע לוודא מידות, עומסים ותקנים מול השרטוט המקורי.</p>
+ <div class="sc-act no-print"><button class="btn" id="wa" type="button">📲 שליחה לרתך בוואטסאפ</button><button class="btn ghost" id="pr" type="button">🖨️ הדפסה / PDF</button><button class="btn ghost" id="cp" type="button">העתקת הטקסט</button><button class="btn ghost" id="sv" type="button">💾 שמירה</button></div>`;
+ bind()}
+function bind(){const res=$('res');
+ res.querySelectorAll('td[contenteditable]').forEach(td=>td.onblur=()=>{const i=+td.parentElement.dataset.i,f=td.dataset.f;let v=td.textContent.trim();if(/length_mm|qty|angle/.test(f))v=+v.replace(/[^\d.]/g,'')||(f==='qty'?1:/angle/.test(f)?90:0);if(R.parts[i][f]!==v){R.parts[i][f]=v;show()}});
+ const t=res.querySelector('[data-k=title]');if(t)t.onblur=()=>{R.title=t.textContent.trim()};
+ res.querySelectorAll('.del').forEach(b=>b.onclick=()=>{R.parts.splice(+b.closest('tr').dataset.i,1);show()});
+ $('addRow').onclick=()=>{R.parts.push({no:R.parts.length+1,name:'',profile:'',length_mm:0,qty:1,angle_a:90,angle_b:90,notes:''});show()};
+ $('pr').onclick=()=>print();$('sv').onclick=()=>{save();$('sv').textContent='נשמר ✓'};
+ $('cp').onclick=()=>{if(navigator.clipboard)navigator.clipboard.writeText(text()).then(()=>$('cp').textContent='הועתק ✓',()=>{})};
+ $('wa').onclick=async()=>{const t=text();if(R.img&&navigator.canShare){try{const b=await (await fetch(R.img)).blob(),f=new File([b],'drawing.jpg',{type:'image/jpeg'});if(navigator.canShare({files:[f]}))await navigator.share({files:[f],title:R.title})}catch(e){}}window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}}
+function text(){const L=[`🔧 *${R.title||'עבודה לפי שרטוט'}*`];if(dims())L.push(`📏 ${dims()} מ״מ`);if(R.material)L.push('חומר: '+R.material);
+ L.push('','*✂️ חיתוך*');R.parts.forEach((p,i)=>L.push(`${i+1}) ${p.name} – ${p.qty} חתיכות באורך *${F(p.length_mm)} מ״מ* · ${p.profile}${(+p.angle_a!==90||+p.angle_b!==90)?` · קצוות ${p.angle_a}°/${p.angle_b}°`:''}${p.notes?` (${p.notes})`:''}`));
+ if(R.spacing.length){L.push('','*📏 מרווחים*');R.spacing.forEach(s=>L.push(`• ${s.what}: ${s.count?s.count+' יח׳, ':''}מרווח נקי ${F(s.gap_mm)} מ״מ${s.pitch_mm?`, מרכז-מרכז ${F(s.pitch_mm)}`:''}`))}
+ L.push('','*🧩 הרכבה*');autoSteps().forEach((s,i)=>L.push(`${i+1}. ${s}`));if(R.welding.length){L.push('','*🔥 ריתוך*');R.welding.forEach(s=>L.push('• '+s))}if(R.finishing.length){L.push('','*🎨 גימור*');R.finishing.forEach(s=>L.push('• '+s))}
+ if(R.unclear.length){L.push('','⚠️ *לבדוק מול השרטוט:*');R.unclear.forEach(s=>L.push('• '+s))}return L.join('\n')}
+function save(){if(!R)return;const H=LS.get(KH,[]);R.id=R.id||Date.now();const c=Object.assign({},R,{img:''});const rest=H.filter(h=>h.id!==R.id);rest.unshift({id:R.id,t:R.title||'שרטוט',d:new Date().toLocaleDateString('he-IL'),r:c});LS.set(KH,rest.slice(0,20));hist()}
+function hist(){const H=LS.get(KH,[]);$('hist').innerHTML=H.length?`<b>שרטוטים קודמים</b>${H.map((h,i)=>`<a href="#" data-i="${i}"><span>${E(h.t)}</span><span>${E(h.d)}</span></a>`).join('')}`:'';$('hist').style.display=H.length?'':'none';
+ $('hist').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();const h=H[+a.dataset.i];R=norm(h.r);R.id=h.id;show();$('res').scrollIntoView({behavior:'smooth'})})}
+hist();window.__scan={show:o=>{R=norm(o);show()},text:()=>text()};
+})();
+</script></body></html>

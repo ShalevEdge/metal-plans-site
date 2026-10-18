@@ -3,7 +3,7 @@
   const S=(k,v)=>{localStorage.setItem(k,JSON.stringify(v));if(['mp_projects','mp_inventory_v1','mp_settings_v1','mp_purchase_orders_v1'].includes(k))
       document.dispatchEvent(new CustomEvent('forge:local-change',{detail:{key:k}}));};
   const navItems=[
-    ['hub.html','מרכז'],['start.html','מדריך'],['dashboard.html','דשבורד'],['gallery.html','גלריה'],['new-job.html','עבודה חדשה'],['plans.html','תוכניות'],['optimizer.html','חיתוך'],['production.html','ייצור'],
+    ['hub.html','מרכז'],['start.html','מדריך'],['dashboard.html','דשבורד'],['gallery.html','גלריה'],['new-job.html','עבודה חדשה'],['plans.html','תוכניות'],['scan.html','צילום שרטוט'],['optimizer.html','חיתוך'],['production.html','ייצור'],
     ['welding.html','ריתוך'],['purchasing.html','רכש'],['finance.html','רווחיות'],['projects.html','פרויקטים'],['inventory.html','מלאי'],['workshop.html','המסגריה'],
     ['smart.html','עוזר חכם'],['account.html','חשבון']
   ];
