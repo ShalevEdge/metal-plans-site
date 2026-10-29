@@ -1,0 +1,25 @@
+name: Static security analysis
+on:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+permissions:
+  contents: read
+concurrency:
+  group: sast-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  semgrep:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      SEMGREP_SEND_METRICS: 'off'
+      SEMGREP_ENABLE_VERSION_CHECK: '0'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned OSS scanner
+        run: python3 -m pip install semgrep==1.182.0
+      - name: Scan locally; download rules only, never upload code
+        run: semgrep scan --oss-only --config p/javascript --metrics=off --disable-version-check --error --exclude vendor --exclude docs

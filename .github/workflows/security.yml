@@ -1,0 +1,58 @@
+name: FORGE isolated security validation
+on:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: forge-security-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  application:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+      - name: Existing operations and sync contracts
+        run: |
+          node tests/operations.test.cjs
+          node tests/cloud-sync.test.cjs
+          python3 tests/site_check.py
+      - name: Install pinned browser test dependencies
+        run: npm ci --prefix tests --ignore-scripts
+      - name: Audit test dependencies
+        run: npm audit --prefix tests --package-lock-only --ignore-scripts --audit-level=high
+      - name: Install isolated Chromium
+        working-directory: tests
+        run: npx playwright install --with-deps chromium
+      - name: Imported data stays inert while editing remains possible
+        run: node --test tests/stored-data.security.test.cjs
+  database:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: forge_security_test_20261028
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d forge_security_test_20261028"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Two synthetic workshops and owner/editor/viewer isolation
+        env:
+          PGHOST: 127.0.0.1
+          PGUSER: postgres
+          PGDATABASE: forge_security_test_20261028
+        run: psql -X -v ON_ERROR_STOP=1 -f tests/rls.security.sql

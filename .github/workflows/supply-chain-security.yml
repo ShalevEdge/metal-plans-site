@@ -1,0 +1,33 @@
+name: Supply chain security
+on:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: supply-chain-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  secrets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pinned local secret scanner
+        run: go install github.com/zricethezav/gitleaks/v8@v8.24.3
+      - name: Scan available Git history with full redaction
+        run: "$(go env GOPATH)/bin/gitleaks git --redact=100 --no-banner --log-opts=--all --report-format=json --report-path=/tmp/gitleaks.json"
+      - name: Verify historical exceptions do not hide new credentials
+        run: GITLEAKS_BIN="$(go env GOPATH)/bin/gitleaks" node tests/gitleaks-suppression-boundary.test.js
+      - name: Report only finding locations (never values or snippets)
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          path='/tmp/gitleaks.json'
+          if os.path.exists(path):
+              for finding in json.load(open(path)):
+                  print(json.dumps({k:finding.get(k) for k in ['RuleID','File','StartLine','Commit','Fingerprint']}))
+          PY
